@@ -1,5 +1,6 @@
 {
   "name": "gplus-sign-in",
+  "version": "0.0.1",
   "dependencies": {
     "polymer": "Polymer/polymer#master"
   }
