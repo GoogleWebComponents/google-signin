@@ -1,0 +1,82 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Copyright (c) 2014 Google Inc. All rights reserved. This code may only be used under the BSD style
+license found at http://polymer.github.io/LICENSE
+
+##### Example
+
+    <gplus-sign-in cliendId="..."></gplus-sign-in>
+
+@class gplus-sign-in
+@blurb A Polymer element for authenticating with Google+/Google Services.
+@status alpha
+@url github.io
+
+Use the `clientId` attribute (retrieved from your Google Developer Console) in order to correctly
+connect with the Google+ API. On successfully logging in, the `gplus-signed-in` event from the
+ <gplus-sign-in-button> will be fired.
+-->
+
+<polymer-element name="gplus-sign-in" attributes="clientId">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <gplus-sign-in-button id="signin" loggedin="false"></gplus-sign-in-button>
+    </template>
+    <script>
+        var accessToken = null;
+
+        /**
+         * A callback executed by the Google+ Auth service
+         * @param result
+         */
+        function signinCallback(result) {
+
+            if (result.access_token) {
+                accessToken = result.access_token;
+
+                var signInButton = document.getElementById("___signin_0");
+
+                // Trigger the gplus-signed-in event
+                signInButton.setAttribute("loggedin", "true");
+
+                // Hide the sign-in button once authorized
+                signInButton.style.display = "none";
+            }
+        }
+
+        /**
+         * A simple Polymer element for injecting the G+ client API
+         * script into an element in order to interact with the sign
+         * in process.
+         */
+        Polymer('gplus-sign-in', {
+            clientId: '',
+            ready: function () {
+                if(this.clientId === ''){
+                    throw "A valid clientId is required to use this element";
+                }
+                var script = document.createElement("script");
+                var body = document.body;
+                var div = document.createElement("div");
+
+                script.setAttribute("type", "text/javascript");
+                script.setAttribute("src", "https://apis.google.com/js/client:plusone.js");
+                script.setAttribute("async", true);
+                script.innerHTML = "{lang: 'en-us'}";
+
+                div.setAttribute("class", "g-signin");
+                div.setAttribute("data-callback", "signinCallback");
+                div.setAttribute("data-clientid", this.clientId);
+                div.setAttribute("data-cookiepolicy", "single_host_origin");
+                div.setAttribute("data-scope", "https://www.googleapis.com/auth/drive.file");
+                body.appendChild(div);
+                body.appendChild(script);
+            }
+        });
+    </script>
+</polymer-element>

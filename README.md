@@ -1,4 +1,4 @@
-gplus-sign-in
-=============
+untitled-element
+================
 
-A Google+ Sign-in element built with Polymer
+See the [component page](http://polymerlabs.github.io/untitled-element) for more information.

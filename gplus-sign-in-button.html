@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Copyright (c) 2014 Google Inc. All rights reserved. This code may only be used under the BSD style
+license found at http://polymer.github.io/LICENSE
+
+##### Example
+
+    <gplus-sign-in-button loggedin="false">
+    </gplus-sign-in-button>
+
+@class gplus-sign-in-button
+@blurb A Polymer helper element for firing events when a user is logged in to G+. To be used alongside gplus-sign-in.
+Use the attribute 'loggedin' is used to indicate when a user is logged in or logged out.
+@status alpha
+@url github.io
+-->
+<polymer-element name="gplus-sign-in-button" attributes="loggedin">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+    </template>
+    <script>
+        /**
+         * A Polymer element which fires a 'plus-signed-in' event
+         * on successfully logging in to Google+.
+         */
+        Polymer('gplus-sign-in-button', {
+            loggedinChanged: function () {
+                console.log('Google+ Signed In Successfully.');
+                this.fire('gplus-signed-in');
+            }
+        });
+    </script>
+</polymer-element>
