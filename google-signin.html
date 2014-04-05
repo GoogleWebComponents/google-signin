@@ -72,9 +72,7 @@ used for customizing the label on the sign-in button.
                 if (authResult && !authResult.error) {
                     // Access token has been successfully retrieved
                     authButton.style.display = 'none';
-                    //var signInButton = document.getElementById("___signin_0");
-                    // Trigger the gplus-signed-in event
-                    //signInButton.setAttribute("loggedin", "true");
+                    // Trigger the google-signed-in event
                     handler.fire('google-signed-in');
                 } else {
                     // No access token could be retrieved, show the button to start the authorization flow.
