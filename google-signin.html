@@ -1,0 +1,125 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Copyright (c) 2014 Google Inc. All rights reserved. This code may only be used under the BSD style
+license found at http://polymer.github.io/LICENSE. Authored by Addy Osmani and Rob Dodson based on
+previous API snippets by the Google+ team.
+--->
+
+<!--
+google-signin is used to authenticate with Google+, allowing you to interact with other Google
+APIs such as Drive. The attribute `clientId` is provided in your Google Developers console. The
+`scopes` attribute allows you to specify which scope permissions are required (e.g do you want to
+allow interaction with the Google Drive API. The `label` attribute is an optional piece of text
+used for customizing the label on the sign-in button.
+
+##### Example
+
+    <google-signin cliendId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+    <google-signin label="Sign-in" cliendId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+@class google-signin
+@blurb A Polymer element for authenticating with Google Services.
+@status alpha
+@events triggers the `google-signed-in` event on successfully authenticating.
+@url github.io
+-->
+
+<polymer-element name="google-signin" attributes="clientId scopes label">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+            }
+        </style>
+        <input type="button" id="authorizeButton" style="display: none" value="{{label}}" />
+    </template>
+    <script>
+        (function() {
+            var CLIENT_ID = '';
+            var SCOPES = '';
+            var authButton;
+            var handler;
+
+            /**
+             * Called when the client library is loaded to start the auth flow.
+             */
+            function handleClientLoad() {
+                var interval = window.setInterval(function() {
+                    if (gapi.auth) {
+                        window.clearInterval(interval);
+                        window.setTimeout(checkAuth, 1);
+                    }
+                }, 10);
+            }
+
+            /**
+             * Check if the current user has authorized the application.
+             */
+            function checkAuth() {
+                gapi.auth.authorize(
+                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
+                        handleAuthResult);
+            }
+
+            /**
+             * Called when authorization server replies.
+             *
+             * @param {Object} authResult Authorization result.
+             */
+            function handleAuthResult(authResult) {
+                if (authResult && !authResult.error) {
+                    // Access token has been successfully retrieved
+                    authButton.style.display = 'none';
+                    //var signInButton = document.getElementById("___signin_0");
+                    // Trigger the gplus-signed-in event
+                    //signInButton.setAttribute("loggedin", "true");
+                    handler.fire('google-signed-in');
+                } else {
+                    // No access token could be retrieved, show the button to start the authorization flow.
+                    authButton.style.display = 'block';
+                    authButton.onclick = function() {
+                        gapi.auth.authorize(
+                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+                                handleAuthResult);
+                    };
+                }
+            }
+
+            Polymer('google-signin', {
+                /**
+                 * a Google Developers clientId reference
+                 */
+                clientId: '',
+                /**
+                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+                 */
+                scopes: 'https://www.googleapis.com/auth/drive',
+                /**
+                 * An optional label for the sign-in button
+                 */
+                label: 'Authorize',
+                attached: function() {
+                    if(this.clientId === ''){
+                        throw "A valid clientId is required to use this element";
+                    }
+
+                    CLIENT_ID =  this.clientId;
+                    SCOPES = this.scopes;
+                    authButton = this.$.authorizeButton;
+                    handler = this;
+
+                    var resource = document.createElement('script');
+                    resource.setAttribute('type', 'text/javascript');
+                    resource.setAttribute('src', 'https://apis.google.com/js/client.js');
+                    resource.setAttribute('async', true);
+                    resource.addEventListener('load', handleClientLoad);
+
+                    var script = document.getElementsByTagName('script')[0];
+                    script.parentNode.insertBefore(resource, script);
+                }
+            });
+        })();
+    </script>
+</polymer-element>
