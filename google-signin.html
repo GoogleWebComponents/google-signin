@@ -10,8 +10,11 @@ previous API snippets by the Google+ team.
 google-signin is used to authenticate with Google+, allowing you to interact with other Google
 APIs such as Drive. The attribute `clientId` is provided in your Google Developers console. The
 `scopes` attribute allows you to specify which scope permissions are required (e.g do you want to
-allow interaction with the Google Drive API. The `label` attribute is an optional piece of text
-used for customizing the label on the sign-in button.
+allow interaction with the Google Drive API). The `label` attribute is an optional piece of text
+used for customizing the label on the sign-in button. The `google-signin-success` event is triggered
+when a user successfully authenticates and `google-signin-failure` is triggered when this is not
+the case. Both events will also provide the data returned by the Google+ client authentication
+process.
 
 ##### Example
 
@@ -22,7 +25,7 @@ used for customizing the label on the sign-in button.
 @class google-signin
 @blurb A Polymer element for authenticating with Google Services.
 @status alpha
-@events triggers the `google-signed-in` event on successfully authenticating.
+@events triggers the `google-signin-success` event on successfully authenticating or `google-signin-failure`
 @url github.io
 -->
 
@@ -72,10 +75,11 @@ used for customizing the label on the sign-in button.
                 if (authResult && !authResult.error) {
                     // Access token has been successfully retrieved
                     authButton.style.display = 'none';
-                    // Trigger the google-signed-in event
-                    handler.fire('google-signed-in');
+                    // Trigger the google-signin-success event
+                    handler.fire('google-signin-success', {result: authResult});
                 } else {
                     // No access token could be retrieved, show the button to start the authorization flow.
+                    handle.fire('google-signin-failure', {result: authResult});
                     authButton.style.display = 'block';
                     authButton.onclick = function() {
                         gapi.auth.authorize(
