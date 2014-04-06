@@ -78,8 +78,9 @@ process.
                     // Trigger the google-signin-success event
                     handler.fire('google-signin-success', {result: authResult});
                 } else {
-                    // No access token could be retrieved, show the button to start the authorization flow.
+                    // Fire event to indicate sign-in was not successful
                     handler.fire('google-signin-failure', {result: authResult});
+                    // No access token could be retrieved, show the button to start the authorization flow.
                     authButton.style.display = 'block';
                     authButton.onclick = function() {
                         gapi.auth.authorize(
