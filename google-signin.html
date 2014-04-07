@@ -10,11 +10,13 @@ previous API snippets by the Google Developer Relations team.
 google-signin is used to authenticate with Google, allowing you to interact with other Google
 APIs such as Drive. The attribute `clientId` is provided in your Google Developers console. The
 `scopes` attribute allows you to specify which scope permissions are required (e.g do you want to
-allow interaction with the Google Drive API). The `label` attribute is an optional piece of text
+allow interaction with the Google Drive API). The `requestVisibleActions` attribute is necessary if
+you want to write app activities (https://developers.google.com/+/web/app-activities/) on behalf of
+the user. Please note that this attribute is only valid in combination with the plus.login scope
+(https://www.googleapis.com/auth/plus.login). The `label` attribute is an optional piece of text
 used for customizing the label on the sign-in button. The `google-signin-success` event is triggered
-when a user successfully authenticates and `google-signin-failure` is triggered when this is not
-the case. Both events will also provide the data returned by the Google client authentication
-process.
+when a user successfully authenticates and `google-signin-failure` is triggered when this is not the
+case. Both events will also provide the data returned by the Google client authentication process.
 
 ##### Example
 
@@ -29,7 +31,7 @@ process.
 @url github.io
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes label">
+<polymer-element name="google-signin" attributes="clientId scopes requestVisibleActions label">
     <template>
         <style>
             :host {
@@ -42,6 +44,7 @@ process.
         (function() {
             var CLIENT_ID = '';
             var SCOPES = '';
+            var REQUEST_VISIBLE_ACTIONS = '';
             var authButton;
             var handler;
 
@@ -62,7 +65,8 @@ process.
              */
             function checkAuth() {
                 gapi.auth.authorize(
-                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
+                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true,
+                         'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
                         handleAuthResult);
             }
 
@@ -84,7 +88,8 @@ process.
                     authButton.style.display = 'block';
                     authButton.onclick = function() {
                         gapi.auth.authorize(
-                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false,
+                                 'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
                                 handleAuthResult);
                     };
                 }
@@ -100,6 +105,11 @@ process.
                  */
                 scopes: 'profile',
                 /**
+                 * The app activity types you want to write on behalf of the user
+                 * (e.g http://schemas.google.com/AddActivity)
+                 */
+                requestVisibleActions: '',
+                /**
                  * An optional label for the sign-in button
                  */
                 label: 'Authorize',
@@ -110,6 +120,7 @@ process.
 
                     CLIENT_ID =  this.clientId;
                     SCOPES = this.scopes;
+                    REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
                     authButton = this.$.authorizeButton;
                     handler = this;
 
