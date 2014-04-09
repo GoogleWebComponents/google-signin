@@ -31,14 +31,14 @@ case. Both events will also provide the data returned by the Google client authe
 @url github.io
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes requestVisibleActions label">
+<polymer-element name="google-signin" attributes="clientId scopes requestVisibleActions labelSignin labelSignout">
     <template>
         <style>
             :host {
                 display: inline-block;
             }
         </style>
-        <input type="button" id="authorizeButton" style="display: none" value="{{label}}" />
+        <input type="button" id="authorizeButton" value="{{labelSignin}}" />
     </template>
     <script>
         (function() {
@@ -46,6 +46,8 @@ case. Both events will also provide the data returned by the Google client authe
             var SCOPES = '';
             var REQUEST_VISIBLE_ACTIONS = '';
             var authButton;
+            var signOutText;
+            var signInText;
             var handler;
 
             /**
@@ -78,20 +80,37 @@ case. Both events will also provide the data returned by the Google client authe
             function handleAuthResult(authResult) {
                 if (authResult && !authResult.error) {
                     // Access token has been successfully retrieved
-                    authButton.style.display = 'none';
+
+                    //authButton.style.display = 'none';
+                    authButton.value = signOutText;
+
+                    // Note that sign-out will not occur on localhost
+                    authButton.onclick = function() {
+                        gapi.auth.signOut();
+                        handler.fire('google-signout-attempted');
+                    }
                     // Trigger the google-signin-success event
                     handler.fire('google-signin-success', {result: authResult});
                 } else {
-                    // Fire event to indicate sign-in was not successful
-                    handler.fire('google-signin-failure', {result: authResult});
-                    // No access token could be retrieved, show the button to start the authorization flow.
-                    authButton.style.display = 'block';
-                    authButton.onclick = function() {
-                        gapi.auth.authorize(
-                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false,
-                                 'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
-                                handleAuthResult);
-                    };
+
+                     // Fire event to indicate sign-in was not successful
+                     handler.fire('google-signin-failure', {result: authResult});
+
+                     // Fire event to indicate a sign-out
+                     if(authResult.error === 'user_signed_out') {
+                         handler.fire('google-signed-out', {result: authResult});
+                     }
+
+                     authButton.value = signInText;
+                     // No access token could be retrieved, show the button to start the authorization flow.
+                     authButton.style.display = 'block';
+                     authButton.onclick = function() {
+                     gapi.auth.authorize(
+                                    {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false,
+                                        'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
+                                    handleAuthResult);
+                     };
+
                 }
             }
 
@@ -112,7 +131,8 @@ case. Both events will also provide the data returned by the Google client authe
                 /**
                  * An optional label for the sign-in button
                  */
-                label: 'Authorize',
+                labelSignin: 'Sign-in',
+                labelSignout: 'Sign-out',
                 attached: function() {
                     if(this.clientId === ''){
                         throw "A valid clientId is required to use this element";
@@ -122,6 +142,8 @@ case. Both events will also provide the data returned by the Google client authe
                     SCOPES = this.scopes;
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
                     authButton = this.$.authorizeButton;
+                    signOutText = this.labelSignout;
+                    signInText = this.labelSignin;
                     handler = this;
 
                     var resource = document.createElement('script');

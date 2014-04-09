@@ -19,6 +19,14 @@
       document.addEventListener("google-signin-success", function(){
           document.querySelector("#status").innerHTML = "You are now signed in.";
       });
+
+      document.addEventListener("google-signed-out", function(){
+          document.querySelector("#status").innerHTML = "You are now signed out.";
+      });
+
+      document.addEventListener("google-signout-attempted", function(){
+          document.querySelector("#status").innerHTML = "You attempted to sign out.";
+      });
   </script>
 
 </body>
