@@ -38,7 +38,7 @@ case. Both events will also provide the data returned by the Google client authe
                 display: inline-block;
             }
         </style>
-        <input type="button" id="authorizeButton" value="{{labelSignin}}" />
+        <input type="button" id="authorizeButton" style="display: none" value="{{labelSignin}}" />
     </template>
     <script>
         (function() {
@@ -69,7 +69,7 @@ case. Both events will also provide the data returned by the Google client authe
              */
             function checkAuth() {
                 gapi.auth.authorize(
-                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'cookie_policy': COOKIE_POLICY, 'immediate': IMMEDIATE,
+                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true,
                          'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
                         handleAuthResult);
             }
@@ -82,9 +82,10 @@ case. Both events will also provide the data returned by the Google client authe
             function handleAuthResult(authResult) {
                 if (authResult && !authResult.error) {
                     // Access token has been successfully retrieved
-                    //console.log('You have been signed in.');
-
                     //authButton.style.display = 'none';
+                    // Trigger the google-signin-success event
+                    handler.fire('google-signin-success', {result: authResult});
+
                     authButton.value = signOutText;
 
                     // Note that sign-out will not occur on localhost
@@ -95,38 +96,18 @@ case. Both events will also provide the data returned by the Google client authe
                         });
                         handler.fire('google-signout-attempted');
                     }
-                    // Trigger the google-signin-success event
-                    handler.fire('google-signin-success', {result: authResult});
+
                 } else {
-                    console.log(authResult);
-/*
-                     // Fire event to indicate sign-in was not successful
-                    if(authResult && authResult.error){
-                        //handler.fire('google-signin-failure', {result: authResult});
-                        console.log('sign in failure');
-                    }
-
-                     // Fire event to indicate a sign-out
-                     if(authResult && !!authResult.error && authResult.error === 'user_signed_out') {
-                         console.log('You have been signed out.');
-                         //handler.fire('google-signed-out', {result: authResult});
-                     }
-*/
-                     authButton.value = signInText;
-
-                     // No access token could be retrieved, show the button to start the authorization flow.
-                     authButton.style.display = 'block';
-                     authButton.onclick = function() {
-                         console.log('attempt signin');
-                       gapi.auth.authorize({
-                           'client_id': CLIENT_ID,
-                           'scope': SCOPES,
-                           'cookie_policy': COOKIE_POLICY,
-                           'immediate': IMMEDIATE,
-                           'request_visible_actions': REQUEST_VISIBLE_ACTIONS
-                       }, handleAuthResult);
-                     };
-
+                    // Fire event to indicate sign-in was not successful
+                    handler.fire('google-signin-failure', {result: authResult});
+                    // No access token could be retrieved, show the button to start the authorization flow.
+                    authButton.style.display = 'block';
+                    authButton.onclick = function() {
+                        gapi.auth.authorize(
+                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false,
+                                 'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
+                                handleAuthResult);
+                    };
                 }
             }
 
@@ -147,8 +128,8 @@ case. Both events will also provide the data returned by the Google client authe
                 /**
                  * An optional label for the sign-in button
                  */
-                labelSignin: 'Sign-in',
-                labelSignout: 'Sign-out',
+                labelSignin: 'Authorize',
+                labelSignout: 'Sign out',
                 attached: function() {
                     if(this.clientId === ''){
                         throw "A valid clientId is required to use this element";
@@ -157,8 +138,6 @@ case. Both events will also provide the data returned by the Google client authe
                     CLIENT_ID =  this.clientId;
                     SCOPES = this.scopes;
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
-                    COOKIE_POLICY = 'single_host_origin';
-                    IMMEDIATE = true;
                     authButton = this.$.authorizeButton;
                     signOutText = this.labelSignout;
                     signInText = this.labelSignin;
