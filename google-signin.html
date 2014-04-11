@@ -69,7 +69,7 @@ case. Both events will also provide the data returned by the Google client authe
              */
             function checkAuth() {
                 gapi.auth.authorize(
-                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true,
+                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'cookie_policy': 'single_host_origin', 'immediate': true,
                          'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
                         handleAuthResult);
             }
@@ -104,7 +104,7 @@ case. Both events will also provide the data returned by the Google client authe
                     authButton.style.display = 'block';
                     authButton.onclick = function() {
                         gapi.auth.authorize(
-                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false,
+                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'cookie_policy': 'single_host_origin', 'immediate': false,
                                  'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
                                 handleAuthResult);
                     };
