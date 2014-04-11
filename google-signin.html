@@ -82,40 +82,49 @@ case. Both events will also provide the data returned by the Google client authe
             function handleAuthResult(authResult) {
                 if (authResult && !authResult.error) {
                     // Access token has been successfully retrieved
-                    console.log('You have been signed in.');
+                    //console.log('You have been signed in.');
 
                     //authButton.style.display = 'none';
                     authButton.value = signOutText;
 
                     // Note that sign-out will not occur on localhost
                     authButton.onclick = function() {
-                        gapi.auth.signOut();
+                        console.log('signout attempted');
+                        gapi.auth.signOut(function(){
+                            alert('logged out');
+                        });
                         handler.fire('google-signout-attempted');
                     }
                     // Trigger the google-signin-success event
                     handler.fire('google-signin-success', {result: authResult});
                 } else {
-
+                    console.log(authResult);
+/*
                      // Fire event to indicate sign-in was not successful
                     if(authResult && authResult.error){
-                        handler.fire('google-signin-failure', {result: authResult});
+                        //handler.fire('google-signin-failure', {result: authResult});
+                        console.log('sign in failure');
                     }
 
                      // Fire event to indicate a sign-out
                      if(authResult && !!authResult.error && authResult.error === 'user_signed_out') {
                          console.log('You have been signed out.');
-                         handler.fire('google-signed-out', {result: authResult});
+                         //handler.fire('google-signed-out', {result: authResult});
                      }
-
+*/
                      authButton.value = signInText;
 
                      // No access token could be retrieved, show the button to start the authorization flow.
                      authButton.style.display = 'block';
                      authButton.onclick = function() {
-                     gapi.auth.authorize(
-                                    {'client_id': CLIENT_ID, 'scope': SCOPES, 'cookie_policy': COOKIE_POLICY, 'immediate': IMMEDIATE,
-                                        'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
-                                    handleAuthResult);
+                         console.log('attempt signin');
+                       gapi.auth.authorize({
+                           'client_id': CLIENT_ID,
+                           'scope': SCOPES,
+                           'cookie_policy': COOKIE_POLICY,
+                           'immediate': IMMEDIATE,
+                           'request_visible_actions': REQUEST_VISIBLE_ACTIONS
+                       }, handleAuthResult);
                      };
 
                 }
