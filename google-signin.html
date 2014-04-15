@@ -74,7 +74,7 @@ case. Both events will also provide the data returned by the Google client authe
 
                 } else {
                     if (authResult && authResult.error == "user_signed_out") {
-                        // Fire event to indicate sign-in was not successful
+                        // Fire event to indicate user signed out
                         handler.fire('google-signed-out', {result: authResult});
                     } else {
                         // Fire event to indicate sign-in was not successful
@@ -86,7 +86,7 @@ case. Both events will also provide the data returned by the Google client authe
                     authButton.style.display = 'block';
 
                     authButton.onclick = function() {
-                      gapi.auth.signIn();
+                        gapi.auth.signIn();
                     };
                 }
             }
