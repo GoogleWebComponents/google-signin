@@ -31,7 +31,7 @@ case. Both events will also provide the data returned by the Google client authe
 @url github.io
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes requestVisibleActions labelSignin labelSignout">
+<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions labelSignin labelSignout">
     <template>
         <style>
             :host {
@@ -46,33 +46,10 @@ case. Both events will also provide the data returned by the Google client authe
             var SCOPES = '';
             var REQUEST_VISIBLE_ACTIONS = '';
             var COOKIE_POLICY = '';
-            var IMMEDIATE = '';
             var authButton;
             var signOutText;
             var signInText;
             var handler;
-
-            /**
-             * Called when the client library is loaded to start the auth flow.
-             */
-            function handleClientLoad() {
-                var interval = window.setInterval(function() {
-                    if (gapi.auth) {
-                        window.clearInterval(interval);
-                        window.setTimeout(checkAuth, 1);
-                    }
-                }, 10);
-            }
-
-            /**
-             * Check if the current user has authorized the application.
-             */
-            function checkAuth() {
-                gapi.auth.authorize(
-                        {'client_id': CLIENT_ID, 'scope': SCOPES, 'cookie_policy': 'single_host_origin', 'immediate': true,
-                         'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
-                        handleAuthResult);
-            }
 
             /**
              * Called when authorization server replies.
@@ -87,26 +64,29 @@ case. Both events will also provide the data returned by the Google client authe
                     handler.fire('google-signin-success', {result: authResult});
 
                     authButton.value = signOutText;
+                    authButton.style.display = 'block';
 
                     // Note that sign-out will not occur on localhost
                     authButton.onclick = function() {
-                        console.log('signout attempted');
-                        gapi.auth.signOut(function(){
-                            alert('logged out');
-                        });
                         handler.fire('google-signout-attempted');
+                        gapi.auth.signOut();
                     }
 
                 } else {
-                    // Fire event to indicate sign-in was not successful
-                    handler.fire('google-signin-failure', {result: authResult});
+                    if (authResult && authResult.error == "user_signed_out") {
+                        // Fire event to indicate user signed out
+                        handler.fire('google-signed-out', {result: authResult});
+                    } else {
+                        // Fire event to indicate sign-in was not successful
+                        handler.fire('google-signin-failure', {result: authResult});
+                    }
+
                     // No access token could be retrieved, show the button to start the authorization flow.
+                    authButton.value = signInText;
                     authButton.style.display = 'block';
+
                     authButton.onclick = function() {
-                        gapi.auth.authorize(
-                                {'client_id': CLIENT_ID, 'scope': SCOPES, 'cookie_policy': 'single_host_origin', 'immediate': false,
-                                 'request_visible_actions': REQUEST_VISIBLE_ACTIONS},
-                                handleAuthResult);
+                        gapi.auth.signIn();
                     };
                 }
             }
@@ -120,6 +100,12 @@ case. Both events will also provide the data returned by the Google client authe
                  * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
                  */
                 scopes: 'profile',
+                /**
+                 * The cookie policy defines what URIs have access to the session cookie
+                 * remembering the user's sign-in state.
+                 * See https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy                 
+                 */
+                cookiePolicy: 'single_host_origin',
                 /**
                  * The app activity types you want to write on behalf of the user
                  * (e.g http://schemas.google.com/AddActivity)
@@ -137,17 +123,47 @@ case. Both events will also provide the data returned by the Google client authe
 
                     CLIENT_ID =  this.clientId;
                     SCOPES = this.scopes;
+                    COOKIE_POLICY = this.cookiePolicy;
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
                     authButton = this.$.authorizeButton;
                     signOutText = this.labelSignout;
                     signInText = this.labelSignin;
                     handler = this;
 
+                    // For page-level configuration the callback has to be in global namespace
+                    window.handleAuthResult = handleAuthResult;
+
+                    var meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-clientid');
+                    meta.setAttribute('content', CLIENT_ID);
+                    document.head.appendChild(meta);
+
+                    meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-scope');
+                    meta.setAttribute('content', SCOPES);
+                    document.head.appendChild(meta);
+
+                    meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-cookiepolicy');
+                    meta.setAttribute('content', COOKIE_POLICY);
+                    document.head.appendChild(meta);
+
+                    meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-callback');
+                    meta.setAttribute('content', 'handleAuthResult');
+                    document.head.appendChild(meta);
+
+                    if (REQUEST_VISIBLE_ACTIONS) {
+                        meta = document.createElement('meta');
+                        meta.setAttribute('name', 'google-signin-requestvisibleactions');
+                        meta.setAttribute('content', REQUEST_VISIBLE_ACTIONS);
+                        document.head.appendChild(meta);
+                    }
+
                     var resource = document.createElement('script');
                     resource.setAttribute('type', 'text/javascript');
                     resource.setAttribute('src', 'https://apis.google.com/js/client.js');
                     resource.setAttribute('async', true);
-                    resource.addEventListener('load', handleClientLoad);
 
                     var script = document.getElementsByTagName('script')[0];
                     script.parentNode.insertBefore(resource, script);
