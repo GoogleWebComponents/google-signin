@@ -61,7 +61,7 @@ case. Both events will also provide the data returned by the Google client authe
                     // Access token has been successfully retrieved
                     //authButton.style.display = 'none';
                     // Trigger the google-signin-success event
-                    handler.fire('google-signin-success', {result: authResult});
+                    handler.fire('google-signin-success', {result: authResult, gapi: gapi});
 
                     authButton.value = signOutText;
                     authButton.style.display = 'block';
