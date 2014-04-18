@@ -8,6 +8,57 @@
     <script src="../platform/platform.js"></script>
     <link rel="import" href="google-signin.html">
 
+    <!-- Demo only styles -->
+    <style>
+      @import url(http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,500italic,900,700italic,900italic);
+
+      * { font-family: 'Roboto', sans-serif; line-height:1.2; vertical-align:middle; }
+
+      body {
+        background: rgba(204, 204, 204, 0.31);
+      }
+
+      .card {
+        width: 290px;
+        padding:1.5rem;
+        box-shadow:0 1px 2px #aaa;
+        background:white;
+        margin:1rem 1rem 1rem;
+        border-radius:3px;
+        user-select:none;
+        transform-origin:top left;
+        position:relative;
+        z-index:2;
+      }
+
+      .card:nth-child(even){
+       transform-origin:top right;
+      }
+
+      .map {
+        background: whitesmoke;
+        margin: .5rem -1.5rem 0 -1.5rem;
+        padding: 0.5rem;
+      }
+
+      h1 {
+        font-size:2rem;
+        font-weight:200;
+      }
+
+      h1 strong {
+        font-weight:300;
+        color:#539D00;
+      }
+
+      h2 {
+        font-size:.9rem;
+        line-height:2.5;
+        color:gray;
+        font-weight:400;
+      }
+    </style>
+
 </head>
 
 <body unresolved>
@@ -19,30 +70,27 @@
 
     <!-- Just for demonstration purposes -->
     <template id="profile" bind="{{ profile }}">
-        <p>
-            <i>Here's some profile info for the logged in user:</i>
-        </p>
-        <p>
-            <strong>Name</strong>: {{displayName}}
-        </p>
-        <p>
-            <strong>Avatar</strong>:
-            <p>
-                <img src="{{image.url}}" />
-            </p>
-        </p>
-        <p>
-            <strong>Gender</strong>: {{gender}}
-        </p>
-        <p>
-            <strong>G+ URL</strong>: <a href="{{url}}">{{url}}</a>
-        </p>
-        <p>
-            <strong>Tagline</strong>: {{tagline}}
-        </p>
-        <p>
-            <strong>Skills</strong>: {{skills}}
-        </p>
+    <div class="card">
+        <h1><strong>{{displayName}}</strong></h1>
+        <h2>Is currently signed-in</h2>
+        <div class="map">
+          <p>
+              <strong>Gender</strong> {{gender}}
+          </p>
+          <p>
+              <strong>Skills</strong> {{skills}}
+          </p>
+          <p>
+              <strong>Avatar</strong>
+              <p>
+                  <img src="{{image.url}}" />
+              </p>
+          </p>
+          <p>
+              <strong>G+ URL</strong> <a href="{{url}}">{{url}}</a>
+          </p>
+        </div>
+    </div>
     </template>
 
     <script>
