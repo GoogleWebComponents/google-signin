@@ -1,63 +1,86 @@
 <!doctype html>
 <html>
+
 <head>
 
-  <title>google-signin Demo</title>
+    <title>google-signin Demo</title>
 
-  <script src="../platform/platform.js"></script>
-  <link rel="import" href="google-signin.html">
+    <script src="../platform/platform.js"></script>
+    <link rel="import" href="google-signin.html">
 
 </head>
+
 <body unresolved>
 
-  <p>A `google-signin` looks like this:</p>
-  <div id="status"></div>
+    <p>A `google-signin` looks like this:</p>
+    <div id="status"></div>
 
-  <google-signin clientId="400542164111-q94vcbin3jp3fb2a0su1nm6gt4qpf86t.apps.googleusercontent.com" scopes="profile"></google-signin>
+    <google-signin clientId="400542164111-q94vcbin3jp3fb2a0su1nm6gt4qpf86t.apps.googleusercontent.com" scopes="profile"></google-signin>
 
-  <!-- Just for demonstration purposes -->
-  <template id="profile" bind="{{ profile }}">
-    <p><i>Here's some profile info for the logged in user:</i></p>
-    <p><strong>Name</strong>: {{displayName}}</p>
-    <p><strong>Occupation</strong>: {{occupation}}</p>
-    <p><strong>Skills</strong>: {{skills}}</p>
-    <p><strong>G+ URL</strong>: <a href="{{url}}">{{url}}</a></p>
-    <p><strong>Avatar</strong>: 
-      <p><img src="{{image.url}}"/></p>
-    </p>
-  </template>
+    <!-- Just for demonstration purposes -->
+    <template id="profile" bind="{{ profile }}">
+        <p>
+            <i>Here's some profile info for the logged in user:</i>
+        </p>
+        <p>
+            <strong>Name</strong>: {{displayName}}
+        </p>
+        <p>
+            <strong>Avatar</strong>:
+            <p>
+                <img src="{{image.url}}" />
+            </p>
+        </p>
+        <p>
+            <strong>Gender</strong>: {{gender}}
+        </p>
+        <p>
+            <strong>G+ URL</strong>: <a href="{{url}}">{{url}}</a>
+        </p>
+        <p>
+            <strong>Tagline</strong>: {{tagline}}
+        </p>
+        <p>
+            <strong>Skills</strong>: {{skills}}
+        </p>
+    </template>
 
-  <script>
-      document.addEventListener("google-signin-success", function(e){
-         var gapi = e.detail.gapi;
-         gapi.client.load('plus','v1', function(){
-         var request = gapi.client.plus.people.get({
-           'userId': 'me'
-         });
-         request.execute(function(resp) {
-          /*
-           console.log('Retrieved profile for:' + resp.displayName);
-           console.log('You are a:' + resp.occupation);
-           console.log('You have skills in:' + resp.skills);
-           console.log('Your G+ URL is:' + resp.url);
-           console.log('Your image URL is:' + resp.image.url);
-          */
-           var t = document.querySelector("#profile");
-           t.model = {};
-           t.model.profile = resp;
-         });
+    <script>
+    document.addEventListener("google-signin-success", function(e) {
+        // Access the GAPI instance passed back from authorization
+        var gapi = e.detail.gapi;
+
+        // Load V1 of the G+ API
+        gapi.client.load('plus', 'v1', function() {
+            // To retreive profile information for a user, use the 
+            // people.get API method. For profile info for the currently
+            // authorized user, use the userId value of me.
+            var request = gapi.client.plus.people.get({
+                'userId': 'me'
+            });
+
+            request.execute(function(resp) {
+                // Some useful profile info is now available via
+                // resp.displayName, resp.skills etc
+                // We can render this info in a template
+                console.log(resp);
+                var t = document.querySelector("#profile");
+                t.model = {};
+                t.model.profile = resp;
+            });
         });
         document.querySelector("#status").innerHTML = "You are now signed in.";
-      });
+    });
 
-      document.addEventListener("google-signed-out", function(){
+    document.addEventListener("google-signed-out", function() {
         document.querySelector("#status").innerHTML = "You are now signed out.";
-      });
+    });
 
-      document.addEventListener("google-signout-attempted", function(){
+    document.addEventListener("google-signout-attempted", function() {
         document.querySelector("#status").innerHTML = "You attempted to sign out.";
-      });
-  </script>
+    });
+    </script>
 
 </body>
+
 </html>

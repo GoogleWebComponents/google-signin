@@ -28,7 +28,7 @@ case. Both events will also provide the data returned by the Google client authe
 @blurb A Polymer element for authenticating with Google Services.
 @status alpha
 @events triggers the `google-signin-success` event on successfully authenticating or `google-signin-failure`
-@url github.io
+@homepage http://github.com/addyosmani/google-signin
 -->
 
 <polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions labelSignin labelSignout">
@@ -55,6 +55,7 @@ case. Both events will also provide the data returned by the Google client authe
              * Called when authorization server replies.
              *
              * @param {Object} authResult Authorization result.
+             * @event google-signin-success
              */
             function handleAuthResult(authResult) {
                 if (authResult && !authResult.error) {
@@ -94,27 +95,48 @@ case. Both events will also provide the data returned by the Google client authe
             Polymer('google-signin', {
                 /**
                  * a Google Developers clientId reference
+                 *
+                 * @attribute clientId
+                 * @type string
                  */
                 clientId: '',
                 /**
                  * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+                 * 
+                 * @attribute scopes
+                 * @type string
                  */
                 scopes: 'profile',
                 /**
                  * The cookie policy defines what URIs have access to the session cookie
                  * remembering the user's sign-in state.
-                 * See https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy                 
+                 * See https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy  
+                 *
+                 * @attribute cookiePolicy
+                 * @type string 
                  */
                 cookiePolicy: 'single_host_origin',
                 /**
                  * The app activity types you want to write on behalf of the user
                  * (e.g http://schemas.google.com/AddActivity)
+                 *
+                 * @attribute requestVisibleActions
+                 * @type string
                  */
                 requestVisibleActions: '',
                 /**
                  * An optional label for the sign-in button
+                 *
+                 * @attribute labelSignin
+                 * @type string
                  */
                 labelSignin: 'Authorize',
+                /**
+                 * An optional label for the sign-out button
+                 *
+                 * @attribute labelSignout
+                 * @type string
+                 */
                 labelSignout: 'Sign out',
                 attached: function() {
                     if(this.clientId === ''){
