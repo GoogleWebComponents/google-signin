@@ -8,26 +8,28 @@ previous API snippets by the Google Developer Relations team.
 
 <!--
 google-signin is used to authenticate with Google, allowing you to interact with other Google
-APIs such as Drive. The attribute `clientId` is provided in your Google Developers console. The
-`scopes` attribute allows you to specify which scope permissions are required (e.g do you want to
-allow interaction with the Google Drive API). The `requestVisibleActions` attribute is necessary if
-you want to write app activities (https://developers.google.com/+/web/app-activities/) on behalf of
-the user. Please note that this attribute is only valid in combination with the plus.login scope
-(https://www.googleapis.com/auth/plus.login). The `label` attribute is an optional piece of text
-used for customizing the label on the sign-in button. The `google-signin-success` event is triggered
-when a user successfully authenticates and `google-signin-failure` is triggered when this is not the
-case. Both events will also provide the data returned by the Google client authentication process.
+APIs such as Drive and Google+.
+
+The attribute `clientId` is provided in your Google Developers console. The `scopes` attribute allows 
+you to specify which scope permissions are required (e.g do you want to allow interaction with the Google Drive API). The `requestVisibleActions` attribute is necessary if you want to write app activities 
+(https://developers.google.com/+/web/app-activities/) on behalf of the user. Please note that this 
+attribute is only valid in combination with the plus.login scope (https://www.googleapis.com/auth/plus.login). 
+
+The `labelSignin` attribute is an optional piece of text used for customizing the label on the sign-in button. `labelSignout` allows you to customize the label for sign-out. The `google-signin-success` event is triggered when a user successfully authenticates and `google-signin-failure` is triggered when this is not the case. Both events will also provide the data returned by the Google client authentication process.
+
+Additional events, such as `google-signout-attempted` and `google-signed-out` are triggered when the user
+attempts to sign-out and successfully signs out.
 
 ##### Example
 
     <google-signin cliendId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
 
-    <google-signin label="Sign-in" cliendId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+    <google-signin labelSignin="Sign-in" cliendId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
 
 @class google-signin
 @blurb A Polymer element for authenticating with Google Services.
 @status alpha
-@events triggers the `google-signin-success` event on successfully authenticating or `google-signin-failure`
+@events 
 @homepage http://github.com/addyosmani/google-signin
 -->
 
