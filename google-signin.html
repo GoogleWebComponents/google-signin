@@ -1,4 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-apis.html">
+
 
 <!--
 Copyright (c) 2014 Google Inc. All rights reserved. This code may only be used under the BSD style
@@ -40,6 +42,7 @@ attempts to sign-out and successfully signs out.
                 display: inline-block;
             }
         </style>
+        <google-client-api></google-client-api>
         <input type="button" id="authorizeButton" style="display: none" value="{{labelSignin}}" />
     </template>
     <script>
@@ -183,14 +186,6 @@ attempts to sign-out and successfully signs out.
                         meta.setAttribute('content', REQUEST_VISIBLE_ACTIONS);
                         document.head.appendChild(meta);
                     }
-
-                    var resource = document.createElement('script');
-                    resource.setAttribute('type', 'text/javascript');
-                    resource.setAttribute('src', 'https://apis.google.com/js/client.js');
-                    resource.setAttribute('async', true);
-
-                    var script = document.getElementsByTagName('script')[0];
-                    script.parentNode.insertBefore(resource, script);
                 }
             });
         })();
