@@ -1,4 +1,4 @@
 google-signin
 ================
 
-See the [component page](http://addyosmani.github.io/google-signin) for more information.
+See the [component page](http://googlewebcomponents.github.io/google-signin) for more information.
