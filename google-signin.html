@@ -109,6 +109,7 @@ attempts to sign-out and successfully signs out.
                  * 
                  * @attribute scopes
                  * @type string
+                 * @default 'profile'
                  */
                 scopes: 'profile',
                 /**
@@ -118,6 +119,7 @@ attempts to sign-out and successfully signs out.
                  *
                  * @attribute cookiePolicy
                  * @type string 
+                 * @default 'single_host_origin'
                  */
                 cookiePolicy: 'single_host_origin',
                 /**
@@ -133,6 +135,7 @@ attempts to sign-out and successfully signs out.
                  *
                  * @attribute labelSignin
                  * @type string
+                 * @default 'Authorize'
                  */
                 labelSignin: 'Authorize',
                 /**
@@ -140,10 +143,12 @@ attempts to sign-out and successfully signs out.
                  *
                  * @attribute labelSignout
                  * @type string
+                 * @default 'Sign out'
                  */
                 labelSignout: 'Sign out',
+
                 attached: function() {
-                    if(this.clientId === ''){
+                    if (this.clientId === '') {
                         throw "A valid clientId is required to use this element";
                     }
 
