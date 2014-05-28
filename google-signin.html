@@ -190,7 +190,7 @@ attempts to sign-out and successfully signs out.
                 /**
                  * An optional label for the button for additional permissions
                  *
-                 * @attribute labelSignout
+                 * @attribute labelAdditional
                  * @type string
                  * @default 'Additional permissions required'
                  */
@@ -284,12 +284,16 @@ attempts to sign-out and successfully signs out.
 
 
 <!--
-google-signin-aware is used to enable authentication in custom elements by interacting with a google-signin element that needs to be present somewhere on the page.
+google-signin-aware is used to enable authentication in custom elements by
+interacting with a google-signin element that needs to be present somewhere
+on the page.
 
-The `scopes` attribute allows you to specify which scope permissions are required 
+The `scopes` attribute allows you to specify which scope permissions are required
 (e.g do you want to allow interaction with the Google Drive API).
 
-The `google-signin-aware-success` event is triggered when a user successfully authenticates. The event will also provide the data returned by the Google client authentication process.
+The `google-signin-aware-success` event is triggered when a user successfully
+authenticates. The event will also provide the data returned by the Google client
+authentication process.
 
 ##### Example
 
@@ -311,7 +315,8 @@ The `google-signin-aware-success` event is triggered when a user successfully au
 
             Polymer('google-signin-aware', {
                 /**
-                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive) and should be space-delimited.
+                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+                 * and should be space-delimited.
                  *
                  * @attribute scopes
                  * @type string
