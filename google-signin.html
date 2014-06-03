@@ -122,7 +122,7 @@ triggered when the user attempts to sign-out and successfully signs out.
                     // Trigger the google-signin-success event
                     handler.fire('google-signin-success', {result: authResult, gapi: gapi});
 
-                    // Trigger the google-auth-success polymer-signal for elements who depend on this
+                    // Trigger the google-auth-success polymer-signal for elements that depend on this
                     handler.fire('polymer-signal', {
                         name: 'google-auth-success',
                         data: {result: authResult, scopes: authorized_scopes}
@@ -135,9 +135,21 @@ triggered when the user attempts to sign-out and successfully signs out.
                     if (authResult && authResult.error == "user_signed_out") {
                         // Fire event to indicate user signed out
                         handler.fire('google-signed-out', {result: authResult});
+
+                        // Trigger the google-auth-signed-out polymer-signal for elements that depend on this
+                        handler.fire('polymer-signal', {
+                            name: 'google-auth-signed-out',
+                            data: {result: authResult}
+                        });
                     } else {
                         // Fire event to indicate sign-in was not successful
                         handler.fire('google-signin-failure', {result: authResult});
+
+                        // Trigger the google-auth-failure polymer-signal for elements that depend on this
+                        handler.fire('polymer-signal', {
+                            name: 'google-auth-failure',
+                            data: {result: authResult}
+                        });
                     }
 
                     authorized_scopes = [];
@@ -308,6 +320,12 @@ The `google-signin-aware-success` event is triggered when a user successfully
 authenticates. The event will also provide the data returned by the Google client
 authentication process.
 
+The `google-signin-aware-success` event is triggered when a user successfully
+authenticates and `google-signin-aware-failure` is triggered when this is not
+he case. Both events will also provide the data returned by the Google client
+authentication process. The `google-signin-aware-signed-out' event is triggered
+when a user explicitely signs out via the google-signin element.
+
 ##### Example
 
     <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
@@ -321,6 +339,8 @@ authentication process.
 <polymer-element name="google-signin-aware" attributes="scopes">
     <template>
         <polymer-signals on-polymer-signal-google-auth-success="{{authSuccess}}"></polymer-signals>
+        <polymer-signals on-polymer-signal-google-auth-failure="{{authFailure}}"></polymer-signals>
+        <polymer-signals on-polymer-signal-google-auth-signed-out="{{signedOut}}"></polymer-signals>
     </template>
     <script>
         (function() {
@@ -344,7 +364,7 @@ authentication process.
                     });
                 },
 
-                authSuccess: function (e, detail, sender) {
+                authSuccess: function (e, detail) {
                     // Check if correct scopes authorized, if not do nothing and continue to wait
                     var complete = false;
                     if (detail && detail.scopes) {
@@ -360,6 +380,14 @@ authentication process.
                     if (complete) {
                         this.fire('google-signin-aware-success', detail);
                     }
+                },
+
+                authFailure: function (e, detail) {
+                    this.fire('google-signin-aware-failure', detail);
+                },
+
+                signedOut: function (e, detail) {
+                    this.fire('google-signin-aware-signed-out', detail);
                 }
             });
         })();
