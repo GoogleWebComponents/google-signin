@@ -3,6 +3,7 @@
   "version": "0.0.6",
   "dependencies": {
     "polymer": "Polymer/polymer#master",
-    "google-apis": "PolymerLabs/google-apis"
+    "google-apis": "PolymerLabs/google-apis",
+    "polymer-signals": "PolymerLabs/polymer-signals"
   }
 }

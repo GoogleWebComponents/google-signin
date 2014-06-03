@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-apis.html">
+<link rel="import" href="../polymer-signals/polymer-signals.html">
 
 <!--
 Copyright (c) 2014 Google Inc. All rights reserved.
@@ -9,18 +10,30 @@ AUTHOR(s): Addy Osmani and Rob Dodson.
 --->
 
 <!--
-google-signin is used to authenticate with Google, allowing you to interact with other Google
-APIs such as Drive and Google+.
+google-signin is used to authenticate with Google, allowing you to interact
+with other Google APIs such as Drive and Google+.
 
-The attribute `clientId` is provided in your Google Developers Console (https://console.developers.google.com). The `scopes` attribute allows 
-you to specify which scope permissions are required (e.g do you want to allow interaction with the Google Drive API). The `requestVisibleActions` attribute is necessary if you want to write app activities 
-(https://developers.google.com/+/web/app-activities/) on behalf of the user. Please note that this 
-attribute is only valid in combination with the plus.login scope (https://www.googleapis.com/auth/plus.login). 
+The attribute `clientId` is provided in your Google Developers Console
+(https://console.developers.google.com).
+The `scopes` attribute allows you to specify which scope permissions are required
+(e.g do you want to allow interaction with the Google Drive API). Many APIs also
+need to be enabled in the Google Developers Console before you can use them.
+The `requestVisibleActions` attribute is necessary if you want to write app
+activities (https://developers.google.com/+/web/app-activities/) on behalf of
+the user. Please note that this attribute is only valid in combination with the
+plus.login scope (https://www.googleapis.com/auth/plus.login).
 
-The `labelSignin` attribute is an optional piece of text used for customizing the label on the sign-in button. `labelSignout` allows you to customize the label for sign-out. The `google-signin-success` event is triggered when a user successfully authenticates and `google-signin-failure` is triggered when this is not the case. Both events will also provide the data returned by the Google client authentication process.
+The `labelSignin` attribute is an optional piece of text used for customizing
+the label on the sign-in button. `labelSignout` allows you to customize the label
+for sign-out, and `labelAdditional` defines the label that is displayed when
+additional permissions are necessary for incremental auth.
 
-Additional events, such as `google-signout-attempted` and `google-signed-out` are triggered when the user
-attempts to sign-out and successfully signs out.
+The `google-signin-success` event is triggered when a user successfully authenticates
+and `google-signin-failure` is triggered when this is not the case. Both events
+will also provide the data returned by the Google client authentication process.
+
+Additional events, such as `google-signout-attempted` and `google-signed-out` are
+triggered when the user attempts to sign-out and successfully signs out.
 
 ##### Example
 
@@ -34,7 +47,7 @@ attempts to sign-out and successfully signs out.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions labelSignin labelSignout">
+<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions labelSignin labelSignout labelAdditional">
     <template>
         <style>
             :host {
@@ -42,18 +55,42 @@ attempts to sign-out and successfully signs out.
             }
         </style>
         <google-client-api></google-client-api>
-        <input type="button" id="authorizeButton" style="display: none" value="{{labelSignin}}" />
+        <polymer-signals on-polymer-signal-google-auth-request="{{authRequest}}"></polymer-signals>
+        <template if="{{ !signedIn }}">
+        <input type="button" value="{{labelSignin}}" on-click="{{signIn}}" />
+        </template>
+        <template if="{{ signedIn && !additionalAuth }}">
+        <input type="button" value="{{labelSignout}}" on-click="{{signOut}}" />
+        </template>
+        <template if="{{ signedIn && additionalAuth }}">
+        <input type="button" value="{{labelAdditional}}" on-click="{{signIn}}" />
+        </template>
     </template>
     <script>
         (function() {
             var CLIENT_ID = '';
-            var SCOPES = '';
+            var SCOPES = [];
             var REQUEST_VISIBLE_ACTIONS = '';
             var COOKIE_POLICY = '';
-            var authButton;
-            var signOutText;
-            var signInText;
+
             var handler;
+            var authorized_scopes = [];
+
+            /**
+             * Checks whether authorized and requested scopes match and
+             * displays button for additional auth if necessary
+             */
+            function checkScopes() {
+                handler.additionalAuth = false;
+                for (var i = 0; i < SCOPES.length; i++) {
+                    if (SCOPES[i] !== '') {
+                        if (authorized_scopes.indexOf(SCOPES[i].toLowerCase()) < 0) {
+                            handler.additionalAuth = true;
+                            break;
+                        }
+                    }
+                }
+            }
 
             /**
              * Called when authorization server replies.
@@ -64,36 +101,64 @@ attempts to sign-out and successfully signs out.
             function handleAuthResult(authResult) {
                 if (authResult && !authResult.error) {
                     // Access token has been successfully retrieved
-                    //authButton.style.display = 'none';
+
+                    // Store authorized scopes to check against for new requests
+                    authorized_scopes = [];
+                    var tmp_scopes = authResult.scope.split(' ');
+                    for (var i = 0; i < tmp_scopes.length; i++) {
+                        if (tmp_scopes[i] !== "") {
+                            authorized_scopes.push(tmp_scopes[i].toLowerCase());
+
+                            // Handle scopes that will be deprecated but are still returned with their old value
+                            if (tmp_scopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
+                                authorized_scopes.push('profile');
+                            }
+                            if (tmp_scopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
+                                authorized_scopes.push('email');
+                            }
+                        }
+                    }
+
                     // Trigger the google-signin-success event
                     handler.fire('google-signin-success', {result: authResult, gapi: gapi});
 
-                    authButton.value = signOutText;
-                    authButton.style.display = 'block';
+                    // Trigger the google-auth-success polymer-signal for elements that depend on this
+                    handler.fire('polymer-signal', {
+                        name: 'google-auth-success',
+                        data: {result: authResult, scopes: authorized_scopes}
+                    });
 
-                    // Note that sign-out will not occur on localhost
-                    authButton.onclick = function() {
-                        handler.fire('google-signout-attempted');
-                        gapi.auth.signOut();
-                    }
+                    handler.signedIn = true;
 
+                    checkScopes();
                 } else {
                     if (authResult && authResult.error == "user_signed_out") {
                         // Fire event to indicate user signed out
                         handler.fire('google-signed-out', {result: authResult});
+
+                        // Trigger the google-auth-signed-out polymer-signal for elements that depend on this
+                        handler.fire('polymer-signal', {
+                            name: 'google-auth-signed-out',
+                            data: {result: authResult}
+                        });
                     } else {
                         // Fire event to indicate sign-in was not successful
                         handler.fire('google-signin-failure', {result: authResult});
+
+                        // Trigger the google-auth-failure polymer-signal for elements that depend on this
+                        handler.fire('polymer-signal', {
+                            name: 'google-auth-failure',
+                            data: {result: authResult}
+                        });
                     }
 
-                    // No access token could be retrieved, show the button to start the authorization flow.
-                    authButton.value = signInText;
-                    authButton.style.display = 'block';
+                    authorized_scopes = [];
 
-                    authButton.onclick = function() {
-                        gapi.auth.signIn();
-                    };
+                    // No access token could be retrieved, show the button to start the authorization flow.
+                    handler.signedIn = false;
                 }
+
+                handler.flowComplete = true;
             }
 
             Polymer('google-signin', {
@@ -105,8 +170,9 @@ attempts to sign-out and successfully signs out.
                  */
                 clientId: '',
                 /**
-                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive) and should be space-delimited.
-                 * 
+                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+                 * and should be space-delimited.
+                 *
                  * @attribute scopes
                  * @type string
                  * @default 'profile'
@@ -115,10 +181,10 @@ attempts to sign-out and successfully signs out.
                 /**
                  * The cookie policy defines what URIs have access to the session cookie
                  * remembering the user's sign-in state.
-                 * See https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy  
+                 * See https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy
                  *
                  * @attribute cookiePolicy
-                 * @type string 
+                 * @type string
                  * @default 'single_host_origin'
                  */
                 cookiePolicy: 'single_host_origin',
@@ -146,19 +212,24 @@ attempts to sign-out and successfully signs out.
                  * @default 'Sign out'
                  */
                 labelSignout: 'Sign out',
+                /**
+                 * An optional label for the button for additional permissions
+                 *
+                 * @attribute labelAdditional
+                 * @type string
+                 * @default 'Additional permissions required'
+                 */
+                labelAdditional: 'Additional permissions required',
 
-                attached: function() {
+                attached: function () {
                     if (this.clientId === '') {
                         throw "A valid clientId is required to use this element";
                     }
 
                     CLIENT_ID =  this.clientId;
-                    SCOPES = this.scopes;
+                    SCOPES = this.scopes.split(' ');
                     COOKIE_POLICY = this.cookiePolicy;
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
-                    authButton = this.$.authorizeButton;
-                    signOutText = this.labelSignout;
-                    signInText = this.labelSignin;
                     handler = this;
 
                     // For page-level configuration the callback has to be in global namespace
@@ -171,7 +242,7 @@ attempts to sign-out and successfully signs out.
 
                     meta = document.createElement('meta');
                     meta.setAttribute('name', 'google-signin-scope');
-                    meta.setAttribute('content', SCOPES);
+                    meta.setAttribute('content', SCOPES.join(' '));
                     document.head.appendChild(meta);
 
                     meta = document.createElement('meta');
@@ -190,6 +261,133 @@ attempts to sign-out and successfully signs out.
                         meta.setAttribute('content', REQUEST_VISIBLE_ACTIONS);
                         document.head.appendChild(meta);
                     }
+                },
+
+                authRequest: function (e, detail, sender) {
+                    var i, new_scopes, extra_scopes;
+                    if (detail) {
+                        // Check if any new scopes need to be authorized
+                        extra_scopes = false;
+                        new_scopes = detail.split(" ");
+                        for (i = 0; i < new_scopes.length; i++) {
+                            if (new_scopes[i] !== "") {
+                                if (authorized_scopes.indexOf(new_scopes[i].toLowerCase()) < 0) {
+                                    extra_scopes = true;
+                                    if (SCOPES.indexOf(new_scopes[i].toLowerCase()) < 0) {
+                                        SCOPES.push(new_scopes[i].toLowerCase());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (extra_scopes) {
+                        if (handler.flowComplete) {
+                            handler.additionalAuth = true;
+                        }
+                    } else {
+                        handler.fire('polymer-signal', {
+                            name: 'google-auth-success',
+                            data: {result: gapi.auth.getToken(), scopes: authorized_scopes}
+                        });
+                    }
+                },
+
+                signIn: function () {
+                    handler.flowComplete = false;
+                    gapi.auth.signIn({'scope': SCOPES.join(' ')});
+                },
+
+                signOut: function () {
+                    handler.flowComplete = false;
+                    handler.fire('google-signout-attempted');
+                    gapi.auth.signOut();
+                }
+            });
+        })();
+    </script>
+</polymer-element>
+
+
+<!--
+google-signin-aware is used to enable authentication in custom elements by
+interacting with a google-signin element that needs to be present somewhere
+on the page.
+
+The `scopes` attribute allows you to specify which scope permissions are required
+(e.g do you want to allow interaction with the Google Drive API).
+
+The `google-signin-aware-success` event is triggered when a user successfully
+authenticates. The event will also provide the data returned by the Google client
+authentication process.
+
+The `google-signin-aware-success` event is triggered when a user successfully
+authenticates and `google-signin-aware-failure` is triggered when this is not
+he case. Both events will also provide the data returned by the Google client
+authentication process. The `google-signin-aware-signed-out' event is triggered
+when a user explicitely signs out via the google-signin element.
+
+##### Example
+
+    <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
+
+@class google-signin-aware
+@blurb A Polymer element for authenticating and authorizing with Google Services.
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-signin
+-->
+
+<polymer-element name="google-signin-aware" attributes="scopes">
+    <template>
+        <polymer-signals on-polymer-signal-google-auth-success="{{authSuccess}}"></polymer-signals>
+        <polymer-signals on-polymer-signal-google-auth-failure="{{authFailure}}"></polymer-signals>
+        <polymer-signals on-polymer-signal-google-auth-signed-out="{{signedOut}}"></polymer-signals>
+    </template>
+    <script>
+        (function() {
+            var loader = null;
+
+            Polymer('google-signin-aware', {
+                /**
+                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+                 * and should be space-delimited.
+                 *
+                 * @attribute scopes
+                 * @type string
+                 * @default 'profile'
+                 */
+                scopes: '',
+
+                attached: function() {
+                    this.fire('polymer-signal', {
+                        name: 'google-auth-request',
+                        data: this.scopes
+                    });
+                },
+
+                authSuccess: function (e, detail) {
+                    // Check if correct scopes authorized, if not do nothing and continue to wait
+                    var complete = false;
+                    if (detail && detail.scopes) {
+                        var scopes = this.scopes.split(' ');
+                        complete = true;
+                        for (var i = 0; i < scopes.length; i++) {
+                            if (scopes[i] !== '' && detail.scopes.indexOf(scopes[i].toLowerCase()) < 0) {
+                                complete = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (complete) {
+                        this.fire('google-signin-aware-success', detail);
+                    }
+                },
+
+                authFailure: function (e, detail) {
+                    this.fire('google-signin-aware-failure', detail);
+                },
+
+                signedOut: function (e, detail) {
+                    this.fire('google-signin-aware-signed-out', detail);
                 }
             });
         })();
