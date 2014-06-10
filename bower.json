@@ -1,9 +1,21 @@
 {
   "name": "google-signin",
   "version": "0.0.6",
+  "description": "Web components to authenticate with Google services",
   "dependencies": {
     "polymer": "Polymer/polymer#master",
-    "google-apis": "PolymerLabs/google-apis",
-    "polymer-signals": "PolymerLabs/polymer-signals"
-  }
+    "google-apis": "PolymerLabs/google-apis#master",
+    "polymer-signals": "PolymerLabs/polymer-signals#master"
+  },
+  "authors": [
+    "Addy Osmani"
+  ],
+  "license": "Apache2",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "sign-in",
+    "google"
+  ]
 }
