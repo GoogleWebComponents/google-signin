@@ -1,6 +1,6 @@
 {
   "name": "google-signin",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Web components to authenticate with Google services",
   "dependencies": {
     "polymer": "Polymer/polymer#master",
