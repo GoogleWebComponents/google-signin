@@ -10,8 +10,10 @@ AUTHOR(s): Addy Osmani and Rob Dodson.
 --->
 
 <!--
-google-signin is used to authenticate with Google, allowing you to interact
+&lt;google-signin&gt; is used to authenticate with Google, allowing you to interact
 with other Google APIs such as Drive and Google+.
+
+<img width="650px" src="http://i.imgur.com/hYueNjN.jpg"/>
 
 The attribute `clientId` is provided in your Google Developers Console
 (https://console.developers.google.com).
@@ -102,6 +104,19 @@ google-signin-aware elements require additional user permissions.
              * @param {Object} authResult Authorization result.
              * @event google-signin-success
              */
+
+            /**
+             * Called when the user attempts sign-out.
+             *
+             * @event google-signout-attempted
+             */
+                        
+            /**
+             * Called when the user has completed sign-out.
+             *
+             * @param {Object} authResult Authorization result.
+             * @event google-signed-out
+             */
             function handleAuthResult(authResult) {
                 if (authResult && !authResult.error) {
                     // Access token has been successfully retrieved
@@ -185,7 +200,7 @@ google-signin-aware elements require additional user permissions.
                 /**
                  * The cookie policy defines what URIs have access to the session cookie
                  * remembering the user's sign-in state.
-                 * See https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy
+                 * See the relevant [docs](https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy) for more information.
                  *
                  * @attribute cookiePolicy
                  * @type string
