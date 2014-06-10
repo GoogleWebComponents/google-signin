@@ -35,6 +35,9 @@ will also provide the data returned by the Google client authentication process.
 Additional events, such as `google-signout-attempted` and `google-signed-out` are
 triggered when the user attempts to sign-out and successfully signs out.
 
+The `google-signin-necessary` event is fired when scopes requested via
+google-signin-aware elements require additional user permissions.
+
 ##### Example
 
     <google-signin cliendId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
@@ -86,6 +89,7 @@ triggered when the user attempts to sign-out and successfully signs out.
                     if (SCOPES[i] !== '') {
                         if (authorized_scopes.indexOf(SCOPES[i].toLowerCase()) < 0) {
                             handler.additionalAuth = true;
+                            handler.fire('google-signin-necessary');
                             break;
                         }
                     }
@@ -283,6 +287,7 @@ triggered when the user attempts to sign-out and successfully signs out.
                     if (extra_scopes) {
                         if (handler.flowComplete) {
                             handler.additionalAuth = true;
+                            handler.fire('google-signin-necessary');
                         }
                     } else {
                         handler.fire('polymer-signal', {
