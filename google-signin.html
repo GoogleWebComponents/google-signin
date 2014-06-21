@@ -165,7 +165,7 @@ google-signin-aware elements require additional user permissions.
              *
              * @event google-signout-attempted
              */
-                        
+
             /**
              * Called when the user has completed sign-out.
              *
@@ -369,7 +369,13 @@ google-signin-aware elements require additional user permissions.
 
                 signIn: function () {
                     handler.flowComplete = false;
-                    gapi.auth.signIn({'scope': SCOPES.join(' ')});
+                    gapi.auth.signIn({
+                        'clientid': CLIENT_ID,
+                        'cookiepolicy': COOKIE_POLICY,
+                        'scope': SCOPES.join(' '),
+                        'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
+                        'callback': 'handleAuthResult'
+                    });
                 },
 
                 signInKeyPress: function (e) {
