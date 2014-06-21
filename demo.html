@@ -110,10 +110,12 @@
             });
 
             request.execute(function(resp) {
-                // Some useful profile info is now available via
-                // resp.displayName, resp.skills etc
-                // We can render this info in a template
+                // Some useful profile information is now available
+                // via the returned object (resp). For example, we 
+                // can discover the displayName, skills and so on.
                 console.log(resp);
+                                
+                // This data can then be rendered into a template:
                 var t = document.querySelector("#profile");
                 t.model = {};
                 t.model.profile = resp;
