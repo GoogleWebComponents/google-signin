@@ -2,6 +2,10 @@
 <link rel="import" href="../google-apis/google-apis.html">
 <link rel="import" href="../polymer-signals/polymer-signals.html">
 
+<template if={{ paperButtons }}>
+    <link rel="import" href="../paper-buttons/paper-buttons.html">
+</template>
+
 <!--
 Copyright (c) 2014 Google Inc. All rights reserved.
 
@@ -52,78 +56,36 @@ google-signin-aware elements require additional user permissions.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions labelSignin labelSignout labelAdditional">
+<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy paperButtons requestVisibleActions labelSignin labelSignout labelAdditional">
     <template>
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <style>
             :host {
                 display: inline-block;
             }
-
-            .btn {
-                display: inline-block;
-                border-radius: 5px;
-                white-space: nowrap;
-                cursor: pointer;
-                color: white;
-            }
-            .signIn {
-                background: #dd4b39;
-            }
-            .signIn:hover, .signIn:focus {
-                background: #e74b37;
-            }
-            .signOut {
-                background: #999;
-            }
-            .signOut:hover, .signOut:focus {
-                background: #aaa;
-            }
-            .icon {
-                background: url('gplus-logo.png') transparent 5px 50% no-repeat;
-                display: inline-block;
-                vertical-align: middle;
-                width: 40px;
-                height: 35px;
-            }
-            .signIn .icon {
-                border-right: #bb3f30 1px solid;
-            }
-            .signOut .icon {
-                border-right: #888 1px solid;
-            }
-            .buttonText {
-                display: inline-block;
-                vertical-align: middle;
-                padding-left: 35px;
-                padding-right: 35px;
-                font-size: 14px;
-                font-weight: bold;
-                font-family: 'Roboto',arial,sans-serif;
-            }
         </style>
         <google-client-api></google-client-api>
         <polymer-signals on-polymer-signal-google-auth-request="{{authRequest}}"></polymer-signals>
-        <template if="{{ !signedIn }}">
-        <div class="btn signIn" role="button" tabindex="0"
-             on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon"></span>
-            <span class="buttonText">{{labelSignin}}</span>
-        </div>
+        <template if="{{ paperButtons }}">
+            <template if="{{ !signedIn }}">
+            <paper-button label="{{labelSignin}}" on-click="{{signIn}}"></paper-button>
+            </template>
+            <template if="{{ signedIn && !additionalAuth }}">
+            <paper-button label="{{labelSignout}}" on-click="{{signOut}}"></paper-button>
+            </template>
+            <template if="{{ signedIn && additionalAuth }}">
+            <paper-button label="{{labelAdditional}}" on-click="{{signIn}}"></paper-button>
+            </template>
         </template>
-        <template if="{{ signedIn && !additionalAuth }}">
-        <div class="btn signOut" role="button" tabindex="0"
-             on-click="{{signOut}}" on-keydown="{{signOutKeyPress}}">
-            <span class="icon"></span>
-            <span class="buttonText">{{labelSignout}}</span>
-        </div>
-        </template>
-        <template if="{{ signedIn && additionalAuth }}">
-        <div class="btn signIn" role="button" tabindex="0"
-             on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon"></span>
-            <span class="buttonText">{{labelAdditional}}</span>
-        </div>
+        <template if="{{ !paperButtons }}">
+            <template if="{{ !signedIn }}">
+            <input type="button" value="{{labelSignin}}" on-click="{{signIn}}" />
+            </template>
+            <template if="{{ signedIn && !additionalAuth }}">
+            <input type="button" value="{{labelSignout}}" on-click="{{signOut}}" />
+            </template>
+            <template if="{{ signedIn && additionalAuth }}">
+            <input type="button" value="{{labelAdditional}}" on-click="{{signIn}}" />
+            </template>
         </template>
     </template>
     <script>
@@ -165,7 +127,7 @@ google-signin-aware elements require additional user permissions.
              *
              * @event google-signout-attempted
              */
-
+                        
             /**
              * Called when the user has completed sign-out.
              *
@@ -277,7 +239,7 @@ google-signin-aware elements require additional user permissions.
                  * @type string
                  * @default 'Authorize'
                  */
-                labelSignin: 'Sign in with Google',
+                labelSignin: 'Authorize',
                 /**
                  * An optional label for the sign-out button
                  *
@@ -369,33 +331,13 @@ google-signin-aware elements require additional user permissions.
 
                 signIn: function () {
                     handler.flowComplete = false;
-                    gapi.auth.signIn({
-                        'clientid': CLIENT_ID,
-                        'cookiepolicy': COOKIE_POLICY,
-                        'scope': SCOPES.join(' '),
-                        'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
-                        'callback': 'handleAuthResult'
-                    });
-                },
-
-                signInKeyPress: function (e) {
-                    if (e.which == 13 || e.keyCode == 13 || e.which == 32 || e.keyCode == 32) {
-                        e.preventDefault();
-                        handler.signIn();
-                    }
+                    gapi.auth.signIn({'scope': SCOPES.join(' ')});
                 },
 
                 signOut: function () {
                     handler.flowComplete = false;
                     handler.fire('google-signout-attempted');
                     gapi.auth.signOut();
-                },
-
-                signOutKeyPress: function (e) {
-                    if (e.which == 13 || e.keyCode == 13 || e.which == 32 || e.keyCode == 32) {
-                        e.preventDefault();
-                        handler.signOut();
-                    }
                 }
             });
         })();
@@ -418,7 +360,7 @@ authentication process.
 The `google-signin-aware-success` event is triggered when a user successfully
 authenticates and `google-signin-aware-failure` is triggered when this is not
 he case. Both events will also provide the data returned by the Google client
-authentication process. The `google-signin-aware-signed-out` event is triggered
+authentication process. The `google-signin-aware-signed-out' event is triggered
 when a user explicitely signs out via the google-signin element.
 
 ##### Example
