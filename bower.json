@@ -4,8 +4,8 @@
   "description": "Web components to authenticate with Google services",
   "dependencies": {
     "polymer": "Polymer/polymer#master",
-    "google-apis": "GoogleWebComponents/google-apis#master",
-    "polymer-signals": "GoogleWebComponents/polymer-signals#master"
+    "google-apis": "GoogleWebComponents/google-apis#~0.3.1",
+    "core-signals": "Polymer/core-signals#~0.3.4"
   },
   "authors": [
     "Addy Osmani"
