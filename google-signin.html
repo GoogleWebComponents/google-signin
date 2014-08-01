@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-apis.html">
-<link rel="import" href="../polymer-signals/polymer-signals.html">
+<link rel="import" href="../core-signals/core-signals.html">
 
 <!--
 Copyright (c) 2014 Google Inc. All rights reserved.
@@ -103,7 +103,7 @@ google-signin-aware elements require additional user permissions.
             }
         </style>
         <google-client-api></google-client-api>
-        <polymer-signals on-polymer-signal-google-auth-request="{{authRequest}}"></polymer-signals>
+        <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
         <template if="{{ !signedIn }}">
         <div class="btn signIn" role="button" tabindex="0"
              on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
@@ -196,8 +196,8 @@ google-signin-aware elements require additional user permissions.
                     // Trigger the google-signin-success event
                     handler.fire('google-signin-success', {result: authResult, gapi: gapi});
 
-                    // Trigger the google-auth-success polymer-signal for elements that depend on this
-                    handler.fire('polymer-signal', {
+                    // Trigger the google-auth-success core-signal for elements that depend on this
+                    handler.fire('core-signal', {
                         name: 'google-auth-success',
                         data: {result: authResult, scopes: authorized_scopes}
                     });
@@ -210,8 +210,8 @@ google-signin-aware elements require additional user permissions.
                         // Fire event to indicate user signed out
                         handler.fire('google-signed-out', {result: authResult});
 
-                        // Trigger the google-auth-signed-out polymer-signal for elements that depend on this
-                        handler.fire('polymer-signal', {
+                        // Trigger the google-auth-signed-out core-signal for elements that depend on this
+                        handler.fire('core-signal', {
                             name: 'google-auth-signed-out',
                             data: {result: authResult}
                         });
@@ -219,8 +219,8 @@ google-signin-aware elements require additional user permissions.
                         // Fire event to indicate sign-in was not successful
                         handler.fire('google-signin-failure', {result: authResult});
 
-                        // Trigger the google-auth-failure polymer-signal for elements that depend on this
-                        handler.fire('polymer-signal', {
+                        // Trigger the google-auth-failure core-signal for elements that depend on this
+                        handler.fire('core-signal', {
                             name: 'google-auth-failure',
                             data: {result: authResult}
                         });
@@ -360,7 +360,7 @@ google-signin-aware elements require additional user permissions.
                             handler.fire('google-signin-necessary');
                         }
                     } else {
-                        handler.fire('polymer-signal', {
+                        handler.fire('core-signal', {
                             name: 'google-auth-success',
                             data: {result: gapi.auth.getToken(), scopes: authorized_scopes}
                         });
@@ -433,9 +433,9 @@ when a user explicitely signs out via the google-signin element.
 
 <polymer-element name="google-signin-aware" attributes="scopes">
     <template>
-        <polymer-signals on-polymer-signal-google-auth-success="{{authSuccess}}"></polymer-signals>
-        <polymer-signals on-polymer-signal-google-auth-failure="{{authFailure}}"></polymer-signals>
-        <polymer-signals on-polymer-signal-google-auth-signed-out="{{signedOut}}"></polymer-signals>
+        <core-signals on-polymer-signal-google-auth-success="{{authSuccess}}"></core-signals>
+        <core-signals on-polymer-signal-google-auth-failure="{{authFailure}}"></core-signals>
+        <core-signals on-polymer-signal-google-auth-signed-out="{{signedOut}}"></core-signals>
     </template>
     <script>
         (function() {
@@ -453,7 +453,7 @@ when a user explicitely signs out via the google-signin element.
                 scopes: '',
 
                 attached: function() {
-                    this.fire('polymer-signal', {
+                    this.fire('core-signal', {
                         name: 'google-auth-request',
                         data: this.scopes
                     });
