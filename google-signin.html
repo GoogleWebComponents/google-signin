@@ -433,9 +433,9 @@ when a user explicitely signs out via the google-signin element.
 
 <polymer-element name="google-signin-aware" attributes="scopes">
     <template>
-        <core-signals on-polymer-signal-google-auth-success="{{authSuccess}}"></core-signals>
-        <core-signals on-polymer-signal-google-auth-failure="{{authFailure}}"></core-signals>
-        <core-signals on-polymer-signal-google-auth-signed-out="{{signedOut}}"></core-signals>
+        <core-signals on-core-signal-google-auth-success="{{authSuccess}}"></core-signals>
+        <core-signals on-core-signal-google-auth-failure="{{authFailure}}"></core-signals>
+        <core-signals on-core-signal-google-auth-signed-out="{{signedOut}}"></core-signals>
     </template>
     <script>
         (function() {
