@@ -30,9 +30,10 @@ the label on the sign-in button. `labelSignout` allows you to customize the labe
 for sign-out, and `labelAdditional` defines the label that is displayed when
 additional permissions are necessary for incremental auth. The `buttonStyle`
 attribute helps you follow the Google+ Sign-In button branding guidelines by using
-long, medium, google or short styles (https://developers.google.com/+/branding-guidelines). 
-`buttonColor` lets you use the white login button by passing `white` as the string 
-with the `buttonColor` attribute.
+long, medium, google or short styles (https://developers.google.com/+/branding-guidelines).
+If `labelSignin` and `buttonStyle` attributes are both set, the `labelSignin` text will
+be used for label on the sign-in button. `buttonColor` lets you use the white login 
+button by passing `white` as the string with the `buttonColor` attribute.
 
 The `google-signin-success` event is triggered when a user successfully authenticates
 and `google-signin-failure` is triggered when this is not the case. Both events
@@ -317,13 +318,13 @@ google-signin-aware elements require additional user permissions.
                  */
                 requestVisibleActions: '',
                 /**
-                 * An optional label for the sign-in button
+                 * An optional label for the sign-in button. If supplied,
+                 * this will overwrite the buttonStyle text.
                  *
                  * @attribute labelSignin
                  * @type string
-                 * @default 'Authorize'
                  */
-                labelSignin: 'Sign in with Google',
+                labelSignin: '',
                 /**
                  * An optional label for the sign-out button
                  *
@@ -340,6 +341,23 @@ google-signin-aware elements require additional user permissions.
                  * @default 'Additional permissions required'
                  */
                 labelAdditional: 'Additional permissions required',
+                /**
+                 * The button style for the sign-in and sign-out buttons
+                 * 
+                 * @attribute buttonStyle
+                 * @type string
+                 * @default 'long'
+                 */
+                buttonStyle: 'long',
+                /**
+                 * The button color for the sign-in and sign-out buttons.
+                 * Defaults to red. `white` can be supplied to turn the
+                 * buttons white.
+                 * 
+                 * @attribute buttonColor
+                 * @type string
+                 */
+                buttonColor: '',
 
                 attached: function () {
                     if (this.clientId === '') {
