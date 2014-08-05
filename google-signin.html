@@ -423,11 +423,19 @@ google-signin-aware elements require additional user permissions.
                         document.head.appendChild(meta);
                     }
                     
-                    buttonStyles.forEach(function(buttonStyle) {
-                        if (buttonStyle.size === handler.buttonStyle) {
-                            handler.labelSignin = buttonStyle.text;
+                    if (handler.labelSignin === '') {
+                        buttonStyles.forEach(function(buttonStyle) {
+                            if (buttonStyle.size === handler.buttonStyle) {
+                                handler.labelSignin = buttonStyle.text;
+                            }
+                        });
+                        
+                        if (handler.labelSignin === '') {
+                            handler.labelSignin = buttonStyles[0].text;
                         }
-                    });
+                    } else {
+                        handler.buttonStyle = 'long';   
+                    }
                 },
 
                 authRequest: function (e, detail, sender) {
