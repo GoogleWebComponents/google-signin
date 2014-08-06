@@ -37,6 +37,9 @@ will also provide the data returned by the Google client authentication process.
 Additional events, such as `google-signout-attempted` and `google-signed-out` are
 triggered when the user attempts to sign-out and successfully signs out.
 
+When requesting offline access, the `google-signout-offline` is triggered when
+the user successfully consents to the offline support.
+
 The `google-signin-necessary` event is fired when scopes requested via
 google-signin-aware elements require additional user permissions.
 
@@ -52,7 +55,7 @@ google-signin-aware elements require additional user permissions.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions labelSignin labelSignout labelAdditional">
+<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions offline labelSignin labelSignout labelAdditional">
     <template>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <style>
@@ -193,6 +196,11 @@ google-signin-aware elements require additional user permissions.
                         }
                     }
 
+                    // Trigger the google-signin-offline event when offline access code is present
+                    if (self.offline && authResult['code']) {
+                        handler.fire('google-signin-offline', {code: authResult['code']});
+                    }
+
                     // Trigger the google-signin-success event
                     handler.fire('google-signin-success', {result: authResult, gapi: gapi});
 
@@ -271,11 +279,19 @@ google-signin-aware elements require additional user permissions.
                  */
                 requestVisibleActions: '',
                 /**
+                 * Allows for offline access_token retrieval during the signin process.
+                 *
+                 * @attribute offline
+                 * @type boolean
+                 * @default false
+                 */
+                offline: false,
+                /**
                  * An optional label for the sign-in button
                  *
                  * @attribute labelSignin
                  * @type string
-                 * @default 'Authorize'
+                 * @default 'Sign in with Google'
                  */
                 labelSignin: 'Sign in with Google',
                 /**
@@ -300,7 +316,7 @@ google-signin-aware elements require additional user permissions.
                         throw "A valid clientId is required to use this element";
                     }
 
-                    CLIENT_ID =  this.clientId;
+                    CLIENT_ID = this.clientId;
                     SCOPES = this.scopes.split(' ');
                     COOKIE_POLICY = this.cookiePolicy;
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
@@ -368,14 +384,23 @@ google-signin-aware elements require additional user permissions.
                 },
 
                 signIn: function () {
-                    handler.flowComplete = false;
-                    gapi.auth.signIn({
+                    var params = {
                         'clientid': CLIENT_ID,
                         'cookiepolicy': COOKIE_POLICY,
                         'scope': SCOPES.join(' '),
                         'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
                         'callback': 'handleAuthResult'
-                    });
+                    };
+                    handler.flowComplete = false;
+
+                    if (this.offline) {
+                        params['accesstype'] = 'offline';
+                        params['redirecturi'] = 'postmessage';
+                    }
+
+                    console.log('params', params);
+
+                    gapi.auth.signIn(params);
                 },
 
                 signInKeyPress: function (e) {
