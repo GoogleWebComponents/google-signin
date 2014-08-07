@@ -204,8 +204,8 @@ google-signin-aware elements require additional user permissions.
                     }
 
                     // Trigger the google-signin-offline event when offline access code is present
-                    if (self.offline && authResult['code']) {
-                        handler.fire('google-signin-offline', {code: authResult['code']});
+                    if (self.offline && authResult.code) {
+                        handler.fire('google-signin-offline', {code: authResult.code});
                     }
 
                     // Trigger the google-signin-success event
@@ -401,11 +401,9 @@ google-signin-aware elements require additional user permissions.
                     handler.flowComplete = false;
 
                     if (this.offline) {
-                        params['accesstype'] = 'offline';
-                        params['redirecturi'] = 'postmessage';
+                        params.accesstype = 'offline';
+                        params.redirecturi = 'postmessage';
                     }
-
-                    console.log('params', params);
 
                     gapi.auth.signIn(params);
                 },
