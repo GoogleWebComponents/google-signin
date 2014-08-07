@@ -391,6 +391,7 @@ google-signin-aware elements require additional user permissions.
                 },
 
                 signIn: function () {
+                    handler.flowComplete = false;
                     var params = {
                         'clientid': CLIENT_ID,
                         'cookiepolicy': COOKIE_POLICY,
@@ -398,7 +399,6 @@ google-signin-aware elements require additional user permissions.
                         'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
                         'callback': 'handleAuthResult'
                     };
-                    handler.flowComplete = false;
 
                     if (this.offline) {
                         params.accesstype = 'offline';
