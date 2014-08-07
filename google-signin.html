@@ -28,12 +28,11 @@ plus.login scope (https://www.googleapis.com/auth/plus.login).
 The `labelSignin` attribute is an optional piece of text used for customizing
 the label on the sign-in button. `labelSignout` allows you to customize the label
 for sign-out, and `labelAdditional` defines the label that is displayed when
-additional permissions are necessary for incremental auth. The `buttonStyle`
-attribute helps you follow the Google+ Sign-In button branding guidelines by using
-long, medium, google or short styles (https://developers.google.com/+/branding-guidelines).
-If `labelSignin` and `buttonStyle` attributes are both set, the `labelSignin` text will
-be used for label on the sign-in button. `buttonColor` lets you use the white login
-button by passing `white` as the string with the `buttonColor` attribute.
+additional permissions are necessary for incremental auth.
+
+The button can be styled in using the `height`, `width`, and `theme` attributes.
+These attributes help you follow the Google+ Sign-In button branding guidelines
+(https://developers.google.com/+/branding-guidelines).
 
 The `google-signin-success` event is triggered when a user successfully authenticates
 and `google-signin-failure` is triggered when this is not the case. Both events
@@ -54,9 +53,7 @@ google-signin-aware elements require additional user permissions.
 
     <google-signin labelSignin="Sign-in" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
 
-    <google-signin buttonStyle="medium" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
-
-    <google-signin buttonColor="white" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+    <google-signin theme="dark" width="iconOnly" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
 
 @class google-signin
 @blurb A Polymer element for authenticating and authorizing with Google Services.
@@ -64,7 +61,7 @@ google-signin-aware elements require additional user permissions.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions offline labelSignin labelSignout labelAdditional buttonStyle buttonColor">
+<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme labelSignin labelSignout labelAdditional">
     <template>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <style>
@@ -77,49 +74,10 @@ google-signin-aware elements require additional user permissions.
                 border-radius: 5px;
                 white-space: nowrap;
                 cursor: pointer;
-                color: white;
-            }
-            .btn.white {
-                color: #737373;
-                border: 1px solid #d9d9d9;
-            }
-            .signIn {
-                background: #dd4b39;
-            }
-            .signIn:hover, .signIn:focus {
-                background: #e74b37;
-            }
-            .signIn.white {
-                background: white;
-            }
-            .signIn.white:hover, .signIn.white:focus {
-
-            }
-            .signOut {
-                background: #999;
-            }
-            .signOut:hover, .signOut:focus {
-                background: #aaa;
             }
             .icon {
-                background: url('assets/gplus-logo.svg') transparent 10px 50% no-repeat;
                 display: inline-block;
                 vertical-align: middle;
-                width: 40px;
-                height: 35px;
-                background-size: 22px 22px;
-            }
-            .white .icon {
-                background-image: url('assets/gplus-logo-red.svg');
-            }
-            .signIn .icon {
-                border-right: #bb3f30 1px solid;
-            }
-            .signIn.white .icon {
-                border-right: #d9d9d9 1px solid;
-            }
-            .signOut .icon {
-                border-right: #888 1px solid;
             }
             .signIn .icon.short {
                 border-right: none;
@@ -130,34 +88,100 @@ google-signin-aware elements require additional user permissions.
                 padding-left: 35px;
                 padding-right: 35px;
                 font-size: 14px;
-                font-weight: bold;
+                font-weight: 400;
                 font-family: 'Roboto',arial,sans-serif;
             }
             .buttonText.short {
                 display: none;
             }
+
+            /* Dark Theme */
+            .theme-dark {
+                color: #fff;
+            }
+            .theme-dark {
+                background: #dd4b39;
+            }
+            .theme-dark:hover,
+            .theme-dark:focus {
+                background: #e74b37;
+            }
+            .theme-dark .icon {
+                background: #aaa;
+                background: url('assets/gplus-logo.svg') transparent 10px 50% no-repeat;
+                border-right: #bb3f30 1px solid;
+                width: 40px;
+                height: 35px;
+                background-size: 22px 22px;
+            }
+            .theme-dark.signOut .icon {
+                border-right: #888 1px solid;
+            }
+            .theme-dark.signOut {
+                background: #999;
+            }
+            .theme-dark.signOut:hover,
+            .theme-dark.signOut:focus {
+                background: #aaa;
+            }
+
+            /* Light Theme */
+            .theme-light {
+                background: #fff;
+                color: #737373;
+                border: 1px solid #d9d9d9;
+            }
+            .theme-light:hover,
+            .theme-light:focus {
+                background: #e74b37;
+            }
+            .theme-light .icon {
+                border-right: #d9d9d9 1px solid;
+                background: url('assets/gplus-logo-red.svg') transparent 10px 50% no-repeat;
+                width: 40px;
+                height: 35px;
+                background-size: 22px 22px;
+            }
+            .theme-light.signOut .icon {
+                border-right: #888 1px solid;
+            }
+            .theme-light.signOut {
+                background: #999;
+            }
+            .theme-light.signOut:hover,
+            .theme-light.signOut:focus {
+                background: #aaa;
+            }
+
+            /* Icon Only Width */
+            .width-iconOnly .buttonText {
+                display: none;
+            }
+            .width-iconOnly .icon {
+                border-right: none;
+            }
         </style>
         <google-client-api></google-client-api>
         <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
         <template if="{{ !signedIn }}">
-        <div class="btn signIn {{buttonColor}}" role="button" tabindex="0"
+        <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
              on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon {{buttonStyle}}"></span>
-            <span class="buttonText {{buttonStyle}}">{{labelSignin}}</span>
+            <span class="icon"></span>
+            <span class="buttonText">{{labelSignin}}</span>
         </div>
         </template>
         <template if="{{ signedIn && !additionalAuth }}">
-        <div class="btn signOut {{buttonColor}}" role="button" tabindex="0"
+        <div class="btn signOut height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
              on-click="{{signOut}}" on-keydown="{{signOutKeyPress}}">
-            <span class="icon {{buttonStyle}}"></span>
-            <span class="buttonText {{buttonStyle}}">{{labelSignout}}</span>
+            <span class="icon"></span>
+            <span class="buttonText">{{labelSignout}}</span>
         </div>
         </template>
         <template if="{{ signedIn && additionalAuth }}">
-        <div class="btn signIn {{buttonColor}}" role="button" tabindex="0"
+        <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
              on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon {{buttonStyle}}"></span>
-            <span class="buttonText {{buttonStyle}}">{{labelAdditional}}</span>
+            <span class="icon"></span>
+            <span class="buttonText">{{labelAdditional}}</span>
         </div>
         </template>
     </template>
@@ -170,12 +194,48 @@ google-signin-aware elements require additional user permissions.
 
             var handler;
             var authorized_scopes = [];
-            var buttonStyles = [
-                { size: 'long', text: 'Sign in with Google' },
-                { size: 'medium', text: 'Sign in' },
-                { size: 'google', text: 'Google' },
-                { size: 'short' }
-            ];
+
+            /**
+             * Enum height values.
+             * @readonly
+             * @enum {string}
+             */
+            var HeightValue = {
+                SHORT: 'short',
+                STANDARD: 'standard',
+                TALL: 'tall'
+            };
+
+            /**
+             * Enum width values.
+             * @readonly
+             * @enum {string}
+             */
+            var WidthValue = {
+                ICON_ONLY: 'iconOnly',
+                STANDARD: 'standard',
+                WIDE: 'wide'
+            };
+
+            /**
+             * Enum theme values.
+             * @readonly
+             * @enum {string}
+             */
+            var ThemeValue = {
+                LIGHT: 'light',
+                DARK: 'dark'
+            };
+
+            /**
+             * Enum button label default values.
+             * @readonly
+             * @enum {string}
+             */
+            var LabelValue = {
+                STANDARD: 'Sign in',
+                WIDE: 'Sign in with Google'
+            };
 
             /**
              * Checks whether authorized and requested scopes match and
@@ -332,15 +392,14 @@ google-signin-aware elements require additional user permissions.
                  */
                 offline: false,
                 /**
-                 * An optional label for the sign-in button. If supplied,
-                 * this will overwrite the buttonStyle text.
+                 * An optional label for the sign-in button.
                  *
                  * @attribute labelSignin
                  * @type string
                  */
                 labelSignin: '',
                 /**
-                 * An optional label for the sign-out button
+                 * An optional label for the sign-out button.
                  *
                  * @attribute labelSignout
                  * @type string
@@ -348,7 +407,7 @@ google-signin-aware elements require additional user permissions.
                  */
                 labelSignout: 'Sign out',
                 /**
-                 * An optional label for the button for additional permissions
+                 * An optional label for the button for additional permissions.
                  *
                  * @attribute labelAdditional
                  * @type string
@@ -356,22 +415,35 @@ google-signin-aware elements require additional user permissions.
                  */
                 labelAdditional: 'Additional permissions required',
                 /**
-                 * The button style for the sign-in and sign-out buttons
+                 * The height to use for the button.
                  *
-                 * @attribute buttonStyle
-                 * @type string
-                 * @default 'long'
+                 * Available options: short, standard, tall.
+                 *
+                 * @attribute height
+                 * @type {HeightValue}
+                 * @default 'standard'
                  */
-                buttonStyle: 'long',
+                height: 'standard',
                 /**
-                 * The button color for the sign-in and sign-out buttons.
-                 * Defaults to red. `white` can be supplied to turn the
-                 * buttons white.
+                 * The width to use for the button.
                  *
-                 * @attribute buttonColor
-                 * @type string
+                 * Available options: iconOnly, standard, wide.
+                 *
+                 * @attribute width
+                 * @type {WidthValue}
+                 * @default 'standard'
                  */
-                buttonColor: '',
+                width: 'standard',
+                /**
+                 * The theme to use for the button.
+                 *
+                 * Available options: light, dark.
+                 *
+                 * @attribute theme
+                 * @type {HeightValue}
+                 * @default 'dark'
+                 */
+                theme: 'dark',
 
                 attached: function () {
                     if (this.clientId === '') {
@@ -415,17 +487,11 @@ google-signin-aware elements require additional user permissions.
                     }
 
                     if (handler.labelSignin === '') {
-                        buttonStyles.forEach(function(buttonStyle) {
-                            if (buttonStyle.size === handler.buttonStyle) {
-                                handler.labelSignin = buttonStyle.text;
-                            }
-                        });
-
-                        if (handler.labelSignin === '') {
-                            handler.labelSignin = buttonStyles[0].text;
+                        if (handler.width == WidthValue.WIDE) {
+                            handler.labelSignin = LabelValue.WIDE;
+                        } else if (handler.width == WidthValue.STANDARD) {
+                            handler.labelSignin = LabelValue.STANDARD;
                         }
-                    } else {
-                        handler.buttonStyle = 'long';
                     }
                 },
 
