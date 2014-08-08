@@ -13,7 +13,7 @@ AUTHOR(s): Addy Osmani, Gerwin Sturm and Rob Dodson.
 &lt;google-signin&gt; is used to authenticate with Google, allowing you to interact
 with other Google APIs such as Drive and Google+.
 
-<img width="650px" src="http://i.imgur.com/hYueNjN.jpg"/>
+<img style="max-width:100%;" src="https://camo.githubusercontent.com/89a3787e89437c885e3244e0e36cc15042bc3ec4/687474703a2f2f692e696d6775722e636f6d2f534a58574e30772e706e67"/>
 
 The attribute `clientId` is provided in your Google Developers Console
 (https://console.developers.google.com).
@@ -37,6 +37,9 @@ will also provide the data returned by the Google client authentication process.
 Additional events, such as `google-signout-attempted` and `google-signed-out` are
 triggered when the user attempts to sign-out and successfully signs out.
 
+When requesting offline access, the `google-signin-offline` event is triggered when
+the user successfully consents with offline support.
+
 The `google-signin-necessary` event is fired when scopes requested via
 google-signin-aware elements require additional user permissions.
 
@@ -52,7 +55,7 @@ google-signin-aware elements require additional user permissions.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions labelSignin labelSignout labelAdditional">
+<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions offline labelSignin labelSignout labelAdditional">
     <template>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <style>
@@ -161,6 +164,13 @@ google-signin-aware elements require additional user permissions.
              */
 
             /**
+             * Called when an offline authorization is successful.
+             *
+             * @param {string} code Authorization one-time offline code.
+             * @event google-signin-offline
+             */
+
+            /**
              * Called when the user attempts sign-out.
              *
              * @event google-signout-attempted
@@ -191,6 +201,11 @@ google-signin-aware elements require additional user permissions.
                                 authorized_scopes.push('email');
                             }
                         }
+                    }
+
+                    // Trigger the google-signin-offline event when offline access code is present
+                    if (self.offline && authResult.code) {
+                        handler.fire('google-signin-offline', {code: authResult.code});
                     }
 
                     // Trigger the google-signin-success event
@@ -271,11 +286,19 @@ google-signin-aware elements require additional user permissions.
                  */
                 requestVisibleActions: '',
                 /**
+                 * Allows for offline access_token retrieval during the signin process.
+                 *
+                 * @attribute offline
+                 * @type boolean
+                 * @default false
+                 */
+                offline: false,
+                /**
                  * An optional label for the sign-in button
                  *
                  * @attribute labelSignin
                  * @type string
-                 * @default 'Authorize'
+                 * @default 'Sign in with Google'
                  */
                 labelSignin: 'Sign in with Google',
                 /**
@@ -300,7 +323,7 @@ google-signin-aware elements require additional user permissions.
                         throw "A valid clientId is required to use this element";
                     }
 
-                    CLIENT_ID =  this.clientId;
+                    CLIENT_ID = this.clientId;
                     SCOPES = this.scopes.split(' ');
                     COOKIE_POLICY = this.cookiePolicy;
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
@@ -369,13 +392,20 @@ google-signin-aware elements require additional user permissions.
 
                 signIn: function () {
                     handler.flowComplete = false;
-                    gapi.auth.signIn({
+                    var params = {
                         'clientid': CLIENT_ID,
                         'cookiepolicy': COOKIE_POLICY,
                         'scope': SCOPES.join(' '),
                         'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
                         'callback': 'handleAuthResult'
-                    });
+                    };
+
+                    if (this.offline) {
+                        params.accesstype = 'offline';
+                        params.redirecturi = 'postmessage';
+                    }
+
+                    gapi.auth.signIn(params);
                 },
 
                 signInKeyPress: function (e) {
