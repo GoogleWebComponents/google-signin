@@ -495,36 +495,6 @@ google-signin-aware elements require additional user permissions.
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
                     handler = this;
 
-                    // For page-level configuration the callback has to be in global namespace
-                    window.handleAuthResult = handleAuthResult;
-
-                    var meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-clientid');
-                    meta.setAttribute('content', CLIENT_ID);
-                    document.head.appendChild(meta);
-
-                    meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-scope');
-                    meta.setAttribute('content', SCOPES.join(' '));
-                    document.head.appendChild(meta);
-
-                    meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-cookiepolicy');
-                    meta.setAttribute('content', COOKIE_POLICY);
-                    document.head.appendChild(meta);
-
-                    meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-callback');
-                    meta.setAttribute('content', 'handleAuthResult');
-                    document.head.appendChild(meta);
-
-                    if (REQUEST_VISIBLE_ACTIONS) {
-                        meta = document.createElement('meta');
-                        meta.setAttribute('name', 'google-signin-requestvisibleactions');
-                        meta.setAttribute('content', REQUEST_VISIBLE_ACTIONS);
-                        document.head.appendChild(meta);
-                    }
-
                     if (handler.labelSignin === '') {
                         if (handler.width == WidthValue.WIDE) {
                             handler.labelSignin = LabelValue.WIDE;
@@ -571,7 +541,7 @@ google-signin-aware elements require additional user permissions.
                         'cookiepolicy': COOKIE_POLICY,
                         'scope': SCOPES.join(' '),
                         'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
-                        'callback': 'handleAuthResult'
+                        'callback': handleAuthResult
                     };
 
                     if (handler.offline) {
