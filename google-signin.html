@@ -259,6 +259,15 @@ google-signin-aware elements require additional user permissions.
             };
 
             /**
+             * Enum of attributes to be passed through to the login API call.
+             * @readonly
+             * @enum {string}
+             */
+            var ProxyLoginAttributes = {
+                'appPackageName': 'apppackagename'
+            };
+
+            /**
              * Checks whether authorized and requested scopes match and
              * displays button for additional auth if necessary
              */
@@ -569,9 +578,12 @@ google-signin-aware elements require additional user permissions.
                         params.redirecturi = 'postmessage';
                     }
 
-                    if (handler.appPackageName != '') {
-                        params.apppackagename = handler.appPackageName;
-                    }
+                    // Proxy specific attributes through to the signIn.
+                    Object.keys(ProxyLoginAttributes).forEach(function(key) {
+                        if (handler[key] and handler[key] != '') {
+                            params[ProxyLoginAttributes[key]] = handler[key];
+                        }
+                    });
 
                     gapi.auth.signIn(params);
                 },
