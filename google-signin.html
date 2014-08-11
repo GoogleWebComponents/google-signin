@@ -580,7 +580,7 @@ google-signin-aware elements require additional user permissions.
 
                     // Proxy specific attributes through to the signIn.
                     Object.keys(ProxyLoginAttributes).forEach(function(key) {
-                        if (handler[key] and handler[key] != '') {
+                        if (handler[key] && handler[key] != '') {
                             params[ProxyLoginAttributes[key]] = handler[key];
                         }
                     });
