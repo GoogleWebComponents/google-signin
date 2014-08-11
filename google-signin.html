@@ -255,11 +255,6 @@ any apps you're building. See the Google Developers Console
     </template>
     <script>
         (function() {
-            var CLIENT_ID = '';
-            var SCOPES = [];
-            var REQUEST_VISIBLE_ACTIONS = '';
-            var COOKIE_POLICY = '';
-
             var handler;
             var authorized_scopes = [];
 
@@ -311,18 +306,23 @@ any apps you're building. See the Google Developers Console
              * @enum {string}
              */
             var ProxyLoginAttributes = {
-                'appPackageName': 'apppackagename'
+                'appPackageName': 'apppackagename',
+                'clientId': 'clientid',
+                'cookiePolicy': 'cookiepolicy',
+                'requestVisibleActions': 'requestvisibleactions'
             };
 
             /**
              * Checks whether authorized and requested scopes match and
              * displays button for additional auth if necessary
+             *
+             * @param {Array} scopes Scopes being requested.
              */
-            function checkScopes() {
+            function checkScopes(scopes) {
                 handler.additionalAuth = false;
-                for (var i = 0; i < SCOPES.length; i++) {
-                    if (SCOPES[i] !== '') {
-                        if (authorized_scopes.indexOf(SCOPES[i].toLowerCase()) < 0) {
+                for (var i = 0; i < scopes.length; i++) {
+                    if (scopes[i] !== '') {
+                        if (authorized_scopes.indexOf(scopes[i].toLowerCase()) < 0) {
                             handler.additionalAuth = true;
                             handler.fire('google-signin-necessary');
                             break;
@@ -400,7 +400,7 @@ any apps you're building. See the Google Developers Console
 
                     handler.signedIn = true;
 
-                    checkScopes();
+                    checkScopes(handler.scopes.split(' '));
                 } else {
                     if (authResult && authResult.error == "user_signed_out") {
                         // Fire event to indicate user signed out
@@ -573,10 +573,6 @@ any apps you're building. See the Google Developers Console
                         throw "A valid clientId is required to use this element";
                     }
 
-                    CLIENT_ID = this.clientId;
-                    SCOPES = this.scopes.split(' ');
-                    COOKIE_POLICY = this.cookiePolicy;
-                    REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
                     handler = this;
 
                     // For page-level configuration the callback has to be in global namespace
@@ -620,6 +616,8 @@ any apps you're building. See the Google Developers Console
 
                 authRequest: function (e, detail, sender) {
                     var i, new_scopes, extra_scopes;
+                    var handler = this;
+                    var current_scopes = handler.scopes.split(' ');
                     if (detail) {
                         // Check if any new scopes need to be authorized
                         extra_scopes = false;
@@ -628,14 +626,17 @@ any apps you're building. See the Google Developers Console
                             if (new_scopes[i] !== "") {
                                 if (authorized_scopes.indexOf(new_scopes[i].toLowerCase()) < 0) {
                                     extra_scopes = true;
-                                    if (SCOPES.indexOf(new_scopes[i].toLowerCase()) < 0) {
-                                        SCOPES.push(new_scopes[i].toLowerCase());
+                                    if (current_scopes.indexOf(new_scopes[i].toLowerCase()) < 0) {
+                                        current_scopes.scopes.push(new_scopes[i].toLowerCase());
                                     }
                                 }
                             }
                         }
                     }
                     if (extra_scopes) {
+                        // Update the scopes if new scopes were added.
+                        this.scopes = current_scopes.join(' ');
+
                         if (handler.flowComplete) {
                             handler.additionalAuth = true;
                             handler.fire('google-signin-necessary');
@@ -656,10 +657,10 @@ any apps you're building. See the Google Developers Console
                 signIn: function () {
                     handler.flowComplete = false;
                     var params = {
-                        'clientid': CLIENT_ID,
-                        'cookiepolicy': COOKIE_POLICY,
-                        'scope': SCOPES.join(' '),
-                        'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
+                        'clientid': this.clientId,
+                        'cookiepolicy': this.cookiePolicy,
+                        'scope': this.scopes,
+                        'requestvisibleactions': this.requestVisibleActions,
                         'callback': 'handleAuthResult'
                     };
 
