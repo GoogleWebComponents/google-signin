@@ -182,7 +182,7 @@ google-signin-aware elements require additional user permissions.
                 background-size: 16px 16px;
             }
         </style>
-        <google-client-api></google-client-api>
+        <google-client-api on-api-load="{{apiLoaded}}"></google-client-api>
         <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
         <template if="{{ !signedIn }}">
         <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
@@ -215,6 +215,7 @@ google-signin-aware elements require additional user permissions.
 
             var handler;
             var authorized_scopes = [];
+            var flowComplete = null;
 
             /**
              * Enum height values.
@@ -375,7 +376,7 @@ google-signin-aware elements require additional user permissions.
                     handler.signedIn = false;
                 }
 
-                handler.flowComplete = true;
+                flowComplete = true;
             }
 
             Polymer('google-signin', {
@@ -495,42 +496,19 @@ google-signin-aware elements require additional user permissions.
                     REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
                     handler = this;
 
-                    // For page-level configuration the callback has to be in global namespace
-                    window.handleAuthResult = handleAuthResult;
-
-                    var meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-clientid');
-                    meta.setAttribute('content', CLIENT_ID);
-                    document.head.appendChild(meta);
-
-                    meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-scope');
-                    meta.setAttribute('content', SCOPES.join(' '));
-                    document.head.appendChild(meta);
-
-                    meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-cookiepolicy');
-                    meta.setAttribute('content', COOKIE_POLICY);
-                    document.head.appendChild(meta);
-
-                    meta = document.createElement('meta');
-                    meta.setAttribute('name', 'google-signin-callback');
-                    meta.setAttribute('content', 'handleAuthResult');
-                    document.head.appendChild(meta);
-
-                    if (REQUEST_VISIBLE_ACTIONS) {
-                        meta = document.createElement('meta');
-                        meta.setAttribute('name', 'google-signin-requestvisibleactions');
-                        meta.setAttribute('content', REQUEST_VISIBLE_ACTIONS);
-                        document.head.appendChild(meta);
-                    }
-
                     if (handler.labelSignin === '') {
                         if (handler.width == WidthValue.WIDE) {
                             handler.labelSignin = LabelValue.WIDE;
                         } else if (handler.width == WidthValue.STANDARD) {
                             handler.labelSignin = LabelValue.STANDARD;
                         }
+                    }
+                },
+
+                apiLoaded: function (e, detail, sender) {
+                    // Start automatic authorization to check if already consented to scopes.
+                    if (flowComplete === null) {
+                        handler.signIn();
                     }
                 },
 
@@ -552,7 +530,7 @@ google-signin-aware elements require additional user permissions.
                         }
                     }
                     if (extra_scopes) {
-                        if (handler.flowComplete) {
+                        if (flowComplete) {
                             handler.additionalAuth = true;
                             handler.fire('google-signin-necessary');
                         }
@@ -565,14 +543,20 @@ google-signin-aware elements require additional user permissions.
                 },
 
                 signIn: function () {
-                    handler.flowComplete = false;
                     var params = {
                         'clientid': CLIENT_ID,
                         'cookiepolicy': COOKIE_POLICY,
                         'scope': SCOPES.join(' '),
                         'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
-                        'callback': 'handleAuthResult'
+                        'callback': handleAuthResult
                     };
+
+                    // If there is no flow state then start an immediate auth check.
+                    if (flowComplete === null) {
+                        params.immediate = true;
+                    }
+
+                    flowComplete = false;
 
                     if (handler.offline) {
                         params.accesstype = 'offline';
@@ -597,7 +581,7 @@ google-signin-aware elements require additional user permissions.
                 },
 
                 signOut: function () {
-                    handler.flowComplete = false;
+                    flowComplete = false;
                     handler.fire('google-signout-attempted');
                     gapi.auth.signOut();
                 },
