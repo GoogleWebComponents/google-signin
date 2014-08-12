@@ -228,6 +228,7 @@ any apps you're building. See the Google Developers Console
         </style>
         <google-client-api></google-client-api>
         <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
+        <core-signals on-core-signal-google-auth-result="{{authResult}}"></core-signals>
         <div id="clip">
             <paper-ripple id="ripple"></paper-ripple>
             <template if="{{ !signedIn }}">
@@ -346,9 +347,15 @@ any apps you're building. See the Google Developers Console
              * @param {Object} authResult Authorization result.
              */
             function handleAuthResult(authResult) {
-                // Allow the default handler to handle the immediate authentication.
+                // Use the default handler for the immediate authentication.
                 if (defaultHandler) {
-                    defaultHandler.handleAuthResult.apply(defaultHandler, arguments);
+                    defaultHandler.fire('core-signal', {
+                        name: 'google-auth-result',
+                        data: {
+                            result: authResult,
+                            isGlobal: true
+                        }
+                    });
                 }
             }
 
@@ -569,6 +576,8 @@ any apps you're building. See the Google Developers Console
                             if (new_scopes[i] !== "") {
                                 if (authorizedScopes.indexOf(new_scopes[i].toLowerCase()) < 0) {
                                     extra_scopes = true;
+
+                                    // Add extra scopes to the button so that they are included in the next auth.
                                     if (currentScopes.indexOf(new_scopes[i].toLowerCase()) < 0) {
                                         currentScopes.scopes.push(new_scopes[i].toLowerCase());
                                     }
@@ -593,8 +602,87 @@ any apps you're building. See the Google Developers Console
                 },
 
                 /**
+                 * Handles processing the authorization result from a signin attempt.
+                 *
+                 * @param {Object} authResult Authorization result.
+                 */
+                authResult: function(e, detail, sender) {
+                    var result = detail.result;
+
+                    if (result && !result.error) {
+                        // Access token has been successfully retrieved
+                        // Store authorized scopes to check against for new requests
+                        authorizedScopes = [];
+                        var tmpScopes = result.scope.split(' ');
+                        for (var i = 0; i < tmpScopes.length; i++) {
+                            if (tmpScopes[i] !== "") {
+                                authorizedScopes.push(tmpScopes[i].toLowerCase());
+
+                                // Handle scopes that will be deprecated but are still returned with their old value
+                                if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
+                                    authorizedScopes.push('profile');
+                                } else if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
+                                    authorizedScopes.push('email');
+                                }
+                            }
+                        }
+
+                        // Only let the global defaultHandler trigger result events to prevent event fanning.
+                        if (this === defaultHandler && detail.isGlobal) {
+                            // Trigger the google-signin-offline event when offline access code is present
+                            if (self.offline && result.code) {
+                                this.fire('google-signin-offline', {code: result.code});
+                            }
+
+                            // Trigger the google-signin-success event
+                            this.fire('google-signin-success', {result: result, gapi: gapi});
+
+                            // Trigger the google-auth-success core-signal for elements that depend on this
+                            this.fire('core-signal', {
+                                name: 'google-auth-success',
+                                data: {result: result, scopes: authorizedScopes}
+                            });
+                        }
+
+                        this.signedIn = true;
+
+                        this.checkScopes();
+                    } else {
+                        // Only let the global defaultHandler trigger result events to prevent event fanning.
+                        if (this === defaultHandler && detail.isGlobal) {
+                            if (result && result.error == "user_signed_out") {
+                                // Fire event to indicate user signed out
+                                this.fire('google-signed-out', {result: result});
+
+                                // Trigger the google-auth-signed-out core-signal for elements that depend on this
+                                this.fire('core-signal', {
+                                    name: 'google-auth-signed-out',
+                                    data: {result: result}
+                                });
+                            } else {
+                                // Fire event to indicate sign-in was not successful
+                                this.fire('google-signin-failure', {result: result});
+
+                                // Trigger the google-auth-failure core-signal for elements that depend on this
+                                this.fire('core-signal', {
+                                    name: 'google-auth-failure',
+                                    data: {result: result}
+                                });
+                            }
+                        }
+
+                        authorizedScopes = [];
+
+                        // No access token could be retrieved, show the button to start the authorization flow.
+                        this.signedIn = false;
+                    }
+
+                    flowComplete = true;
+                },
+
+                /**
                  * Checks whether authorized and requested scopes match and
-                 * displays button for additional auth if necessary
+                 * displays button for additional auth if necessary.
                  *
                  * @param {Array} scopes Scopes being requested.
                  */
@@ -619,6 +707,9 @@ any apps you're building. See the Google Developers Console
                  * @param {Object} authResult Authorization result.
                  */
                 handleAuthResult: function(authResult) {
+                    console.log('authResult', authResult);
+                    console.log('this', this);
+
                     if (authResult && !authResult.error) {
                         // Access token has been successfully retrieved
                         // Store authorized scopes to check against for new requests
@@ -691,13 +782,21 @@ any apps you're building. See the Google Developers Console
                 },
 
                 signIn: function () {
-                    flowComplete = false;
+                    var handler = this;
                     var params = {
                         'clientid': this.clientId,
                         'cookiepolicy': this.cookiePolicy,
                         'scope': this.scopes,
                         'requestvisibleactions': this.requestVisibleActions,
-                        'callback': 'handleAuthResult'
+                        'callback': function(result) {
+                            handler.fire('core-signal', {
+                                name: 'google-auth-result',
+                                data: {
+                                    result: result,
+                                    isGlobal: false
+                                }
+                            });
+                        }
                     };
 
                     if (this.offline) {
@@ -711,6 +810,8 @@ any apps you're building. See the Google Developers Console
                             params[ProxyLoginAttributes[key]] = this[key];
                         }
                     });
+
+                    flowComplete = false;
 
                     gapi.auth.signIn(params);
                 },
