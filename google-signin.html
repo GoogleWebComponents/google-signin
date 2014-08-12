@@ -112,15 +112,15 @@ google-signin-aware elements require additional user permissions.
                 height: 35px;
                 background-size: 22px 22px;
             }
-            .theme-dark.signOut .icon {
-                border-right: #888 1px solid;
-            }
             .theme-dark.signOut {
                 background: #999;
             }
             .theme-dark.signOut:hover,
             .theme-dark.signOut:focus {
                 background: #aaa;
+            }
+            .theme-dark.signOut .icon {
+                border-right: #888 1px solid;
             }
 
             /* Light Theme */
@@ -140,15 +140,17 @@ google-signin-aware elements require additional user permissions.
                 height: 35px;
                 background-size: 22px 22px;
             }
-            .theme-light.signOut .icon {
-                border-right: #888 1px solid;
-            }
             .theme-light.signOut {
                 background: #999;
+                color: #fff;
             }
             .theme-light.signOut:hover,
             .theme-light.signOut:focus {
                 background: #aaa;
+            }
+            .theme-light.signOut .icon {
+                background-image: url('assets/gplus-logo.svg');
+                border-right: #888 1px solid;
             }
 
             /* Icon Only Width */
