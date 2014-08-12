@@ -305,10 +305,16 @@ google-signin-aware elements require additional user permissions.
              */
 
             /**
-             * Called when the user has completed sign-out.
+             * Called when the user is signed-out.
+             *
+             * @param {Object} result Authorization result.
+             * @event google-signed-out
+             */
+
+            /**
+             * Called when the authentication result is complete.
              *
              * @param {Object} authResult Authorization result.
-             * @event google-signed-out
              */
             function handleAuthResult(authResult) {
                 if (authResult && !authResult.error) {
