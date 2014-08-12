@@ -61,7 +61,7 @@ google-signin-aware elements require additional user permissions.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme labelSignin labelSignout labelAdditional">
+<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme labelSignin labelSignout labelAdditional appPackageName">
     <template>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <style>
@@ -259,6 +259,15 @@ google-signin-aware elements require additional user permissions.
             };
 
             /**
+             * Enum of attributes to be passed through to the login API call.
+             * @readonly
+             * @enum {string}
+             */
+            var ProxyLoginAttributes = {
+                'appPackageName': 'apppackagename'
+            };
+
+            /**
              * Checks whether authorized and requested scopes match and
              * displays button for additional auth if necessary
              */
@@ -413,6 +422,15 @@ google-signin-aware elements require additional user permissions.
                  */
                 offline: false,
                 /**
+                 * App package name for android over-the-air installs.
+                 * See the relevant [docs](https://developers.google.com/+/web/signin/android-app-installs)
+                 *
+                 * @attribute appPackageName
+                 * @type string
+                 * @default ''
+                 */
+                appPackageName: '',
+                /**
                  * An optional label for the sign-in button.
                  *
                  * @attribute labelSignin
@@ -556,10 +574,17 @@ google-signin-aware elements require additional user permissions.
                         'callback': 'handleAuthResult'
                     };
 
-                    if (this.offline) {
+                    if (handler.offline) {
                         params.accesstype = 'offline';
                         params.redirecturi = 'postmessage';
                     }
+
+                    // Proxy specific attributes through to the signIn.
+                    Object.keys(ProxyLoginAttributes).forEach(function(key) {
+                        if (handler[key] && handler[key] !== '') {
+                            params[ProxyLoginAttributes[key]] = handler[key];
+                        }
+                    });
 
                     gapi.auth.signIn(params);
                 },
