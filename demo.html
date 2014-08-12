@@ -67,10 +67,19 @@
     <p>A `google-signin` element looks like this:</p>
 
     <h2>Standard button with `profile` scope:</h2>
-    <google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
 
-    <div>Status:</div>
-    <div id="status">Not logged in.</div>
+    <h2>Wide tall button with `profile` scope:</h2>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="wide" height="tall"></google-signin></p>
+
+    <h2>Short light themed button with `email` scope:</h2>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="email" theme="light" width="standard" height="short"></google-signin></p>
+
+    <h2>Tall light themed icon only button with `plus.login` scope:</h2>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="tall"></google-signin></p>
+
+    <p>Status:</p>
+    <p id="status">Not logged in.</p>
 
     <!-- Just for demonstration purposes -->
     <template id="profile" bind="{{ profile }}">
