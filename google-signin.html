@@ -627,16 +627,16 @@ any apps you're building. See the Google Developers Console
                             }
                         }
 
-                        // Only let the global defaultHandler trigger result events to prevent event fanning.
+                        // Trigger the google-signin-offline event when offline access code is present
+                        if (self.offline && result.code) {
+                            this.fire('google-signin-offline', {code: result.code});
+                        }
+
+                        // Trigger the google-signin-success event
+                        this.fire('google-signin-success', {result: result, gapi: gapi});
+
+                        // Only let the global defaultHandler trigger result signals to prevent fanning.
                         if (this === defaultHandler && detail.isGlobal) {
-                            // Trigger the google-signin-offline event when offline access code is present
-                            if (self.offline && result.code) {
-                                this.fire('google-signin-offline', {code: result.code});
-                            }
-
-                            // Trigger the google-signin-success event
-                            this.fire('google-signin-success', {result: result, gapi: gapi});
-
                             // Trigger the google-auth-success core-signal for elements that depend on this
                             this.fire('core-signal', {
                                 name: 'google-auth-success',
@@ -648,21 +648,25 @@ any apps you're building. See the Google Developers Console
 
                         this.checkScopes();
                     } else {
-                        // Only let the global defaultHandler trigger result events to prevent event fanning.
-                        if (this === defaultHandler && detail.isGlobal) {
-                            if (result && result.error == "user_signed_out") {
-                                // Fire event to indicate user signed out
-                                this.fire('google-signed-out', {result: result});
+                        if (result && result.error == "user_signed_out") {
+                            // Fire event to indicate user signed out
+                            this.fire('google-signed-out', {result: result});
+
+                            // Only let the global defaultHandler trigger result signals to prevent fanning.
+                            if (this === defaultHandler && detail.isGlobal) {
 
                                 // Trigger the google-auth-signed-out core-signal for elements that depend on this
                                 this.fire('core-signal', {
                                     name: 'google-auth-signed-out',
                                     data: {result: result}
                                 });
-                            } else {
-                                // Fire event to indicate sign-in was not successful
-                                this.fire('google-signin-failure', {result: result});
+                            }
+                        } else {
+                            // Fire event to indicate sign-in was not successful
+                            this.fire('google-signin-failure', {result: result});
 
+                            // Only let the global defaultHandler trigger result signals to prevent fanning.
+                            if (this === defaultHandler && detail.isGlobal) {
                                 // Trigger the google-auth-failure core-signal for elements that depend on this
                                 this.fire('core-signal', {
                                     name: 'google-auth-failure',
