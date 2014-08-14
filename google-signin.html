@@ -104,7 +104,6 @@ google-signin-aware elements require additional user permissions.
                 left: 0;
                 bottom: 0;
                 right: 0;
-                color: #c43828;
                 pointer-events: none;
             }
 
@@ -141,6 +140,8 @@ google-signin-aware elements require additional user permissions.
             }
             .theme-dark.signOut .icon {
                 border-right: #888 1px solid;
+            .theme-dark #ripple {
+                color: #c43828;
             }
 
             /* Light Theme */
@@ -167,6 +168,9 @@ google-signin-aware elements require additional user permissions.
             .theme-light.signOut .icon {
                 background-image: url('assets/gplus-logo.svg');
                 border-right: #888 1px solid;
+            }
+            .theme-light #ripple {
+                color: #d1d1d1;
             }
 
             /* Icon Only Width */
