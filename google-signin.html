@@ -63,7 +63,7 @@ google-signin-aware elements require additional user permissions.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" extends="paper-focusable" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme labelSignin labelSignout labelAdditional appPackageName">
+<polymer-element name="google-signin" extends="paper-focusable" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme noink labelSignin labelSignout labelAdditional appPackageName">
     <template>
         <link rel="import" href="../components/font-roboto/roboto.html">
         <style>
@@ -143,6 +143,14 @@ google-signin-aware elements require additional user permissions.
             .theme-dark #ripple {
                 color: #c43828;
             }
+            :host([noink]) .theme-dark:hover,
+            :host([noink]) .theme-dark:focus {
+                background: #e74b37;
+            }
+            :host([noink]) .theme-dark.signOut:hover,
+            :host([noink]) .theme-dark.signOut:focus {
+                background: #aaa;
+            }
 
             /* Light Theme */
             .theme-light {
@@ -171,6 +179,14 @@ google-signin-aware elements require additional user permissions.
             }
             .theme-light #ripple {
                 color: #d1d1d1;
+            }
+            :host([noink]) .theme-light:hover,
+            :host([noink]) .theme-light:focus {
+                border: 1px solid #c0c0c0;
+            }
+            :host([noink]) .theme-light.signOut:hover,
+            :host([noink]) .theme-light.signOut:focus {
+                background: #aaa;
             }
 
             /* Icon Only Width */
@@ -515,8 +531,22 @@ google-signin-aware elements require additional user permissions.
                  */
                 theme: 'dark',
 
+                /**
+                 * If true, ink ripple effect is disabled.
+                 *
+                 * @attribute noink
+                 * @type boolean
+                 * @default false
+                 */
+                noink: false,
+
                 activeChanged: function() {
                     this.super();
+
+                    if(this.noink) {
+                        return;
+                    }
+
                     if (this.active) {
                         // FIXME: remove when paper-ripple can have a default 'down' state.
                         if (!this.lastEvent) {
