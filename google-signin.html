@@ -1,6 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-apis.html">
 <link rel="import" href="../core-signals/core-signals.html">
+<link rel="import" href="../paper-focusable/paper-focusable.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
 
 <!--
 Copyright (c) 2014 Google Inc. All rights reserved.
@@ -61,7 +63,7 @@ google-signin-aware elements require additional user permissions.
 @homepage http://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme labelSignin labelSignout labelAdditional appPackageName">
+<polymer-element name="google-signin" extends="paper-focusable" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme noink labelSignin labelSignout labelAdditional appPackageName">
     <template>
         <link rel="import" href="../components/font-roboto/roboto.html">
         <style>
@@ -95,19 +97,36 @@ google-signin-aware elements require additional user permissions.
                 display: none;
             }
 
+            /* Ripple */
+            #ripple {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                pointer-events: none;
+            }
+
+            #ripple::shadow canvas {
+                top: 0;
+                left: 0;
+            }
+
+            #clip {
+              position: relative;
+              border-radius: inherit;
+              overflow: hidden;
+            }
+
             /* Dark Theme */
             .theme-dark {
-                background: #dd4b39;
+                background: #da4336;
                 color: #fff;
                 border: 1px solid transparent;
             }
-            .theme-dark:hover,
-            .theme-dark:focus {
-                background: #e74b37;
-            }
             .theme-dark .icon {
                 background-image: url('assets/gplus-logo.svg');
-                border-right: #bb3f30 1px solid;
+                border-right: #a42613 1px solid;
                 width: 35px;
                 height: 35px;
                 background-size: 22px 22px;
@@ -121,6 +140,16 @@ google-signin-aware elements require additional user permissions.
             }
             .theme-dark.signOut .icon {
                 border-right: #888 1px solid;
+            .theme-dark #ripple {
+                color: #c43828;
+            }
+            :host([noink]) .theme-dark:hover,
+            :host([noink]) .theme-dark:focus {
+                background: #e74b37;
+            }
+            :host([noink]) .theme-dark.signOut:hover,
+            :host([noink]) .theme-dark.signOut:focus {
+                background: #aaa;
             }
 
             /* Light Theme */
@@ -128,10 +157,6 @@ google-signin-aware elements require additional user permissions.
                 background: #fff;
                 color: #737373;
                 border: 1px solid #d9d9d9;
-            }
-            .theme-light:hover,
-            .theme-light:focus {
-                border: 1px solid #c0c0c0;
             }
             .theme-light .icon {
                 background-image: url('assets/gplus-logo-red.svg');
@@ -151,6 +176,17 @@ google-signin-aware elements require additional user permissions.
             .theme-light.signOut .icon {
                 background-image: url('assets/gplus-logo.svg');
                 border-right: #888 1px solid;
+            }
+            .theme-light #ripple {
+                color: #d1d1d1;
+            }
+            :host([noink]) .theme-light:hover,
+            :host([noink]) .theme-light:focus {
+                border: 1px solid #c0c0c0;
+            }
+            :host([noink]) .theme-light.signOut:hover,
+            :host([noink]) .theme-light.signOut:focus {
+                background: #aaa;
             }
 
             /* Icon Only Width */
@@ -186,27 +222,30 @@ google-signin-aware elements require additional user permissions.
         </style>
         <google-client-api></google-client-api>
         <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
-        <template if="{{ !signedIn }}">
-        <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
-             on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon"></span>
-            <span class="buttonText">{{labelSignin}}</span>
+        <div id="clip">
+            <paper-ripple id="ripple"></paper-ripple>
+            <template if="{{ !signedIn }}">
+                <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
+                        on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
+                    <span class="icon"></span>
+                    <span class="buttonText">{{labelSignin}}</span>
+                </div>
+            </template>
+            <template if="{{ signedIn && !additionalAuth }}">
+                <div class="btn signOut height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
+                    on-click="{{signOut}}" on-keydown="{{signOutKeyPress}}">
+                    <span class="icon"></span>
+                    <span class="buttonText">{{labelSignout}}</span>
+                </div>
+            </template>
+            <template if="{{ signedIn && additionalAuth }}">
+                <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
+                        on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
+                    <span class="icon"></span>
+                    <span class="buttonText">{{labelAdditional}}</span>
+                </div>
+            </template>
         </div>
-        </template>
-        <template if="{{ signedIn && !additionalAuth }}">
-        <div class="btn signOut height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
-             on-click="{{signOut}}" on-keydown="{{signOutKeyPress}}">
-            <span class="icon"></span>
-            <span class="buttonText">{{labelSignout}}</span>
-        </div>
-        </template>
-        <template if="{{ signedIn && additionalAuth }}">
-        <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
-             on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon"></span>
-            <span class="buttonText">{{labelAdditional}}</span>
-        </div>
-        </template>
     </template>
     <script>
         (function() {
@@ -492,6 +531,37 @@ google-signin-aware elements require additional user permissions.
                  */
                 theme: 'dark',
 
+                /**
+                 * If true, ink ripple effect is disabled.
+                 *
+                 * @attribute noink
+                 * @type boolean
+                 * @default false
+                 */
+                noink: false,
+
+                activeChanged: function() {
+                    this.super();
+
+                    if(this.noink) {
+                        return;
+                    }
+
+                    if (this.active) {
+                        // FIXME: remove when paper-ripple can have a default 'down' state.
+                        if (!this.lastEvent) {
+                            var rect = this.getBoundingClientRect();
+                            this.lastEvent = {
+                                x: rect.left + rect.width / 2,
+                                y: rect.top + rect.height / 2
+                            }
+                        }
+                        this.$.ripple.downAction(this.lastEvent);
+                    } else {
+                        this.$.ripple.upAction();
+                    }
+                },
+
                 attached: function () {
                     if (this.clientId === '') {
                         throw "A valid clientId is required to use this element";
@@ -570,6 +640,11 @@ google-signin-aware elements require additional user permissions.
                             data: {result: gapi.auth.getToken(), scopes: authorized_scopes}
                         });
                     }
+                },
+
+                downAction: function(e) {
+                    this.super(e);
+                    this.lastEvent = e;
                 },
 
                 signIn: function () {
