@@ -647,6 +647,41 @@ any apps you're building. See the Google Developers Console
                         this.signedIn = true;
 
                         this.checkScopes();
+                    } else if (result && result.error == "access_denied") {
+                        // Access is denied when cancelling the consent.
+                        // This doesn't change already authorized scopes.
+                        var currentScopes = this.scopes.split(' ');
+                        var tmpScopes = result.scope.split(' ');
+                        var deniedScopes = false;
+
+                        // Remove the already authorizeds scopes from the result.
+                        for (var i = 0; i < authorizedScopes.length; i++) {
+                            for (var j = tmpScopes.length - 1; j >= 0; j--) {
+                                if(authorizedScopes[i] == tmpScopes[j]) {
+                                    tmpScopes.splice(j, 1);
+                                }
+                            }
+                        }
+
+                        // Need to determine if it affects the current button's scopes.
+                        for (var i = 0; i < currentScopes.length; i++) {
+                            for (var j = 0; j < tmpScopes.length; j++) {
+                                if (currentScopes[i] == tmpScopes[j]) {
+                                    // Has been denied if any of the scopes match.
+                                    deniedScopes = true;
+                                    break;
+                                }
+                            }
+
+                            if (deniedScopes) {
+                                break;
+                            }
+                        }
+
+                        if (deniedScopes) {
+                            // Still needs additional authorization.
+                            this.additionalAuth = true;
+                        }
                     } else {
                         if (result && result.error == "user_signed_out") {
                             // Fire event to indicate user signed out
