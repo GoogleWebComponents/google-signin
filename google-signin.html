@@ -742,7 +742,7 @@ when a user explicitely signs out via the google-signin element.
                  */
                 scopes: '',
 
-                attached: function() {
+                domReady: function() {
                     this.fire('core-signal', {
                         name: 'google-auth-request',
                         data: this.scopes
