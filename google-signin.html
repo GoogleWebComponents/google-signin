@@ -375,7 +375,7 @@ google-signin-aware elements require additional user permissions.
                     }
 
                     // Trigger the google-signin-offline event when offline access code is present
-                    if (self.offline && authResult.code) {
+                    if (handler.offline && authResult.code) {
                         handler.fire('google-signin-offline', {code: authResult.code});
                     }
 
