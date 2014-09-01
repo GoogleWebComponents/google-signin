@@ -24,11 +24,11 @@
     "google"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~0.3.5",
-    "google-apis": "GoogleWebComponents/google-apis#~0.3.1",
-    "core-signals": "Polymer/core-signals#~0.3.5",
-    "paper-focusable": "Polymer/paper-focusable#~0.3.5",
-    "paper-ripple": "Polymer/paper-ripple#~0.3.5",
+    "polymer": "Polymer/polymer#~0.4.0",
+    "google-apis": "GoogleWebComponents/google-apis#~0.3.2",
+    "core-signals": "Polymer/core-signals#~0.4.0",
+    "paper-focusable": "Polymer/paper-focusable#~0.4.0",
+    "paper-ripple": "Polymer/paper-ripple#~0.4.0",
     "font-roboto": "Polymer/font-roboto#master"
   }
 }
