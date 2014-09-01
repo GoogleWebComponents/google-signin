@@ -29,6 +29,6 @@
     "core-signals": "Polymer/core-signals#~0.4.0",
     "paper-focusable": "Polymer/paper-focusable#~0.4.0",
     "paper-ripple": "Polymer/paper-ripple#~0.4.0",
-    "font-roboto": "Polymer/font-roboto#master"
+    "font-roboto": "Polymer/font-roboto#~0.4.0"
   }
 }
