@@ -17,8 +17,19 @@ with other Google APIs such as Drive and Google+.
 
 <img style="max-width:100%;" src="https://camo.githubusercontent.com/89a3787e89437c885e3244e0e36cc15042bc3ec4/687474703a2f2f692e696d6775722e636f6d2f534a58574e30772e706e67"/>
 
+#### Examples
+
+    <google-signin clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+    <google-signin labelSignin="Sign-in" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+    <google-signin theme="dark" width="iconOnly" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+#### Notes
+
 The attribute `clientId` is provided in your Google Developers Console
 (https://console.developers.google.com).
+
 The `scopes` attribute allows you to specify which scope permissions are required
 (e.g do you want to allow interaction with the Google Drive API). Many APIs also
 need to be enabled in the Google Developers Console before you can use them.
@@ -49,13 +60,12 @@ the user successfully consents with offline support.
 The `google-signin-necessary` event is fired when scopes requested via
 google-signin-aware elements require additional user permissions.
 
-##### Example
+#### Testing
 
-    <google-signin clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
-
-    <google-signin labelSignin="Sign-in" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
-
-    <google-signin theme="dark" width="iconOnly" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+By default, the demo accompanying this element is setup to work on localhost with
+port 8080. That said, you *should* update the `clientId` to your own one for
+any apps you're building. See the Google Developers Console
+(https://console.developers.google.com) for more info.
 
 @class google-signin
 @blurb A Polymer element for authenticating and authorizing with Google Services.
