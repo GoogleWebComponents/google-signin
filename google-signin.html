@@ -628,7 +628,7 @@ any apps you're building. See the Google Developers Console
                         }
 
                         // Trigger the google-signin-offline event when offline access code is present
-                        if (self.offline && result.code) {
+                        if (this.offline && result.code) {
                             this.fire('google-signin-offline', {code: result.code});
                         }
 
@@ -746,9 +746,6 @@ any apps you're building. See the Google Developers Console
                  * @param {Object} authResult Authorization result.
                  */
                 handleAuthResult: function(authResult) {
-                    console.log('authResult', authResult);
-                    console.log('this', this);
-
                     if (authResult && !authResult.error) {
                         // Access token has been successfully retrieved
                         // Store authorized scopes to check against for new requests
@@ -769,7 +766,7 @@ any apps you're building. See the Google Developers Console
                         }
 
                         // Trigger the google-signin-offline event when offline access code is present
-                        if (self.offline && authResult.code) {
+                        if (this.offline && authResult.code) {
                             this.fire('google-signin-offline', {code: authResult.code});
                         }
 
