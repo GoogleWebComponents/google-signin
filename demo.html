@@ -67,72 +67,38 @@
     <p>A `google-signin` element looks like this:</p>
 
     <h2>Standard button with `profile` scope:</h2>
-    <google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
 
-    <div>Status:</div>
-    <div id="status">Not logged in.</div>
+    <h2>Wide tall button with `email` scope:</h2>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="email" width="wide" height="tall"></google-signin></p>
 
-    <!-- Just for demonstration purposes -->
-    <template id="profile" bind="{{ profile }}">
-    <div class="card">
-        <h1><strong>{{displayName}}</strong></h1>
-        <h2>Is currently signed-in</h2>
-        <div class="map">
-          <p>
-              <strong>Gender</strong> {{gender}}
-          </p>
-          <p>
-              <strong>Skills</strong> {{skills}}
-          </p>
-          <p>
-              <strong>Avatar</strong>
-              <p>
-                  <img src="{{image.url}}" />
-              </p>
-          </p>
-          <p>
-              <strong>G+ URL</strong> <a href="{{url}}">{{url}}</a>
-          </p>
-        </div>
-    </div>
-    </template>
+    <h2>Short light themed button with `email` and `plus.profile.emails.read` scope:</h2>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.profile.emails.read email" theme="light" width="standard" height="short"></google-signin></p>
 
-    <script>
-    document.addEventListener("google-signin-success", function(e) {
-        // Access the GAPI instance passed back from authorization
-        var gapi = e.detail.gapi;
+    <h2>Tall light themed icon only button with `plus.login` scope:</h2>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="tall"></google-signin></p>
 
-        // Load V1 of the G+ API
-        gapi.client.load('plus', 'v1', function() {
-            // To retreive profile information for a user, use the
-            // people.get API method. For profile info for the currently
-            // authorized user, use the userId value of me.
-            var request = gapi.client.plus.people.get({
-                'userId': 'me'
-            });
+    <!-- Demo the ability to use the google-signin-aware element. -->
+    <polymer-element name="sample-aware">
+      <template>
+        <google-signin-aware
+            scopes="https://www.googleapis.com/auth/calendar.readonly"
+            on-google-signin-aware-success="{{signIn}}"></google-signin-aware>
 
-            request.execute(function(resp) {
-                // Some useful profile information is now available
-                // via the returned object (resp). For example, we
-                // can discover the displayName, skills and so on.
-                console.log(resp);
+        <p>Testing <code>google-signin-aware</code>: {{status}}</p>
+      </template>
 
-                // This data can then be rendered into a template:
-                var t = document.querySelector("#profile");
-                t.model = {};
-                t.model.profile = resp;
-            });
+      <script>
+        Polymer('sample-aware', {
+          status: 'Not granted',
+          signIn: function(response) {
+            this.status = 'Signin granted';
+            console.log('Signin Response', response);
+          }
         });
-        document.querySelector("#status").innerHTML = "You are now signed in.";
-    });
+      </script>
+    </polymer-element>
 
-    document.addEventListener("google-signed-out", function() {
-        document.querySelector("#status").innerHTML = "You are now signed out.";
-    });
-
-    document.addEventListener("google-signout-attempted", function() {
-        document.querySelector("#status").innerHTML = "You attempted to sign out.";
-    });
-    </script>
+    <sample-aware></sample-aware>
 </body>
 </html>
