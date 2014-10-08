@@ -566,6 +566,11 @@ any apps you're building. See the Google Developers Console
                 },
 
                 authRequest: function (e, authScopes, sender) {
+                    // Only want the default handler to add the new scope for now.
+                    if (this !== defaultHandler) {
+                        return;
+                    }
+
                     var i;
                     var currentScopes = this.scopes.split(' ');
                     var extraScopes;
