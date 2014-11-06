@@ -4,6 +4,7 @@
 <link rel="import" href="../google-apis/google-apis.html">
 <link rel="import" href="../paper-focusable/paper-focusable.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../core-icons/core-icons.html">
 
 <!--
 Copyright (c) 2014 Google Inc. All rights reserved.
@@ -97,6 +98,9 @@ any apps you're building. See the Google Developers Console
                 height: 35px;
                 background-size: 22px 22px;
             }
+            .icon svg {
+                fill: #fff;
+            }
             .buttonText {
                 display: inline-block;
                 vertical-align: middle;
@@ -136,7 +140,6 @@ any apps you're building. See the Google Developers Console
                 border: 1px solid transparent;
             }
             .theme-dark .icon {
-                background-image: url('assets/gplus-logo.svg');
                 border-right: #a42613 1px solid;
             }
             .theme-dark.signOut {
@@ -168,8 +171,10 @@ any apps you're building. See the Google Developers Console
                 border: 1px solid #d9d9d9;
             }
             .theme-light .icon {
-                background-image: url('assets/gplus-logo-red.svg');
                 border-right: #d9d9d9 1px solid;
+            }
+            .theme-light .icon svg {
+                fill: #dd4b39;
             }
             .theme-light.signOut {
                 background: #999;
@@ -180,7 +185,6 @@ any apps you're building. See the Google Developers Console
                 background: #aaa;
             }
             .theme-light.signOut .icon {
-                background-image: url('assets/gplus-logo.svg');
                 border-right: #888 1px solid;
             }
             .theme-light #ripple {
@@ -212,7 +216,11 @@ any apps you're building. See the Google Developers Console
             .height-tall .icon {
                 width: 46px;
                 height: 46px;
-                background-size: 30px 30px;
+            }
+            .height-tall .icon svg {
+                width: 30px;
+                height: 30px;
+                margin: 6px 8px;
             }
 
             /* Short Height */
@@ -223,7 +231,12 @@ any apps you're building. See the Google Developers Console
             .height-short .icon {
                 width: 22px;
                 height: 22px;
-                background-size: 16px 16px;
+            }
+
+            .height-short .icon svg {
+                width: 16px;
+                height: 16px;
+                margin: 3px;
             }
         </style>
         <google-client-api></google-client-api>
@@ -234,7 +247,7 @@ any apps you're building. See the Google Developers Console
             <template if="{{ !signedIn }}">
                 <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
                         on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-                    <span class="icon"></span>
+                    <core-icon icon="google-plus" class="icon"></core-icon>
                     <span class="buttonText">{{labelSignin}}</span>
                 </div>
             </template>
