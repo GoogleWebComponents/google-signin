@@ -1,9 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../font-roboto/roboto.html">
+<link rel="import" href="../core-icon/core-icon.html">
+<link rel="import" href="../core-icons/core-icons.html">
 <link rel="import" href="../core-signals/core-signals.html">
 <link rel="import" href="../google-apis/google-apis.html">
 <link rel="import" href="../paper-focusable/paper-focusable.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="google-icons.html">
 
 <!--
 Copyright (c) 2014 Google Inc. All rights reserved.
@@ -88,14 +91,14 @@ any apps you're building. See the Google Developers Console
                 cursor: pointer;
                 box-shadow: 0 1px 0 rgba(0,0,0,0.10);
             }
+            core-icon {
+                width: 22px;
+                height: 22px;
+                margin: 6px;
+            }
             .icon {
-                background: transparent no-repeat;
-                background-position: 50% 50%;
                 display: inline-block;
                 vertical-align: middle;
-                width: 35px;
-                height: 35px;
-                background-size: 22px 22px;
             }
             .buttonText {
                 display: inline-block;
@@ -136,7 +139,6 @@ any apps you're building. See the Google Developers Console
                 border: 1px solid transparent;
             }
             .theme-dark .icon {
-                background-image: url('assets/gplus-logo.svg');
                 border-right: #a42613 1px solid;
             }
             .theme-dark.signOut {
@@ -168,7 +170,6 @@ any apps you're building. See the Google Developers Console
                 border: 1px solid #d9d9d9;
             }
             .theme-light .icon {
-                background-image: url('assets/gplus-logo-red.svg');
                 border-right: #d9d9d9 1px solid;
             }
             .theme-light.signOut {
@@ -180,7 +181,6 @@ any apps you're building. See the Google Developers Console
                 background: #aaa;
             }
             .theme-light.signOut .icon {
-                background-image: url('assets/gplus-logo.svg');
                 border-right: #888 1px solid;
             }
             .theme-light #ripple {
@@ -209,10 +209,10 @@ any apps you're building. See the Google Developers Console
                 font-weight: 700;
             }
 
-            .height-tall .icon {
-                width: 46px;
-                height: 46px;
-                background-size: 30px 30px;
+            .height-tall core-icon {
+                width: 30px;
+                height: 30px;
+                margin: 8px;
             }
 
             /* Short Height */
@@ -220,10 +220,10 @@ any apps you're building. See the Google Developers Console
                 font-size: 11px;
             }
 
-            .height-short .icon {
-                width: 22px;
-                height: 22px;
-                background-size: 16px 16px;
+            .height-short core-icon {
+                width: 16px;
+                height: 16px;
+                margin: 3px;
             }
         </style>
         <google-client-api></google-client-api>
@@ -234,21 +234,21 @@ any apps you're building. See the Google Developers Console
             <template if="{{ !signedIn }}">
                 <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
                         on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-                    <span class="icon"></span>
+                    <span class="icon"><core-icon icon="google:google-plus"></core-icon></span>
                     <span class="buttonText">{{labelSignin}}</span>
                 </div>
             </template>
             <template if="{{ signedIn && !additionalAuth }}">
                 <div class="btn signOut height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
                     on-click="{{signOut}}" on-keydown="{{signOutKeyPress}}">
-                    <span class="icon"></span>
+                    <span class="icon"><core-icon icon="google:google-plus"></core-icon></span>
                     <span class="buttonText">{{labelSignout}}</span>
                 </div>
             </template>
             <template if="{{ signedIn && additionalAuth }}">
                 <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
                         on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-                    <span class="icon"></span>
+                    <span class="icon"><core-icon icon="google:google-plus"></core-icon></span>
                     <span class="buttonText">{{labelAdditional}}</span>
                 </div>
             </template>
