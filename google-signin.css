@@ -76,16 +76,16 @@ core-icon {
    border-right: 1px solid #a42613;
 }
 
-.theme-dark.signedIn-true {
+.theme-dark.signedIn-true.additionalAuth-false {
   background: #999;
 }
 
-.theme-dark .signOut:hover,
-.theme-dark .signOut:focus {
+.theme-dark.signedIn-true.additionalAuth-false:hover,
+.theme-dark.signedIn-true.additionalAuth-false:focus {
   background: #aaa;
 }
 
-.theme-dark .signOut .icon {
+.theme-dark.signedIn-true.additionalAuth-false .icon {
   border-right: 1px solid #888;
 }
 
@@ -94,8 +94,8 @@ core-icon {
   background: #e74b37;
 }
 
-:host([noink]) .theme-dark.signedIn-true:hover,
-:host([noink]) .theme-dark.signedIn-true:focus {
+:host([noink]) .theme-dark.signedIn-true.additionalAuth-false:hover,
+:host([noink]) .theme-dark.signedIn-true.additionalAuth-false:focus {
   background: #aaa;
 }
 
@@ -111,17 +111,17 @@ core-icon {
 .theme-light .icon {
     border-right: #d9d9d9 1px solid;
 }
-.theme-light.signedIn-true {
+.theme-light.signedIn-true.additionalAuth-false {
     background: #999;
     color: #fff;
 }
 
-.theme-light.signedIn-true:hover,
-.theme-light.signedIn-true:focus {
+.theme-light.signedIn-true.additionalAuth-false:hover,
+.theme-light.signedIn-true.additionalAuth-false:focus {
     background: #aaa;
 }
 
-.theme-light.signOut .icon {
+.theme-light.signedIn-true.additionalAuth-false .icon {
     border-right: #888 1px solid;
 }
 
@@ -130,8 +130,8 @@ core-icon {
   border: 1px solid #c0c0c0;
 }
 
-:host([noink]) .theme-light.signedIn-true:hover,
-:host([noink]) .theme-light.signedIn-true:focus {
+:host([noink]) .theme-light.signedIn-true.additionalAuth-false:hover,
+:host([noink]) .theme-light.signedIn-true.additionalAuth-false:focus {
   background: #aaa;
 }
 
