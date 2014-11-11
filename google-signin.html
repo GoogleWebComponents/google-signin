@@ -84,7 +84,8 @@ any apps you're building. See the Google Developers Console
 
     <google-client-api></google-client-api>
     <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
-    <core-signals on-core-signal-google-auth-result="{{authResult}}"></core-signals>
+    <core-signals on-core-signal-google-auth-user="{{authUserChange}}"></core-signals>
+    <core-signals on-core-signal-google-auth-scopes="{{authScopesChange}}"></core-signals>
 
     <template if="{{raised}}">
       <paper-shadow id="shadow" fit animated></paper-shadow>
@@ -201,30 +202,8 @@ any apps you're building. See the Google Developers Console
        * @event google-signed-out
        */
 
-      /**
-       * Called when the authentication result is complete.
-       *
-       * @param {Object} authResult Authorization result.
-       */
-      function handleAuthResult(authResult) {
-        // Use the default handler for the immediate authentication.
-        if (defaultHandler) {
-          defaultHandler.fire('core-signal', {
-            'name': 'google-auth-result',
-            'data': {
-              'result': authResult,
-              'isGlobal': true
-            }
-          });
-        }
-      }
-
       Polymer({
         attached: function () {
-          if (this.clientId === '') {
-            throw "A valid clientId is required to use this element";
-          }
-
           // If no label supplied use the width to determine label.
           if (this.labelSignin === '') {
             if (this.width == WidthValue.WIDE) {
@@ -234,46 +213,57 @@ any apps you're building. See the Google Developers Console
             }
           }
 
-          // Bind the defaultHandler to the first attached signin button.
+          if (this.clientId === '') {
+            throw "A valid clientId is required to use this element";
+          }
+
           if (defaultHandler === null) {
+            // Bind the defaultHandler to the first attached signin button.
             defaultHandler = this;
 
-            // For page-level configuration the callback has to be in global namespace
-            window.handleAuthResult = handleAuthResult;
+            gapi.load('auth2', function() {
+              auth = gapi.auth2.init({
+                'client_id': defaultHandler.clientId,
+                'cookie_policy': defaultHandler.cookiePolicy,
+                'scope': defaultHandler.scopes
+              });
 
-            var meta = document.createElement('meta');
-            meta.setAttribute('name', 'google-signin-clientid');
-            meta.setAttribute('content', this.clientId);
-            document.head.appendChild(meta);
+              // Listen for changes to the primary user.
+              auth.currentUser.listen(function(newPrimary) {
+                if(newPrimary == null) {
+                  // TODO What do to with no primary user? Logged out?
+                  return;
+                }
 
-            meta = document.createElement('meta');
-            meta.setAttribute('name', 'google-signin-scope');
-            meta.setAttribute('content', this.scopes);
-            document.head.appendChild(meta);
+                // Reset the authorized scopes and update with current user scopes.
+                authorizedScopes = [];
 
-            meta = document.createElement('meta');
-            meta.setAttribute('name', 'google-signin-cookiepolicy');
-            meta.setAttribute('content', this.cookiePolicy);
-            document.head.appendChild(meta);
+                if(!!newPrimary.getAuthResponse()) { // TODO switch to use isSignedIn().
+                  // Store authorized scopes to check against for granted scopes.
+                  var tmpScopes = newPrimary.authResponse_.scope.split(' ');
+                  for (var i = 0; i < tmpScopes.length; i++) {
+                    if (tmpScopes[i] !== "") {
+                      authorizedScopes.push(tmpScopes[i].toLowerCase());
+                    }
+                  }
+                }
 
-            meta = document.createElement('meta');
-            meta.setAttribute('name', 'google-signin-callback');
-            meta.setAttribute('content', 'handleAuthResult');
-            document.head.appendChild(meta);
-
-            if (this.requestVisibleActions) {
-              meta = document.createElement('meta');
-              meta.setAttribute('name', 'google-signin-requestvisibleactions');
-              meta.setAttribute('content', this.requestVisibleActions);
-              document.head.appendChild(meta);
-            }
+                // Signal all buttons to update their state based on the user.
+                defaultHandler.fire('core-signal', {
+                  'name': 'google-auth-user',
+                  'data': {
+                    'user': newPrimary
+                  }
+                });
+              });
+            });
           }
         },
 
         authRequest: function (e, authScopes, sender) {
           // Only want the default handler to add the new scope for now.
           if (this !== defaultHandler) {
-            return;
+              return;
           }
 
           var i;
@@ -300,14 +290,12 @@ any apps you're building. See the Google Developers Console
               }
             }
           }
+
           if (extraScopes) {
             // Update the scopes if new scopes were added.
             this.scopes = currentScopes.join(' ');
-
-            if (flowComplete) {
-              this.additionalAuth = true;
-              this.fire('google-signin-necessary');
-            }
+            this.additionalAuth = true;
+            this.fire('google-signin-necessary');
           } else {
             this.fire('core-signal', {
               'name': 'google-auth-success',
@@ -317,120 +305,20 @@ any apps you're building. See the Google Developers Console
         },
 
         /**
-         * Handles processing the authorization result from a signin attempt.
-         *
-         * @param {Object} authResult Authorization result.
+         * Handles a change to the authenticated user.
          */
-        authResult: function(e, response, sender) {
-          var result = response.result;
+        authUserChange: function(e, result) {
+          this.signedIn = !!result.user.getAuthResponse();
 
-          if (result && !result.error) {
-              // Access token has been successfully retrieved
-              // Store authorized scopes to check against for new requests
-              authorizedScopes = [];
-              var tmpScopes = result.scope.split(' ');
-              for (var i = 0; i < tmpScopes.length; i++) {
-                  if (tmpScopes[i] !== "") {
-                      authorizedScopes.push(tmpScopes[i].toLowerCase());
+          if(this.signedIn) {
+            this.checkScopes();
 
-                      // Handle scopes that will be deprecated but are still returned with their old value
-                      if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
-                          authorizedScopes.push('profile');
-                      } else if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
-                          authorizedScopes.push('email');
-                      }
-                  }
-              }
-
-              // Trigger the google-signin-offline event when offline access code is present
-              if (this.offline && result.code) {
-                  this.fire('google-signin-offline', {'code': result.code});
-              }
-
-              // Trigger the google-signin-success event
-              this.fire('google-signin-success', {'result': result, 'gapi': gapi});
-
-              // Only let the global defaultHandler trigger result signals to prevent fanning.
-              if (this === defaultHandler && response.isGlobal) {
-                  // Trigger the google-auth-success core-signal for elements that depend on this
-                  this.fire('core-signal', {
-                      name: 'google-auth-success',
-                      data: {'result': result, 'scopes': authorizedScopes}
-                  });
-              }
-
-              this.signedIn = true;
-
-              this.checkScopes();
-          } else if (result && result.error == "access_denied") {
-            // Access is denied when cancelling the consent.
-            // This doesn't change already authorized scopes.
-            var currentScopes = this.scopes.split(' ');
-            var tmpScopes = result.scope.split(' ');
-            var deniedScopes = false;
-
-            // Remove the already authorizeds scopes from the result.
-            for (var i = 0; i < authorizedScopes.length; i++) {
-              for (var j = tmpScopes.length - 1; j >= 0; j--) {
-                if (authorizedScopes[i] == tmpScopes[j]) {
-                  tmpScopes.splice(j, 1);
-                }
-              }
-            }
-
-            // Need to determine if it affects the current button's scopes.
-            for (var i = 0; i < currentScopes.length; i++) {
-              for (var j = 0; j < tmpScopes.length; j++) {
-                if (currentScopes[i] == tmpScopes[j]) {
-                  // Has been denied if any of the scopes match.
-                  deniedScopes = true;
-                  break;
-                }
-              }
-
-              if (deniedScopes) {
-                break;
-              }
-            }
-
-            if (deniedScopes) {
-                // Still needs additional authorization.
-                this.additionalAuth = true;
-            }
+            // Trigger the google-signin-success event
+            this.fire('google-signin-success', { 'user': result.user, 'gapi': gapi });
           } else {
-            if (result && result.error == "user_signed_out") {
-              // Fire event to indicate user signed out
-              this.fire('google-signed-out', {'result': result});
-
-              // Only let the global defaultHandler trigger result signals to prevent fanning.
-              if (this === defaultHandler && response.isGlobal) {
-                // Trigger the google-auth-signed-out core-signal for elements that depend on this
-                this.fire('core-signal', {
-                  'name': 'google-auth-signed-out',
-                  'data': {'result': result}
-                });
-              }
-            } else {
-              // Fire event to indicate sign-in was not successful
-              this.fire('google-signin-failure', {'result': result});
-
-              // Only let the global defaultHandler trigger result signals to prevent fanning.
-              if (this === defaultHandler && response.isGlobal) {
-                // Trigger the google-auth-failure core-signal for elements that depend on this
-                this.fire('core-signal', {
-                  'name': 'google-auth-failure',
-                  'data': {'result': result}
-                });
-              }
-            }
-
-            authorizedScopes = [];
-
-            // No access token could be retrieved, show the button to start the authorization flow.
-            this.signedIn = false;
+            // Fire event to indicate user signed out
+            this.fire('google-signed-out', { 'user': result.user });
           }
-
-          flowComplete = true;
         },
 
         /**
@@ -592,38 +480,11 @@ any apps you're building. See the Google Developers Console
         },
 
         signIn: function () {
-          var handler = this;
-          var params = {
-            'clientid': handler.clientId,
-            'cookiepolicy': handler.cookiePolicy,
-            'scope': handler.scopes,
-            'requestvisibleactions': handler.requestVisibleActions,
-            'callback': function(result) {
-              handler.fire('core-signal', {
-                'name': 'google-auth-result',
-                'data': {
-                  'result': result,
-                  'isGlobal': false
-                }
-              });
-            }
-          };
-
-          if (handler.offline) {
-            params.accesstype = 'offline';
-            params.redirecturi = 'postmessage';
-          }
-
-          // Proxy specific attributes through to the signIn.
-          Object.keys(ProxyLoginAttributes).forEach(function(key) {
-            if (handler[key] && handler[key] !== '') {
-              params[ProxyLoginAttributes[key]] = handler[key];
-            }
+          auth.signIn(this.scopes.split(' ')).then(function(newUser) {
+              // Let the current user listener trigger the changes.
+          }, function(error) {
+              console.error(error);
           });
-
-          flowComplete = false;
-
-          gapi.auth.signIn(params);
         },
 
         signedIn: false,
@@ -636,9 +497,18 @@ any apps you're building. See the Google Developers Console
         },
 
         signOut: function () {
-          flowComplete = false;
           this.fire('google-signout-attempted');
-          gapi.auth.signOut();
+          auth.signOut().then(function() {
+            // TODO: Remove when the signout triggers the primary listener.
+            defaultHandler.fire('core-signal', {
+              'name': 'google-auth-user',
+              'data': {
+                'user': auth.primary.value
+              }
+            });
+          }, function(error) {
+            console.error(error);
+          });
         },
 
         signOutKeyPress: function (e) {
