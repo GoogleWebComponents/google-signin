@@ -8,7 +8,7 @@
     "Addy Osmani",
     "Randy Merrill"
   ],
-  "license": "Apache2",
+  "license": "Apache-2",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -22,7 +22,8 @@
     "web-components",
     "polymer",
     "sign-in",
-    "google"
+    "google",
+    "authentication"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#~0.5.1",
