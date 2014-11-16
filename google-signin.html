@@ -121,7 +121,7 @@ any apps you're building. See the Google Developers Console
   </template>
 
   <script>
-    (function() {
+    (function () {
       var authorizedScopes = [];
       var defaultHandler = null;
       var flowComplete = null;
@@ -222,7 +222,7 @@ any apps you're building. See the Google Developers Console
       Polymer({
         attached: function () {
           if (this.clientId === '') {
-            throw "A valid clientId is required to use this element";
+            throw 'A valid clientId is required to use this element';
           }
 
           // If no label supplied use the width to determine label.
@@ -321,7 +321,7 @@ any apps you're building. See the Google Developers Console
          *
          * @param {Object} authResult Authorization result.
          */
-        authResult: function(e, response, sender) {
+        authResult: function (e, response, sender) {
           var result = response.result;
 
           if (result && !result.error) {
@@ -439,7 +439,7 @@ any apps you're building. See the Google Developers Console
          *
          * @param {Array} scopes Scopes being requested.
          */
-        checkScopes: function() {
+        checkScopes: function () {
           var currentScopes = this.scopes.split(' ');
           this.additionalAuth = false;
 
@@ -688,7 +688,7 @@ when a user explicitly signs out via the google-signin element.
       <core-signals on-core-signal-google-auth-signed-out="{{signedOut}}"></core-signals>
   </template>
   <script>
-    (function() {
+    (function () {
       var loader = null;
 
       Polymer({
@@ -702,7 +702,7 @@ when a user explicitly signs out via the google-signin element.
          */
         scopes: '',
 
-        domReady: function() {
+        domReady: function () {
           this.fire('core-signal', {
             'name': 'google-auth-request',
             'data': this.scopes
