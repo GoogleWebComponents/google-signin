@@ -83,7 +83,7 @@ any apps you're building. See the Google Developers Console
     <link rel="stylesheet" href="google-signin.css" >
 
     <google-client-api></google-client-api>
-    <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
+    <core-signals on-core-signal-google-auth-request="{{authRequestScopes}}"></core-signals>
     <core-signals on-core-signal-google-auth-user="{{authUserChange}}"></core-signals>
     <core-signals on-core-signal-google-auth-scopes="{{authScopesChange}}"></core-signals>
 
@@ -123,7 +123,9 @@ any apps you're building. See the Google Developers Console
 
   <script>
     (function() {
+      var auth;
       var authorizedScopes = [];
+      var extraScopes = [];
       var defaultHandler = null;
       var flowComplete = null;
 
@@ -179,6 +181,30 @@ any apps you're building. See the Google Developers Console
         ICON_ONLY: 'iconOnly',
         STANDARD: 'standard',
         WIDE: 'wide'
+      };
+
+      /**
+       * Adds any ungranted, unique scopes to the provided authScopes.
+       *
+       * @param {String} authScopes Scopes being requested.
+       */
+      var mergeExtraScopes = function(authScopes) {
+        if(!extraScopes.length) {
+          return authScopes;
+        }
+
+        var scopes = authScopes.split(' ');
+
+        // Check if there are any unauthorized scopes to add to the scope list.
+        for (var i = 0; i < extraScopes.length; i++) {
+          var currentScope = extraScopes[i].toLowerCase();
+          if (authorizedScopes.indexOf(currentScope) < 0
+              && scopes.indexOf(currentScope) < 0) {
+            scopes.push(currentScope);
+          }
+        }
+
+        return scopes.join(' ');
       };
 
       /**
@@ -238,7 +264,7 @@ any apps you're building. See the Google Developers Console
                 // Reset the authorized scopes and update with current user scopes.
                 authorizedScopes = [];
 
-                if(!!newPrimary.getAuthResponse()) { // TODO switch to use isSignedIn().
+                if(newPrimary.isSignedIn()) {
                   // Store authorized scopes to check against for granted scopes.
                   var tmpScopes = newPrimary.authResponse_.scope.split(' ');
                   for (var i = 0; i < tmpScopes.length; i++) {
@@ -260,47 +286,26 @@ any apps you're building. See the Google Developers Console
           }
         },
 
-        authRequest: function (e, authScopes, sender) {
+        /**
+         * Adds additional extra scopes to be used when signing in.
+         *
+         * @param {Object} e Event triggering the request.
+         * @param {Array} authScopes Scopes being requested.
+         */
+        authRequestScopes: function (e, authScopes) {
           // Only want the default handler to add the new scope for now.
           if (this !== defaultHandler) {
               return;
           }
 
-          var i;
-          var currentScopes = this.scopes.split(' ');
-          var extraScopes;
-          var newScope;
-          var newScopes
-          if (authScopes) {
-            // Check if any new scopes need to be authorized
-            extraScopes = false;
-            newScopes = authScopes.split(" ");
-            for (i = 0; i < newScopes.length; i++) {
-              if (newScopes[i] !== "") {
-                newScope = newScopes[i].toLowerCase();
+          for (var i = 0; i < authScopes.length; i++) {
+            if (authScopes[i] !== "") {
+              authScopes[i] = authScopes[i].toLowerCase();
 
-                if (authorizedScopes.indexOf(newScope) < 0) {
-                  extraScopes = true;
-
-                  // Add extra scopes to the button so that they are included in the next auth.
-                  if (currentScopes.indexOf(newScope) < 0) {
-                    currentScopes.push(newScope);
-                  }
-                }
+              if (extraScopes.indexOf(authScopes[i]) < 0) {
+                  extraScopes.push(authScopes[i]);
               }
             }
-          }
-
-          if (extraScopes) {
-            // Update the scopes if new scopes were added.
-            this.scopes = currentScopes.join(' ');
-            this.additionalAuth = true;
-            this.fire('google-signin-necessary');
-          } else {
-            this.fire('core-signal', {
-              'name': 'google-auth-success',
-              'data': {'result': gapi.auth.getToken(), 'scopes': authorizedScopes}
-            });
           }
         },
 
@@ -480,7 +485,7 @@ any apps you're building. See the Google Developers Console
         },
 
         signIn: function () {
-          auth.signIn(this.scopes.split(' ')).then(function(newUser) {
+          auth.signIn(mergeExtraScopes(this.scopes)).then(function(newUser) {
               // Let the current user listener trigger the changes.
           }, function(error) {
               console.error(error);
@@ -503,7 +508,7 @@ any apps you're building. See the Google Developers Console
             defaultHandler.fire('core-signal', {
               'name': 'google-auth-user',
               'data': {
-                'user': auth.primary.value
+                'user': auth.currentUser.get()
               }
             });
           }, function(error) {
@@ -532,13 +537,7 @@ The `scopes` attribute allows you to specify which scope permissions are require
 (e.g do you want to allow interaction with the Google Drive API).
 
 The `google-signin-aware-success` event is triggered when a user successfully
-authenticates. The event will also provide the data returned by the Google client
-authentication process.
-
-The `google-signin-aware-success` event is triggered when a user successfully
-authenticates and `google-signin-aware-failure` is triggered when this is not
-he case. Both events will also provide the data returned by the Google client
-authentication process. The `google-signin-aware-signed-out` event is triggered
+authenticates. The `google-signin-aware-signed-out` event is triggered
 when a user explicitely signs out via the google-signin element.
 
 ##### Example
@@ -553,8 +552,7 @@ when a user explicitely signs out via the google-signin element.
 
 <polymer-element name="google-signin-aware" attributes="scopes">
   <template>
-      <core-signals on-core-signal-google-auth-success="{{authSuccess}}"></core-signals>
-      <core-signals on-core-signal-google-auth-failure="{{authFailure}}"></core-signals>
+    <core-signals on-core-signal-google-auth-user="{{authUserChange}}"></core-signals>
       <core-signals on-core-signal-google-auth-signed-out="{{signedOut}}"></core-signals>
   </template>
   <script>
@@ -575,34 +573,37 @@ when a user explicitely signs out via the google-signin element.
         domReady: function() {
           this.fire('core-signal', {
             'name': 'google-auth-request',
-            'data': this.scopes
+            'data': this.scopes.split(' ')
           });
         },
 
-        authSuccess: function (e, response) {
-          // Check if correct scopes authorized, if not do nothing and continue to wait
-          var complete = false;
-          if (response && response.scopes) {
+        /**
+         * Handles a change to the authenticated user.
+         */
+        authUserChange: function(e, result) {
+          this.signedIn = !!result.user.getAuthResponse();
+
+          if(this.signedIn) {
+            // Check if correct scopes authorized, if not do nothing and continue to wait.
+            var complete = true;
+            var authResult = result.user.getAuthResponse();
+            var tmpScopes = authResult.scope.split(' ');
             var scopes = this.scopes.split(' ');
-            complete = true;
+
             for (var i = 0; i < scopes.length; i++) {
-              if (scopes[i] !== '' && response.scopes.indexOf(scopes[i].toLowerCase()) < 0) {
+              if (scopes[i] !== '' && tmpScopes.indexOf(scopes[i].toLowerCase()) < 0) {
                 complete = false;
                 break;
               }
             }
-          }
-          if (complete) {
-            this.fire('google-signin-aware-success', response);
-          }
-        },
 
-        authFailure: function (e, detail) {
-          this.fire('google-signin-aware-failure', detail);
-        },
-
-        signedOut: function (e, detail) {
-          this.fire('google-signin-aware-signed-out', detail);
+            if (complete) {
+              this.fire('google-signin-aware-success', result);
+            }
+          } else {
+            // Fire event to indicate user signed out.
+            this.fire('google-signin-aware-signed-out', { 'user': result.user });
+          }
         }
       });
     })();
