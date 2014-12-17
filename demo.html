@@ -43,8 +43,9 @@
       }
 
       h1 {
-        font-size:2rem;
+        font-size: 2rem;
         font-weight:200;
+        clear: both;
       }
 
       h1 strong {
@@ -57,48 +58,84 @@
         line-height:2.5;
         color:gray;
         font-weight:400;
+        clear: both;
+      }
+
+      .showcase {
+        display: inline-block;
+        margin-right: 2rem;
+        float: left;
       }
     </style>
 
 </head>
 
 <body unresolved>
+  <p>A `google-signin` element looks like this:</p>
 
-    <p>A `google-signin` element looks like this:</p>
+  <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
 
-    <h2>Standard button with `profile` scope:</h2>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
+  <h1>Styling</h1>
 
-    <h2>Wide tall button with `email` scope:</h2>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="email" width="wide" height="tall"></google-signin></p>
+  <p>The sign in element can be styled by using using a combination of the <code>width</code>, <code>height</code>, and <code>theme</code> attributes</p>
 
-    <h2>Short light themed button with `email` and `plus.profile.emails.read` scope:</h2>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.profile.emails.read email" theme="light" width="standard" height="short"></google-signin></p>
+  <div class="showcase">
+    <h2>Width</h2>
 
-    <h2>Tall light themed icon only button with `plus.login` scope:</h2>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="tall"></google-signin></p>
+    <p>Wide:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="wide"></google-signin></p>
+    <p>Standard:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="standard"></google-signin></p>
+    <p>Icon Only:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="iconOnly"></google-signin></p>
+  </div>
 
-    <!-- Demo the ability to use the google-signin-aware element. -->
-    <polymer-element name="sample-aware">
-      <template>
-        <google-signin-aware
-            scopes="https://www.googleapis.com/auth/calendar.readonly"
-            on-google-signin-aware-success="{{signIn}}"></google-signin-aware>
+  <div class="showcase">
+    <h2>Height</h2>
 
-        <p>Testing <code>google-signin-aware</code>: {{status}}</p>
-      </template>
+    <p>Tall:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="tall"></google-signin></p>
+    <p>Standard:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="standard"></google-signin></p>
+    <p>Short:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="short"></google-signin></p>
+  </div>
 
-      <script>
-        Polymer('sample-aware', {
-          status: 'Not granted',
-          signIn: function(response) {
-            this.status = 'Signin granted';
-            console.log('Signin Response', response);
-          }
-        });
-      </script>
-    </polymer-element>
+  <div class="showcase">
+    <h2>Theme</h2>
 
-    <sample-aware></sample-aware>
+    <p>Dark:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark"></google-signin></p>
+    <p>Light:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light"></google-signin></p>
+  </div>
+
+  <!-- Demo the ability to use the google-signin-aware element. -->
+  <h2>google-signin-aware</h2>
+
+  <p>The <code>google-signin-aware</code> element can be used within other elements to request additional scopes.</p>
+
+  <!-- Demo the ability to use the google-signin-aware element. -->
+  <polymer-element name="sample-aware">
+    <template>
+      <google-signin-aware
+          scopes="https://www.googleapis.com/auth/calendar.readonly"
+          on-google-signin-aware-success="{{signIn}}"></google-signin-aware>
+
+      <p>Testing <code>google-signin-aware</code>: {{status}}</p>
+    </template>
+
+    <script>
+      Polymer('sample-aware', {
+        status: 'Not granted',
+        signIn: function(response) {
+          this.status = 'Signin granted';
+          console.log('Signin Response', response);
+        }
+      });
+    </script>
+  </polymer-element>
+
+  <sample-aware></sample-aware>
 </body>
 </html>
