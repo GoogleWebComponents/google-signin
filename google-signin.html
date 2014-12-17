@@ -270,6 +270,13 @@ any apps you're building. See the Google Developers Console
                   for (var i = 0; i < tmpScopes.length; i++) {
                     if (tmpScopes[i] !== "") {
                       authorizedScopes.push(tmpScopes[i].toLowerCase());
+
+                      // Handle scopes that will be deprecated but are still returned with their old value
+                      if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
+                          authorizedScopes.push('profile');
+                      } else if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
+                          authorizedScopes.push('email');
+                      }
                     }
                   }
                 }
@@ -313,7 +320,7 @@ any apps you're building. See the Google Developers Console
          * Handles a change to the authenticated user.
          */
         authUserChange: function(e, result) {
-          this.signedIn = !!result.user.getAuthResponse();
+          this.signedIn = result.user.isSignedIn();
 
           if(this.signedIn) {
             this.checkScopes();
@@ -485,7 +492,10 @@ any apps you're building. See the Google Developers Console
         },
 
         signIn: function () {
-          auth.signIn(mergeExtraScopes(this.scopes)).then(function(newUser) {
+          var options = new gapi.auth2.SigninOptionsBuilder();
+          options.setScope(mergeExtraScopes(this.scopes));
+
+          auth.signIn(options).then(function(newUser) {
               // Let the current user listener trigger the changes.
           }, function(error) {
               console.error(error);
@@ -581,7 +591,7 @@ when a user explicitely signs out via the google-signin element.
          * Handles a change to the authenticated user.
          */
         authUserChange: function(e, result) {
-          this.signedIn = !!result.user.getAuthResponse();
+          this.signedIn = result.user.isSignedIn();
 
           if(this.signedIn) {
             // Check if correct scopes authorized, if not do nothing and continue to wait.
