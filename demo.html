@@ -8,6 +8,7 @@
 
     <script src="../webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="google-signin.html">
+    <link rel="import" href="google-signin-aware.html">
 
     <!-- Demo only styles -->
     <style>
@@ -111,7 +112,7 @@
   </div>
 
   <!-- Demo the ability to use the google-signin-aware element. -->
-  <h2>google-signin-aware</h2>
+  <h1>google-signin-aware</h1>
 
   <p>The <code>google-signin-aware</code> element can be used within other elements to request additional scopes.</p>
 
@@ -120,7 +121,8 @@
     <template>
       <google-signin-aware
           scopes="https://www.googleapis.com/auth/calendar.readonly"
-          on-google-signin-aware-success="{{signIn}}"></google-signin-aware>
+          on-google-signin-aware-success="{{signIn}}"
+          on-google-signin-aware-signed-out="{{signOut}}"></google-signin-aware>
 
       <p>Testing <code>google-signin-aware</code>: {{status}}</p>
     </template>
@@ -130,7 +132,11 @@
         status: 'Not granted',
         signIn: function(response) {
           this.status = 'Signin granted';
-          console.log('Signin Response', response);
+          console.log('[Aware] Signin Response', response);
+        },
+        signOut: function(response) {
+          this.status = 'Signed out';
+          console.log('[Aware] Signout Response', response);
         }
       });
     </script>
