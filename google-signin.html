@@ -82,7 +82,6 @@ any apps you're building. See the Google Developers Console
   <template>
     <link rel="stylesheet" href="google-signin.css" >
 
-    <google-client-api></google-client-api>
     <core-signals on-core-signal-google-auth-request="{{authRequestScopes}}"></core-signals>
     <core-signals on-core-signal-google-auth-user="{{authUserChange}}"></core-signals>
     <core-signals on-core-signal-google-auth-scopes="{{authScopesChange}}"></core-signals>
@@ -265,8 +264,10 @@ any apps you're building. See the Google Developers Console
                 authorizedScopes = [];
 
                 if(newPrimary.isSignedIn()) {
+                  var authResponse = newPrimary.getAuthResponse();
+
                   // Store authorized scopes to check against for granted scopes.
-                  var tmpScopes = newPrimary.authResponse_.scope.split(' ');
+                  var tmpScopes = authResponse.scope.split(' ');
                   for (var i = 0; i < tmpScopes.length; i++) {
                     if (tmpScopes[i] !== "") {
                       authorizedScopes.push(tmpScopes[i].toLowerCase());
