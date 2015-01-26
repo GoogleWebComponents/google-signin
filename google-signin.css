@@ -171,3 +171,159 @@ core-icon {
   height: 16px;
   margin: 3px;
 }
+
+
+/*
+ * Branding
+ */
+
+/* Google Scopes */
+
+/* Dark Theme */
+.brand-google.theme-dark {
+  background: #4184F3;
+  color: #fff;
+  border: 1px solid #3266d5;
+}
+
+.brand-google.theme-dark .icon {
+  border-right: #3266d5 1px solid;
+}
+
+.brand-google.theme-dark.signOut {
+  background: #999;
+}
+
+.brand-google.theme-dark.signOut:hover,
+.brand-google.theme-dark.signOut:focus {
+  background: #aaa;
+}
+
+.brand-google.theme-dark.signOut .icon {
+  border-right: #888 1px solid;
+}
+
+.brand-google.theme-dark #ripple {
+  color: #1b39a8;
+}
+
+:host([noink]) .brand-google.theme-dark:hover,
+:host([noink]) .brand-google.theme-dark:focus {
+  background: #e74b37;
+}
+
+:host([noink]) .brand-google.theme-dark.signOut:hover,
+:host([noink]) .brand-google.theme-dark.signOut:focus {
+  background: #aaa;
+}
+
+.brand-google.theme-light .icon {
+  border-right: 1px solid #d9d9d9;
+  color: #4184F3;
+}
+
+.brand-google.theme-light.signOut {
+  background: #999;
+  color: #fff;
+}
+
+.brand-google.theme-light.signOut:hover,
+.brand-google.theme-light.signOut:focus {
+  background: #aaa;
+}
+
+.brand-google.theme-light.signOut .icon {
+  border-right: #888 1px solid;
+}
+
+.brand-google.theme-light #ripple {
+  color: #d1d1d1;
+}
+
+:host([noink]) .brand-google.theme-light:hover,
+:host([noink]) .brand-google.theme-light:focus {
+  border: 1px solid #c0c0c0;
+}
+
+:host([noink]) .brand-google.theme-light.signOut:hover,
+:host([noink]) .brand-google.theme-light.signOut:focus {
+  background: #aaa;
+}
+
+.brand-google-plus.theme-dark {
+  background: #da4336;
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.brand-google-plus.theme-dark .icon {
+  border-right: #a42613 1px solid;
+}
+
+.brand-google-plus.theme-dark.signOut {
+  background: #999;
+}
+
+.brand-google-plus.theme-dark.signOut:hover,
+.brand-google-plus.theme-dark.signOut:focus {
+  background: #aaa;
+}
+
+.brand-google-plus.theme-dark.signOut .icon {
+  border-right: #888 1px solid;
+}
+
+.brand-google-plus.theme-dark #ripple {
+  color: #c43828;
+}
+
+:host([noink]) .brand-google-plus.theme-dark:hover,
+:host([noink]) .brand-google-plus.theme-dark:focus {
+  background: #e74b37;
+}
+
+:host([noink]) .brand-google-plus.theme-dark.signOut:hover,
+:host([noink]) .brand-google-plus.theme-dark.signOut:focus {
+  background: #aaa;
+}
+
+/* Light Theme */
+.brand-google-plus.theme-light {
+  background: #fff;
+  color: #737373;
+  border: 1px solid #d9d9d9;
+}
+
+.brand-google-plus.theme-light .icon {
+  border-right: 1px solid #d9d9d9;
+  color: #e74b37;
+}
+
+.brand-google-plus.theme-light.signOut {
+  background: #999;
+  color: #fff;
+}
+
+.brand-google-plus.theme-light.signOut:hover,
+.brand-google-plus.theme-light.signOut:focus {
+  background: #aaa;
+}
+
+.brand-google-plus.theme-light.signOut .icon {
+  background-image: url('assets/gplus-logo.svg');
+  border-right: 1px solid #888;
+}
+
+.brand-google-plus.theme-light #ripple {
+  color: #d1d1d1;
+}
+
+:host([noink]) .brand-google-plus.theme-light:hover,
+:host([noink]) .brand-google-plus.theme-light:focus {
+  border: 1px solid #c0c0c0;
+}
+
+:host([noink]) .brand-google-plus.theme-light.signOut:hover,
+:host([noink]) .brand-google-plus.theme-light.signOut:focus {
+  background: #aaa;
+}

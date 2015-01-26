@@ -90,7 +90,7 @@ any apps you're building. See the Google Developers Console
       <paper-shadow id="shadow" fit animated></paper-shadow>
     </template>
 
-    <div id="button" class="height-{{height}} width-{{width}} theme-{{theme}} signedIn-{{signedIn}} additionalAuth-{{additionalAuth}}">
+    <div id="button" class="height-{{height}} width-{{width}} theme-{{theme}} signedIn-{{signedIn}}  brand-{{brand}} additionalAuth-{{additionalAuth}}">
       <paper-ripple id="ripple" fit></paper-ripple>
 
       <!-- this div is needed to position the ripple behind text content -->
@@ -98,21 +98,21 @@ any apps you're building. See the Google Developers Console
         <template if="{{ !signedIn }}">
           <div class="button-content signIn" tabindex="0"
               on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon"><core-icon icon="google:google-plus"></core-icon></span>
+            <span class="icon"><core-icon icon="google:{{brand}}"></core-icon></span>
             <span class="buttonText">{{labelSignin}}</span>
           </div>
         </template>
         <template if="{{ signedIn && !additionalAuth }}">
           <div class="button-content signOut" tabindex="0"
               on-click="{{signOut}}" on-keydown="{{signOutKeyPress}}">
-            <span class="icon"><core-icon icon="google:google-plus"></core-icon></span>
+            <span class="icon"><core-icon icon="google:{{brand}}"></core-icon></span>
             <span class="buttonText">{{labelSignout}}</span>
           </div>
         </template>
         <template if="{{ signedIn && additionalAuth }}">
           <div class="button-content signIn" tabindex="0"
               on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
-            <span class="icon"><core-icon icon="google:google-plus"></core-icon></span>
+            <span class="icon"><core-icon icon="google:{{brand}}"></core-icon></span>
             <span class="buttonText">{{labelAdditional}}</span>
           </div>
         </template>
@@ -127,6 +127,16 @@ any apps you're building. See the Google Developers Console
       var extraScopes = [];
       var defaultHandler = null;
       var flowComplete = null;
+
+      /**
+       * Enum brand values.
+       * @readonly
+       * @enum {string}
+       */
+      var BrandValue = {
+          GOOGLE: 'google',
+          PLUS: 'google-plus'
+      };
 
       /**
        * Enum height values.
@@ -146,7 +156,8 @@ any apps you're building. See the Google Developers Console
        */
       var LabelValue = {
         STANDARD: 'Sign in',
-        WIDE: 'Sign in with Google'
+        WIDE: 'Sign in with Google',
+        WIDE_PLUS: 'Sign in with Google+'
       };
 
       /**
@@ -229,17 +240,16 @@ any apps you're building. See the Google Developers Console
 
       Polymer({
         attached: function () {
-          // If no label supplied use the width to determine label.
-          if (this.labelSignin === '') {
-            if (this.width == WidthValue.WIDE) {
-              this.labelSignin = LabelValue.WIDE;
-            } else if (this.width == WidthValue.STANDARD) {
-              this.labelSignin = LabelValue.STANDARD;
-            }
-          }
-
           if (this.clientId === '') {
             throw "A valid clientId is required to use this element";
+          }
+
+          // Determine the branding to use before the label.
+          this.determineBranding();
+
+          // Allow for the label to be provided as an attribute.
+          if (this.labelSignin === '') {
+            this.determineLabel();
           }
 
           if (defaultHandler === null) {
@@ -355,6 +365,45 @@ any apps you're building. See the Google Developers Console
           }
         },
 
+        /**
+         * Determines the proper branding based on the scopes being requested.
+         */
+        determineBranding: function() {
+          var scope;
+          var currentScopes = this.scopes.split(' ');
+          var hasPlusScopes = false;
+          for (var i = 0; i < currentScopes.length; i++) {
+            scope = currentScopes[i];
+            if (scope == '') continue;
+            if(scope.indexOf('/auth/games') > -1 || (
+                scope.indexOf('auth/plus.') > -1 && scope.indexOf('auth/plus.me') < 0)) {
+              hasPlusScopes = true;
+            }
+          }
+
+          if(hasPlusScopes) {
+            this.brand = BrandValue.PLUS;
+          } else {
+            this.brand = BrandValue.GOOGLE;
+          }
+        },
+
+        /**
+         * Determines the proper label based on the attributes.
+         */
+        determineLabel: function() {
+          // If no label supplied use the width to determine label.
+          if (this.width == WidthValue.WIDE) {
+            if(this.brand == BrandValue.PLUS) {
+                this.labelSignin = LabelValue.WIDE_PLUS;
+            } else {
+                this.labelSignin = LabelValue.WIDE;
+            }
+          } else if (this.width == WidthValue.STANDARD) {
+            this.labelSignin = LabelValue.STANDARD;
+          }
+        },
+
         publish: {
           /**
            * App package name for android over-the-air installs.
@@ -365,6 +414,14 @@ any apps you're building. See the Google Developers Console
            * @default ''
            */
           appPackageName: '',
+
+          /**
+           * The brand being used for logo and styling.
+           *
+           * @default google
+           * @type string
+           */
+          brand: 'google',
 
           /**
            * a Google Developers clientId reference
