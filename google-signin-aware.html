@@ -70,19 +70,19 @@ when a user explicitely signs out via the google-signin element.
         authUserChange: function(e, result) {
           if(result.user.isSignedIn()) {
             // Check if correct scopes authorized, if not do nothing and continue to wait.
-            var complete = true;
+            var isComplete = true;
             var authResult = result.user.getAuthResponse();
             var tmpScopes = authResult.scope.split(' ');
             var scopes = this.scopes.split(' ');
 
             for (var i = 0; i < scopes.length; i++) {
               if (scopes[i] !== '' && tmpScopes.indexOf(scopes[i].toLowerCase()) < 0) {
-                complete = false;
+                isComplete = false;
                 break;
               }
             }
 
-            if (complete) {
+            if (isComplete) {
               this.fire('google-signin-aware-success', result);
             }
           } else {

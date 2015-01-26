@@ -73,11 +73,12 @@ core-icon {
 }
 
 .theme-dark .icon {
-   border-right: 1px solid #a42613;
+  border-right: 1px solid #a42613;
 }
 
 .theme-dark.signedIn-true.additionalAuth-false {
   background: #999;
+  border: 1px solid #888;
 }
 
 .theme-dark.signedIn-true.additionalAuth-false:hover,
@@ -112,8 +113,9 @@ core-icon {
   border-right: #d9d9d9 1px solid;
 }
 .theme-light.signedIn-true.additionalAuth-false {
-  background: #999;
+  background: #c0c0c0;
   color: #fff;
+  border: #888 1px solid;
 }
 
 .theme-light.signedIn-true.additionalAuth-false:hover,
@@ -141,7 +143,9 @@ core-icon {
 .width-iconOnly .buttonText {
   display: none;
 }
-.width-iconOnly .icon {
+
+.width-iconOnly .icon,
+.width-iconOnly.signedIn-true.additionalAuth-false .icon {
   border-right: none;
 }
 
@@ -190,19 +194,6 @@ core-icon {
   border-right: #3266d5 1px solid;
 }
 
-.brand-google.theme-dark.signOut {
-  background: #999;
-}
-
-.brand-google.theme-dark.signOut:hover,
-.brand-google.theme-dark.signOut:focus {
-  background: #aaa;
-}
-
-.brand-google.theme-dark.signOut .icon {
-  border-right: #888 1px solid;
-}
-
 .brand-google.theme-dark #ripple {
   color: #1b39a8;
 }
@@ -212,28 +203,9 @@ core-icon {
   background: #e74b37;
 }
 
-:host([noink]) .brand-google.theme-dark.signOut:hover,
-:host([noink]) .brand-google.theme-dark.signOut:focus {
-  background: #aaa;
-}
-
 .brand-google.theme-light .icon {
   border-right: 1px solid #d9d9d9;
   color: #4184F3;
-}
-
-.brand-google.theme-light.signOut {
-  background: #999;
-  color: #fff;
-}
-
-.brand-google.theme-light.signOut:hover,
-.brand-google.theme-light.signOut:focus {
-  background: #aaa;
-}
-
-.brand-google.theme-light.signOut .icon {
-  border-right: #888 1px solid;
 }
 
 .brand-google.theme-light #ripple {
@@ -243,11 +215,6 @@ core-icon {
 :host([noink]) .brand-google.theme-light:hover,
 :host([noink]) .brand-google.theme-light:focus {
   border: 1px solid #c0c0c0;
-}
-
-:host([noink]) .brand-google.theme-light.signOut:hover,
-:host([noink]) .brand-google.theme-light.signOut:focus {
-  background: #aaa;
 }
 
 .brand-google-plus.theme-dark {
@@ -260,31 +227,8 @@ core-icon {
   border-right: #a42613 1px solid;
 }
 
-.brand-google-plus.theme-dark.signOut {
-  background: #999;
-}
-
-.brand-google-plus.theme-dark.signOut:hover,
-.brand-google-plus.theme-dark.signOut:focus {
-  background: #aaa;
-}
-
-.brand-google-plus.theme-dark.signOut .icon {
-  border-right: #888 1px solid;
-}
-
 .brand-google-plus.theme-dark #ripple {
   color: #c43828;
-}
-
-:host([noink]) .brand-google-plus.theme-dark:hover,
-:host([noink]) .brand-google-plus.theme-dark:focus {
-  background: #e74b37;
-}
-
-:host([noink]) .brand-google-plus.theme-dark.signOut:hover,
-:host([noink]) .brand-google-plus.theme-dark.signOut:focus {
-  background: #aaa;
 }
 
 /* Light Theme */
@@ -299,21 +243,6 @@ core-icon {
   color: #e74b37;
 }
 
-.brand-google-plus.theme-light.signOut {
-  background: #999;
-  color: #fff;
-}
-
-.brand-google-plus.theme-light.signOut:hover,
-.brand-google-plus.theme-light.signOut:focus {
-  background: #aaa;
-}
-
-.brand-google-plus.theme-light.signOut .icon {
-  background-image: url('assets/gplus-logo.svg');
-  border-right: 1px solid #888;
-}
-
 .brand-google-plus.theme-light #ripple {
   color: #d1d1d1;
 }
@@ -321,9 +250,4 @@ core-icon {
 :host([noink]) .brand-google-plus.theme-light:hover,
 :host([noink]) .brand-google-plus.theme-light:focus {
   border: 1px solid #c0c0c0;
-}
-
-:host([noink]) .brand-google-plus.theme-light.signOut:hover,
-:host([noink]) .brand-google-plus.theme-light.signOut:focus {
-  background: #aaa;
 }
