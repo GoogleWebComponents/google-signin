@@ -112,6 +112,7 @@ core-icon {
 .theme-light .icon {
   border-right: #d9d9d9 1px solid;
 }
+
 .theme-light.signedIn-true.additionalAuth-false {
   background: #c0c0c0;
   color: #fff;
@@ -208,6 +209,10 @@ core-icon {
   color: #4184F3;
 }
 
+.brand-google.theme-light.signedIn-true.additionalAuth-false .icon {
+  color: #fff;
+}
+
 .brand-google.theme-light #ripple {
   color: #d1d1d1;
 }
@@ -241,6 +246,10 @@ core-icon {
 .brand-google-plus.theme-light .icon {
   border-right: 1px solid #d9d9d9;
   color: #e74b37;
+}
+
+.brand-google-plus.theme-light.signedIn-true.additionalAuth-false .icon {
+  color: #fff;
 }
 
 .brand-google-plus.theme-light #ripple {
