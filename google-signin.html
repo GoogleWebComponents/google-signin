@@ -3,7 +3,7 @@
 <link rel="import" href="../core-icons/core-icons.html">
 <link rel="import" href="../core-signals/core-signals.html">
 <link rel="import" href="../font-roboto/roboto.html">
-<link rel="import" href="../google-apis/google-apis.html">
+<link rel="import" href="../google-apis/google-js-api.html">
 <link rel="import" href="../paper-button/paper-button-base.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../paper-shadow/paper-shadow.html">
@@ -80,6 +80,7 @@ any apps you're building. See the Google Developers Console
 
 <polymer-element name="google-signin" extends="paper-button-base" role="button">
   <template>
+    <google-js-api on-js-api-load="{{loadAuth}}"></google-js-api>
     <link rel="stylesheet" href="google-signin.css" >
 
     <core-signals on-core-signal-google-auth-request="{{authRequestScopes}}"></core-signals>
@@ -255,52 +256,6 @@ any apps you're building. See the Google Developers Console
           if (defaultHandler === null) {
             // Bind the defaultHandler to the first attached signin button.
             defaultHandler = this;
-
-            gapi.load('auth2', function() {
-              auth = gapi.auth2.init({
-                'client_id': defaultHandler.clientId,
-                'cookie_policy': defaultHandler.cookiePolicy,
-                'scope': defaultHandler.scopes
-              });
-
-              // Listen for changes to the primary user.
-              auth.currentUser.listen(function(newPrimary) {
-                if(newPrimary == null) {
-                  // TODO What do to with no primary user? Logged out?
-                  return;
-                }
-
-                // Reset the authorized scopes and update with current user scopes.
-                authorizedScopes = [];
-
-                if(newPrimary.isSignedIn()) {
-                  var authResponse = newPrimary.getAuthResponse();
-
-                  // Store authorized scopes to check against for granted scopes.
-                  var tmpScopes = authResponse.scope.split(' ');
-                  for (var i = 0; i < tmpScopes.length; i++) {
-                    if (tmpScopes[i] !== "") {
-                      authorizedScopes.push(tmpScopes[i].toLowerCase());
-
-                      // Handle scopes that will be deprecated but are still returned with their old value
-                      if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
-                          authorizedScopes.push('profile');
-                      } else if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
-                          authorizedScopes.push('email');
-                      }
-                    }
-                  }
-                }
-
-                // Signal all buttons to update their state based on the user.
-                defaultHandler.fire('core-signal', {
-                  'name': 'google-auth-user',
-                  'data': {
-                    'user': newPrimary
-                  }
-                });
-              });
-            });
           }
         },
 
@@ -402,6 +357,62 @@ any apps you're building. See the Google Developers Console
           } else if (this.width == WidthValue.STANDARD) {
             this.labelSignin = LabelValue.STANDARD;
           }
+        },
+
+        /**
+         * Loads the `gapi.auth2` library and triggers the immediate auth.
+         */
+        loadAuth: function() {
+          // Only the defaultHander should load the library.
+          if (this !== defaultHandler) {
+            return;
+          }
+
+          gapi.load('auth2', function() {
+            auth = gapi.auth2.init({
+              'client_id': defaultHandler.clientId,
+              'cookie_policy': defaultHandler.cookiePolicy,
+              'scope': defaultHandler.scopes
+            });
+
+            // Listen for changes to the primary user.
+            auth.currentUser.listen(function(newPrimary) {
+              if(newPrimary == null) {
+                // TODO What do to with no primary user? Logged out?
+                return;
+              }
+
+              // Reset the authorized scopes and update with current user scopes.
+              authorizedScopes = [];
+
+              if(newPrimary.isSignedIn()) {
+                var authResponse = newPrimary.getAuthResponse();
+
+                // Store authorized scopes to check against for granted scopes.
+                var tmpScopes = authResponse.scope.split(' ');
+                for (var i = 0; i < tmpScopes.length; i++) {
+                  if (tmpScopes[i] !== "") {
+                    authorizedScopes.push(tmpScopes[i].toLowerCase());
+
+                    // Handle scopes that will be deprecated but are still returned with their old value
+                    if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
+                      authorizedScopes.push('profile');
+                    } else if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
+                      authorizedScopes.push('email');
+                    }
+                  }
+                }
+              }
+
+              // Signal all buttons to update their state based on the user.
+              defaultHandler.fire('core-signal', {
+                'name': 'google-auth-user',
+                'data': {
+                  'user': newPrimary
+                }
+              });
+            });
+          });
         },
 
         publish: {
