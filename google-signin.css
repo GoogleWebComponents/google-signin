@@ -59,8 +59,7 @@ core-icon {
 .buttonText {
   display: inline-block;
   vertical-align: middle;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding-right: .8em;
 }
 
 /*
@@ -72,10 +71,6 @@ core-icon {
   border: 1px solid transparent;
 }
 
-.theme-dark .icon {
-  border-right: 1px solid #a42613;
-}
-
 .theme-dark.signedIn-true.additionalAuth-false {
   background: #999;
   border: 1px solid #888;
@@ -84,10 +79,6 @@ core-icon {
 .theme-dark.signedIn-true.additionalAuth-false:hover,
 .theme-dark.signedIn-true.additionalAuth-false:focus {
   background: #aaa;
-}
-
-.theme-dark.signedIn-true.additionalAuth-false .icon {
-  border-right: 1px solid #888;
 }
 
 :host([noink]) .theme-dark:hover,
@@ -109,10 +100,6 @@ core-icon {
   border: 1px solid #d9d9d9;
 }
 
-.theme-light .icon {
-  border-right: #d9d9d9 1px solid;
-}
-
 .theme-light.signedIn-true.additionalAuth-false {
   background: #c0c0c0;
   color: #fff;
@@ -122,10 +109,6 @@ core-icon {
 .theme-light.signedIn-true.additionalAuth-false:hover,
 .theme-light.signedIn-true.additionalAuth-false:focus {
   background: #aaa;
-}
-
-.theme-light.signedIn-true.additionalAuth-false .icon {
-  border-right: #888 1px solid;
 }
 
 :host([noink]) .theme-light .button-content:hover,
@@ -143,11 +126,6 @@ core-icon {
  */
 .width-iconOnly .buttonText {
   display: none;
-}
-
-.width-iconOnly .icon,
-.width-iconOnly.signedIn-true.additionalAuth-false .icon {
-  border-right: none;
 }
 
 /*
@@ -191,10 +169,6 @@ core-icon {
   border: 1px solid #3266d5;
 }
 
-.brand-google.theme-dark .icon {
-  border-right: #3266d5 1px solid;
-}
-
 .brand-google.theme-dark #ripple {
   color: #1b39a8;
 }
@@ -205,7 +179,6 @@ core-icon {
 }
 
 .brand-google.theme-light .icon {
-  border-right: 1px solid #d9d9d9;
   color: #4184F3;
 }
 
@@ -228,10 +201,6 @@ core-icon {
   border: 1px solid transparent;
 }
 
-.brand-google-plus.theme-dark .icon {
-  border-right: #a42613 1px solid;
-}
-
 .brand-google-plus.theme-dark #ripple {
   color: #c43828;
 }
@@ -244,7 +213,6 @@ core-icon {
 }
 
 .brand-google-plus.theme-light .icon {
-  border-right: 1px solid #d9d9d9;
   color: #e74b37;
 }
 
