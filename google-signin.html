@@ -367,11 +367,6 @@ any apps you're building. See the Google Developers Console
 
             // Listen for changes to the primary user.
             auth.currentUser.listen(function(newPrimary) {
-              if(newPrimary == null) {
-                // TODO What do to with no primary user? Logged out?
-                return;
-              }
-
               // Reset the authorized scopes and update with current user scopes.
               authorizedScopes = [];
 
