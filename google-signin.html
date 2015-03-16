@@ -564,21 +564,18 @@ any apps you're building. See the Google Developers Console
           var params = {
             'scope': mergeExtraScopes(this.scopes)
           };
-          var self = this;
 
           // Proxy specific attributes through to the signIn options.
           Object.keys(ProxyLoginAttributes).forEach(function(key) {
-            if (self[key] && self[key] !== '') {
-              params[ProxyLoginAttributes[key]] = self[key];
+            if (this[key] && this[key] !== '') {
+              params[ProxyLoginAttributes[key]] = this[key];
             }
-          });
+          }, this);
 
-          var options = new gapi.auth2.SigninOptionsBuilder(params);
-
-          auth.signIn(options).then(function(newUser) {
-              // Let the current user listener trigger the changes.
+          auth.signIn(params).then(function(newUser) {
+            // Let the current user listener trigger the changes.
           }, function(error) {
-              console.error(error);
+            console.error(error);
           });
         },
 
