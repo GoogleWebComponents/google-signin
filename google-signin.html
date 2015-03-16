@@ -228,7 +228,7 @@ any apps you're building. See the Google Developers Console
       /**
        * Called when an offline authorization is successful.
        *
-       * @param {string} code Authorization one-time offline code.
+       * @param {Object} result Result with one-time offline code.
        * @event google-signin-offline
        */
 
@@ -576,11 +576,21 @@ any apps you're building. See the Google Developers Console
             }
           }, this);
 
-          auth.signIn(params).then(function(newUser) {
-            // Let the current user listener trigger the changes.
-          }, function(error) {
-            console.error(error);
-          });
+          if(this.offline) {
+            var handler = this;
+            auth.grantOfflineAccess(params).then(function(response) {
+              // Trigger the offline code.
+              handler.fire('google-signin-offline', response);
+            }, function(error) {
+              console.error(error);
+            });
+          } else {
+            auth.signIn(params).then(function(newUser) {
+              // Let the current user listener trigger the changes.
+            }, function(error) {
+              console.error(error);
+            });
+          }
         },
 
         signedIn: false,
