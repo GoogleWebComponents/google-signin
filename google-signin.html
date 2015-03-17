@@ -197,7 +197,7 @@ any apps you're building. See the Google Developers Console
        * @param {String} authScopes Scopes being requested.
        */
       var mergeExtraScopes = function(authScopes) {
-        if(!extraScopes.length) {
+        if (!extraScopes.length) {
           return authScopes;
         }
 
@@ -278,7 +278,7 @@ any apps you're building. See the Google Developers Console
         authUserChange: function(e, result) {
           this.signedIn = result.user.isSignedIn();
 
-          if(this.signedIn) {
+          if (this.signedIn) {
             this.checkScopes();
 
             // Trigger the google-signin-success event
@@ -320,13 +320,13 @@ any apps you're building. See the Google Developers Console
           for (var i = 0; i < currentScopes.length; i++) {
             scope = currentScopes[i];
             if (scope == '') continue;
-            if(scope.indexOf('/auth/games') > -1 || (
+            if (scope.indexOf('/auth/games') > -1 || (
                 scope.indexOf('auth/plus.') > -1 && scope.indexOf('auth/plus.me') < 0)) {
               hasPlusScopes = true;
             }
           }
 
-          if(hasPlusScopes) {
+          if (hasPlusScopes) {
             this.brand = BrandValue.PLUS;
           } else {
             this.brand = BrandValue.GOOGLE;
@@ -339,7 +339,7 @@ any apps you're building. See the Google Developers Console
         determineLabel: function() {
           // If no label supplied use the width to determine label.
           if (this.width == WidthValue.WIDE) {
-            if(this.brand == BrandValue.PLUS) {
+            if (this.brand == BrandValue.PLUS) {
                 this.labelSignin = LabelValue.WIDE_PLUS;
             } else {
                 this.labelSignin = LabelValue.WIDE;
@@ -370,7 +370,7 @@ any apps you're building. See the Google Developers Console
               // Reset the authorized scopes and update with current user scopes.
               authorizedScopes = [];
 
-              if(newPrimary.isSignedIn()) {
+              if (newPrimary.isSignedIn()) {
                 var authResponse = newPrimary.getAuthResponse();
 
                 // Store authorized scopes to check against for granted scopes.

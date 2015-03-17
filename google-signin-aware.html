@@ -68,7 +68,7 @@ when a user explicitely signs out via the google-signin element.
          * Handles a change to the authenticated user.
          */
         authUserChange: function(e, result) {
-          if(result.user.isSignedIn()) {
+          if (result.user.isSignedIn()) {
             // Check if correct scopes authorized, if not do nothing and continue to wait.
             var isComplete = true;
             var authResult = result.user.getAuthResponse();
