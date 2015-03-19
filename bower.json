@@ -1,13 +1,14 @@
 {
   "name": "google-signin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Web components to authenticate with Google services",
   "homepage": "http://googlewebcomponents.github.io/google-signin",
   "main": "google-signin.html",
   "authors": [
-    "Addy Osmani"
+    "Addy Osmani",
+    "Randy Merrill"
   ],
-  "license": "Apache2",
+  "license": "Apache-2",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -21,17 +22,18 @@
     "web-components",
     "polymer",
     "sign-in",
-    "google"
+    "google",
+    "authentication"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~0.5.0",
-    "core-icon": "Polymer/core-icon#~0.5.0",
-    "core-icons": "Polymer/core-icons#~0.5.0",
-    "core-signals": "Polymer/core-signals#~0.5.0",
-    "font-roboto": "Polymer/font-roboto#~0.5.0",
-    "google-apis": "GoogleWebComponents/google-apis#~0.4.0",
-    "paper-button": "Polymer/paper-button#~0.5.0",
-    "paper-ripple": "Polymer/paper-ripple#~0.5.0",
-    "paper-shadow": "Polymer/paper-shadow#~0.5.0"
+    "polymer": "Polymer/polymer#~0.5.4",
+    "core-icon": "Polymer/core-icon#~0.5.4",
+    "core-icons": "Polymer/core-icons#~0.5.4",
+    "core-signals": "Polymer/core-signals#~0.5.1",
+    "font-roboto": "Polymer/font-roboto#~0.5.4",
+    "google-apis": "GoogleWebComponents/google-apis#~0.4.3",
+    "paper-button": "Polymer/paper-button#~0.5.4",
+    "paper-ripple": "Polymer/paper-ripple#~0.5.4",
+    "paper-shadow": "Polymer/paper-shadow#~0.5.4"
   }
 }

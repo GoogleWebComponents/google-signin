@@ -232,7 +232,7 @@ any apps you're building. See the Google Developers Console
       Polymer({
         attached: function () {
           if (this.clientId === '') {
-            throw "A valid clientId is required to use this element";
+            throw 'A valid clientId is required to use this element';
           }
 
           // Determine the branding to use before the label.
@@ -295,7 +295,7 @@ any apps you're building. See the Google Developers Console
          *
          * @param {Array} scopes Scopes being requested.
          */
-        checkScopes: function() {
+        checkScopes: function () {
           var currentScopes = this.scopes.split(' ');
           this.additionalAuth = false;
 
