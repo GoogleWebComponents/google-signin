@@ -1,0 +1,96 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-signals/core-signals.html">
+
+<!--
+google-signin-aware is used to enable authentication in custom elements by
+interacting with a google-signin element that needs to be present somewhere
+on the page.
+
+The `scopes` attribute allows you to specify which scope permissions are required
+(e.g do you want to allow interaction with the Google Drive API).
+
+The `google-signin-aware-success` event is triggered when a user successfully
+authenticates. The `google-signin-aware-signed-out` event is triggered
+when a user explicitely signs out via the google-signin element.
+
+##### Example
+
+    <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
+
+@class google-signin-aware
+@blurb A Polymer element for authenticating and authorizing with Google Services.
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-signin
+-->
+
+<polymer-element name="google-signin-aware" attributes="scopes">
+  <template>
+    <core-signals on-core-signal-google-auth-user="{{authUserChange}}"></core-signals>
+  </template>
+
+  <script>
+    (function() {
+      var loader = null;
+
+      /**
+       * Called when authorization server replies.
+       *
+       * @param {Object} result Authorization result.
+       * @event google-signin-aware-success
+       */
+
+      /**
+       * Called when the user is signed out.
+       *
+       * @param {Object} result Authorization result.
+       * @event google-signin-aware-signed-out
+       */
+
+      Polymer({
+        /**
+         * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+         * and should be space-delimited.
+         *
+         * @attribute scopes
+         * @type string
+         * @default 'profile'
+         */
+        scopes: '',
+
+        domReady: function() {
+          this.fire('core-signal', {
+            'name': 'google-auth-request',
+            'data': this.scopes.split(' ')
+          });
+        },
+
+        /**
+         * Handles a change to the authenticated user.
+         */
+        authUserChange: function(e, result) {
+          if (result.user.isSignedIn()) {
+            // Check if correct scopes authorized, if not do nothing and continue to wait.
+            var isComplete = true;
+            var authResult = result.user.getAuthResponse();
+            var tmpScopes = authResult.scope.split(' ');
+            var scopes = this.scopes.split(' ');
+
+            for (var i = 0; i < scopes.length; i++) {
+              if (scopes[i] !== '' && tmpScopes.indexOf(scopes[i].toLowerCase()) < 0) {
+                isComplete = false;
+                break;
+              }
+            }
+
+            if (isComplete) {
+              this.fire('google-signin-aware-success', result);
+            }
+          } else {
+            // Fire event to indicate user signed out.
+            this.fire('google-signin-aware-signed-out');
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

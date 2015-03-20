@@ -8,6 +8,7 @@
 
     <script src="../webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="google-signin.html">
+    <link rel="import" href="google-signin-aware.html">
 
     <!-- Demo only styles -->
     <style>
@@ -43,8 +44,9 @@
       }
 
       h1 {
-        font-size:2rem;
+        font-size: 2rem;
         font-weight:200;
+        clear: both;
       }
 
       h1 strong {
@@ -57,48 +59,154 @@
         line-height:2.5;
         color:gray;
         font-weight:400;
+        clear: both;
+      }
+
+      .showcase {
+        display: inline-block;
+        margin-right: 2rem;
+        float: left;
       }
     </style>
 
 </head>
 
 <body unresolved>
+  <p>A `google-signin` element looks like this:</p>
 
-    <p>A `google-signin` element looks like this:</p>
+  <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
 
-    <h2>Standard button with `profile` scope:</h2>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
+  <h1>Styling</h1>
 
-    <h2>Wide tall button with `email` scope:</h2>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="email" width="wide" height="tall"></google-signin></p>
+  <p>The sign in element can be styled by using using a combination of the <code>width</code>, <code>height</code>, and <code>theme</code> attributes</p>
 
-    <h2>Short light themed button with `email` and `plus.profile.emails.read` scope:</h2>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.profile.emails.read email" theme="light" width="standard" height="short"></google-signin></p>
+  <div class="showcase">
+    <h2>Width</h2>
 
-    <h2>Tall light themed icon only button with `plus.login` scope:</h2>
+    <p>Wide:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="wide"></google-signin></p>
+    <p>Standard:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="standard"></google-signin></p>
+    <p>Icon Only:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="iconOnly"></google-signin></p>
+  </div>
+
+  <div class="showcase">
+    <h2>Height</h2>
+
+    <p>Tall:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="tall"></google-signin></p>
+    <p>Standard:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="standard"></google-signin></p>
+    <p>Short:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="short"></google-signin></p>
+  </div>
+
+  <div class="showcase">
+    <h2>Theme</h2>
+
+    <p>Dark:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark"></google-signin></p>
+    <p>Light:</p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light"></google-signin></p>
+  </div>
+
+  <h1>Branding</h1>
+
+  <p>Based on the scopes being used, the branding for the button will change to match the scopes.</p>
+
+  <h2>General Google Scopes</h2>
+  <p>For most Google scopes the branding will use the Google logo and blue color scheme:</p>
+
+  <div class="showcase">
+    <h3>Dark Theme</h3>
+
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="short"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="short"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="short"></google-signin></p>
+  </div>
+
+  <div class="showcase">
+    <h3>Light Theme</h3>
+
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="short"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="short"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="short"></google-signin></p>
+  </div>
+
+  <h2>Google Plus Scopes</h2>
+  <p>For Google Plus and social scopes the branding will use the Google+ logo and red color scheme:</p>
+
+  <div class="showcase">
+    <h3>Dark Theme</h3>
+
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="short"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="short"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="short"></google-signin></p>
+  </div>
+
+  <div class="showcase">
+    <h3>Light Theme</h3>
+
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="short"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="short"></google-signin></p>
     <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="short"></google-signin></p>
+  </div>
 
-    <!-- Demo the ability to use the google-signin-aware element. -->
-    <polymer-element name="sample-aware">
-      <template>
-        <google-signin-aware
-            scopes="https://www.googleapis.com/auth/calendar.readonly"
-            on-google-signin-aware-success="{{signIn}}"></google-signin-aware>
+  <h2>google-signin-aware</h2>
 
-        <p>Testing <code>google-signin-aware</code>: {{status}}</p>
-      </template>
+  <p>The <code>google-signin-aware</code> element can be used within other elements to request additional scopes.</p>
 
-      <script>
-        Polymer('sample-aware', {
-          status: 'Not granted',
-          signIn: function(response) {
-            this.status = 'Signin granted';
-            console.log('Signin Response', response);
-          }
-        });
-      </script>
-    </polymer-element>
+  <!-- Demo the ability to use the google-signin-aware element. -->
+  <polymer-element name="sample-aware">
+    <template>
+      <google-signin-aware
+          scopes="https://www.googleapis.com/auth/calendar.readonly"
+          on-google-signin-aware-success="{{signIn}}"
+          on-google-signin-aware-signed-out="{{signOut}}"></google-signin-aware>
 
-    <sample-aware></sample-aware>
+      <p>Testing <code>google-signin-aware</code>: {{status}}</p>
+    </template>
+
+    <script>
+      Polymer('sample-aware', {
+        status: 'Not granted',
+        signIn: function(response) {
+          this.status = 'Signin granted';
+          console.log('[Aware] Signin Response', response);
+        },
+        signOut: function(response) {
+          this.status = 'Signed out';
+          console.log('[Aware] Signout Response', response);
+        }
+      });
+    </script>
+  </polymer-element>
+
+  <sample-aware></sample-aware>
 </body>
 </html>
