@@ -623,11 +623,11 @@ any apps you're building. See the Google Developers Console
         };
 
         // // Proxy specific attributes through to the signIn options.
-        // Object.keys(ProxyLoginAttributes).forEach(function(key) {
-        //   if (this[key] && this[key] !== '') {
-        //     params[ProxyLoginAttributes[key]] = this[key];
-        //   }
-        // }, this);
+        Object.keys(ProxyLoginAttributes).forEach(function(key) {
+          if (this[key] && this[key] !== '') {
+            params[ProxyLoginAttributes[key]] = this[key];
+          }
+        }, this);
  
         gapi.auth2.getAuthInstance().signIn(params).then(function(newUser) {
           // Let the current user listener trigger the changes.
