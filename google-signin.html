@@ -91,30 +91,25 @@ any apps you're building. See the Google Developers Console
 
     <div id="button" 
       class$="[[computeButtonClass(height, width, theme, signedIn, brand, additionalAuth)]]">
-      <paper-ripple id="ripple" fit></paper-ripple>
 
+      <paper-ripple id="ripple" fit></paper-ripple>
       <!-- this div is needed to position the ripple behind text content -->
       <div relative layout horizontal center-center>
-         <div class="button-content signIn" tabindex="0"
-              on-click="signIn" on-keydown="signInKeyPress">
-            <span class="icon"><core-icon icon="[[computeIcon(brand)]]"></core-icon></span>
-            <span class="buttonText">{{labelSignin}}</span>
-          </div>
-        <template is="x-if" if="{{ !signedIn }}">
+        <template is="x-if" if="{{computeButtonIsSignIn(signedIn, additionalAuth)}}">
           <div class="button-content signIn" tabindex="0"
               on-click="signIn" on-keydown="signInKeyPress">
             <span class="icon"><core-icon icon="[[computeIcon(brand)]]"></core-icon></span>
             <span class="buttonText">{{labelSignin}}</span>
           </div>
         </template>
-        <template is="x-if" if="{{ signedIn && !additionalAuth }}">
+        <template is="x-if" if="{{ computeButtonIsSignOut(signedIn, additionalAuth) }}">
           <div class="button-content signOut" tabindex="0"
               on-click="signOut" on-keydown="signOutKeyPress">
             <span class="icon"><core-icon icon="[[computeIcon(brand)]]"></core-icon></span>
             <span class="buttonText">{{labelSignout}}</span>
           </div>
         </template>
-        <template is="x-if" if="{{ signedIn && additionalAuth }}">
+        <template is="x-if" if="{{ computeButtonIsSignOutAddl(signedIn, additionalAuth) }}">
           <div class="button-content signIn" tabindex="0"
               on-click="signIn" on-keydown="signInKeyPress">
             <span class="icon"><core-icon icon="[[computeIcon(brand)]]"></core-icon></span>
@@ -128,11 +123,9 @@ any apps you're building. See the Google Developers Console
 <script>
   (function() {
 
-    var auth;
     var authorizedScopes = [];
     var extraScopes = [];
     var defaultHandler = null;
-    var flowComplete = null;
 
     /**
      * Enum brand values.
@@ -338,7 +331,7 @@ any apps you're building. See the Google Developers Console
          */
         labelSignin: {
           type: String,
-          value: ''
+          value: 'Sign in'
         },
 
         /**
@@ -417,6 +410,17 @@ any apps you're building. See the Google Developers Console
           type: String,
           value: 'standard'
         },
+        /**
+         * Is user signed in?
+         *
+         * @attribute signedIn
+         * @type {Boolean}
+         */
+        signedIn: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
         /*
          * 
          */
@@ -451,6 +455,17 @@ any apps you're building. See the Google Developers Console
 
       computeIcon: function(brand) {
         return "google:" + brand;
+      },
+
+      /* Button state computed */
+      computeButtonIsSignIn: function(signedIn, additionalAuth) {
+        return !signedIn;
+      },
+      computeButtonIsSignOut: function(signedIn, additionalAuth) {
+        return signedIn && !additionalAuth;
+      },
+      computeButtonIsSignOutAddl: function(signedIn, additionalAuth) {
+        return signedIn && additionalAuth;
       },
       /**
        * Adds additional extra scopes to be used when signing in.
@@ -562,13 +577,11 @@ any apps you're building. See the Google Developers Console
         }
 
         gapi.load('auth2', function() {
-          console.log("auth2.init", defaultHandler.clientId, defaultHandler.cookiePolicy, defaultHandler.scopes);
-          auth = gapi.auth2.init({
+          var auth = gapi.auth2.init({
             'client_id': defaultHandler.clientId,
             'cookie_policy': defaultHandler.cookiePolicy,
             'scope': defaultHandler.scopes
           });
-
           // Listen for changes to the primary user.
           auth.currentUser.listen(function(newPrimary) {
             // Reset the authorized scopes and update with current user scopes.
@@ -609,23 +622,19 @@ any apps you're building. See the Google Developers Console
           'scope': mergeExtraScopes(this.scopes)
         };
 
-        // Proxy specific attributes through to the signIn options.
-        Object.keys(ProxyLoginAttributes).forEach(function(key) {
-          if (this[key] && this[key] !== '') {
-            params[ProxyLoginAttributes[key]] = this[key];
-          }
-        }, this);
-
-        console.log("auth.signIn", params.scope, params);
-        auth.signIn(params).then(function(newUser) {
-          console.log("singin callback");
+        // // Proxy specific attributes through to the signIn options.
+        // Object.keys(ProxyLoginAttributes).forEach(function(key) {
+        //   if (this[key] && this[key] !== '') {
+        //     params[ProxyLoginAttributes[key]] = this[key];
+        //   }
+        // }, this);
+ 
+        gapi.auth2.getAuthInstance().signIn(params).then(function(newUser) {
           // Let the current user listener trigger the changes.
         }, function(error) {
           console.error(error);
         });
       },
-
-      signedIn: false,
 
       signInKeyPress: function (e) {
         if (e.which == 13 || e.keyCode == 13 || e.which == 32 || e.keyCode == 32) {
@@ -636,8 +645,7 @@ any apps you're building. See the Google Developers Console
 
       signOut: function () {
         this.fire('google-signout-attempted');
-        auth.signOut().then(function() {
-          console.log("sing out complete");
+        gapi.auth2.getAuthInstance().signOut().then(function() {
           // Let the current user listener trigger the changes.
         }, function(error) {
           console.error(error);

@@ -2,72 +2,72 @@
 <!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <title>google-signin Demo</title>
+  <title>google-signin Demo</title>
 
-    <script src="../webcomponentsjs/webcomponents.js"></script>
-    <link rel="import" href="google-signin.html">
-    <link rel="import" href="google-signin-aware.html">
+  <script src="../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="google-signin.html">
+  <link rel="import" href="google-signin-aware.html">
 
-    <!-- Demo only styles -->
-    <style>
-      body { font-family: 'RobotoDraft', 'Roboto', sans-serif; line-height:1.2; vertical-align:middle; }
+  <!-- Demo only styles -->
+  <style>
+    body { font-family: 'RobotoDraft', 'Roboto', sans-serif; line-height:1.2; vertical-align:middle; }
 
-      body {
-        background: rgba(204, 204, 204, 0.31);
-      }
+    body {
+      background: rgba(204, 204, 204, 0.31);
+    }
 
-      .card {
-        min-width: 300px;
-        max-width: 400px;
-        padding:1.5rem;
-        box-shadow:0 1px 2px #aaa;
-        background:white;
-        margin:1rem 1rem 1rem;
-        border-radius:3px;
-        user-select:none;
-        transform-origin:top left;
-        position:relative;
-        z-index:2;
-        clear: both;
-      }
+    .card {
+      min-width: 300px;
+      max-width: 400px;
+      padding:1.5rem;
+      box-shadow:0 1px 2px #aaa;
+      background:white;
+      margin:1rem 1rem 1rem;
+      border-radius:3px;
+      user-select:none;
+      transform-origin:top left;
+      position:relative;
+      z-index:2;
+      clear: both;
+    }
 
-      .card:nth-child(even){
-       transform-origin:top right;
-      }
+    .card:nth-child(even){
+     transform-origin:top right;
+    }
 
-      .map {
-        background: whitesmoke;
-        margin: .5rem -1.5rem 0 -1.5rem;
-        padding: 0.5rem;
-      }
+    .map {
+      background: whitesmoke;
+      margin: .5rem -1.5rem 0 -1.5rem;
+      padding: 0.5rem;
+    }
 
-      h1 {
-        font-size: 2rem;
-        font-weight:200;
-        clear: both;
-      }
+    h1 {
+      font-size: 2rem;
+      font-weight:200;
+      clear: both;
+    }
 
-      h1 strong {
-        font-weight:300;
-        color:#539D00;
-      }
+    h1 strong {
+      font-weight:300;
+      color:#539D00;
+    }
 
-      h2 {
-        font-size:.9rem;
-        line-height:2.5;
-        color:gray;
-        font-weight:400;
-        clear: both;
-      }
+    h2 {
+      font-size:.9rem;
+      line-height:2.5;
+      color:gray;
+      font-weight:400;
+      clear: both;
+    }
 
-      .showcase {
-        display: inline-block;
-        margin-right: 2rem;
-        float: left;
-      }
-    </style>
+    .showcase {
+      display: inline-block;
+      margin-right: 2rem;
+      float: left;
+    }
+  </style>
 
 </head>
 
@@ -79,7 +79,7 @@
   <h1>Styling</h1>
 
   <p>The sign in element can be styled by using using a combination of the <code>width</code>, <code>height</code>, and <code>theme</code> attributes</p>
-<!---
+
   <div class="showcase">
     <h2>Width</h2>
 
@@ -180,7 +180,7 @@
   <h2>google-signin-aware</h2>
 
   <p>The <code>google-signin-aware</code> element can be used within other elements to request additional scopes.</p>
--->
+
   <!-- Demo the ability to use the google-signin-aware element. -->
   <template id="awareness" is="x-autobind">
     <google-signin-aware
