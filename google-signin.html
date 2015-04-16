@@ -98,22 +98,22 @@ any apps you're building. See the Google Developers Console
         <template is="x-if" if="{{computeButtonIsSignIn(signedIn, additionalAuth)}}">
           <div class="button-content signIn" tabindex="0"
               on-click="signIn" on-keydown="signInKeyPress">
-            <span class="icon"><core-icon icon="[[computeIcon(brand)]]"></core-icon></span>
-            <span class="buttonText">{{labelSignin}}</span>
+            <span class="icon"><core-icon icon="[[parent.brandIcon]]"></core-icon></span>
+            <span class="buttonText">{{parent.labelSignin}}</span>
           </div>
         </template>
         <template is="x-if" if="{{ computeButtonIsSignOut(signedIn, additionalAuth) }}">
           <div class="button-content signOut" tabindex="0"
               on-click="signOut" on-keydown="signOutKeyPress">
-            <span class="icon"><core-icon icon="[[computeIcon(brand)]]"></core-icon></span>
-            <span class="buttonText">{{labelSignout}}</span>
+            <span class="icon"><core-icon icon="[[parent.brandIcon]]"></core-icon></span>
+            <span class="buttonText">{{parent.labelSignout}}</span>
           </div>
         </template>
         <template is="x-if" if="{{ computeButtonIsSignOutAddl(signedIn, additionalAuth) }}">
           <div class="button-content signIn" tabindex="0"
               on-click="signIn" on-keydown="signInKeyPress">
-            <span class="icon"><core-icon icon="[[computeIcon(brand)]]"></core-icon></span>
-            <span class="buttonText">{{labelAdditional}}</span>
+            <span class="icon"><core-icon icon="[[parent.brandIcon]]"></core-icon></span>
+            <span class="buttonText">{{parent.labelAdditional}}</span>
           </div>
         </template>
       </div>
@@ -429,6 +429,11 @@ any apps you're building. See the Google Developers Console
         additionalAuth: {
           type: Boolean,
           value: false
+        },
+
+        brandIcon: {
+          type: String,
+          computed: 'computeIcon(brand)'
         }
       },
 
