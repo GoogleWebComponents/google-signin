@@ -2,79 +2,80 @@
 <!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <title>google-signin Demo</title>
+  <title>google-signin Demo</title>
 
-    <script src="../webcomponentsjs/webcomponents.js"></script>
-    <link rel="import" href="google-signin.html">
-    <link rel="import" href="google-signin-aware.html">
+  <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="google-signin.html">
+  <link rel="import" href="google-signin-aware.html">
 
-    <!-- Demo only styles -->
-    <style>
-      * { font-family: 'RobotoDraft', 'Roboto', sans-serif; line-height:1.2; vertical-align:middle; }
+  <!-- Demo only styles -->
+  <style>
+    body { 
+      font-family: 'RobotoDraft', 'Roboto', sans-serif; 
+      line-height:1.2; 
+      vertical-align:middle; 
+      background: rgba(204, 204, 204, 0.31);
+    }
 
-      body {
-        background: rgba(204, 204, 204, 0.31);
-      }
+    .card {
+      min-width: 300px;
+      max-width: 400px;
+      padding:1.5rem;
+      box-shadow:0 1px 2px #aaa;
+      background:white;
+      margin:1rem 1rem 1rem;
+      border-radius:3px;
+      user-select:none;
+      transform-origin:top left;
+      position:relative;
+      z-index:2;
+      clear: both;
+    }
 
-      .card {
-        min-width: 300px;
-        max-width: 400px;
-        padding:1.5rem;
-        box-shadow:0 1px 2px #aaa;
-        background:white;
-        margin:1rem 1rem 1rem;
-        border-radius:3px;
-        user-select:none;
-        transform-origin:top left;
-        position:relative;
-        z-index:2;
-        clear: both;
-      }
+    .card:nth-child(even){
+     transform-origin:top right;
+    }
 
-      .card:nth-child(even){
-       transform-origin:top right;
-      }
+    .map {
+      background: whitesmoke;
+      margin: .5rem -1.5rem 0 -1.5rem;
+      padding: 0.5rem;
+    }
 
-      .map {
-        background: whitesmoke;
-        margin: .5rem -1.5rem 0 -1.5rem;
-        padding: 0.5rem;
-      }
+    h1 {
+      font-size: 2rem;
+      font-weight:200;
+      clear: both;
+    }
 
-      h1 {
-        font-size: 2rem;
-        font-weight:200;
-        clear: both;
-      }
+    h1 strong {
+      font-weight:300;
+      color:#539D00;
+    }
 
-      h1 strong {
-        font-weight:300;
-        color:#539D00;
-      }
+    h2 {
+      font-size:.9rem;
+      line-height:2.5;
+      color:gray;
+      font-weight:400;
+      clear: both;
+    }
 
-      h2 {
-        font-size:.9rem;
-        line-height:2.5;
-        color:gray;
-        font-weight:400;
-        clear: both;
-      }
-
-      .showcase {
-        display: inline-block;
-        margin-right: 2rem;
-        float: left;
-      }
-    </style>
+    .showcase {
+      display: inline-block;
+      margin-right: 2rem;
+      float: left;
+    }
+  </style>
 
 </head>
 
-<body unresolved>
+<body>
   <p>A `google-signin` element looks like this:</p>
 
-  <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
+  <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin></p>
 
   <h1>Styling</h1>
 
@@ -84,31 +85,31 @@
     <h2>Width</h2>
 
     <p>Wide:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="wide"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="wide"></google-signin></p>
     <p>Standard:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="standard"></google-signin></p>
     <p>Icon Only:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="iconOnly"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" width="iconOnly"></google-signin></p>
   </div>
 
   <div class="showcase">
     <h2>Height</h2>
 
     <p>Tall:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="tall"></google-signin></p>
     <p>Standard:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="standard"></google-signin></p>
     <p>Short:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" height="short"></google-signin></p>
   </div>
 
   <div class="showcase">
     <h2>Theme</h2>
 
     <p>Dark:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark"></google-signin></p>
     <p>Light:</p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light"></google-signin></p>
   </div>
 
   <h1>Branding</h1>
@@ -121,29 +122,29 @@
   <div class="showcase">
     <h3>Dark Theme</h3>
 
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="wide" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="standard" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="dark" width="iconOnly" height="short"></google-signin></p>
   </div>
 
   <div class="showcase">
     <h3>Light Theme</h3>
 
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="wide" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="standard" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile" theme="light" width="iconOnly" height="short"></google-signin></p>
   </div>
 
   <h2>Google Plus Scopes</h2>
@@ -152,29 +153,29 @@
   <div class="showcase">
     <h3>Dark Theme</h3>
 
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="wide" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="standard" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="dark" width="iconOnly" height="short"></google-signin></p>
   </div>
 
   <div class="showcase">
     <h3>Light Theme</h3>
 
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="short"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="tall"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="standard"></google-signin></p>
-    <p><google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="wide" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="standard" height="short"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="tall"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="standard"></google-signin></p>
+    <p><google-signin client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/plus.login" theme="light" width="iconOnly" height="short"></google-signin></p>
   </div>
 
   <h2>google-signin-aware</h2>
@@ -182,31 +183,26 @@
   <p>The <code>google-signin-aware</code> element can be used within other elements to request additional scopes.</p>
 
   <!-- Demo the ability to use the google-signin-aware element. -->
-  <polymer-element name="sample-aware">
-    <template>
-      <google-signin-aware
-          scopes="https://www.googleapis.com/auth/calendar.readonly"
-          on-google-signin-aware-success="{{signIn}}"
-          on-google-signin-aware-signed-out="{{signOut}}"></google-signin-aware>
+  <template id="awareness" is="x-autobind">
+    <google-signin-aware
+        scopes="https://www.googleapis.com/auth/calendar.readonly"
+        on-google-signin-aware-success="signIn"
+        on-google-signin-aware-signed-out="signOut"></google-signin-aware>
 
-      <p>Testing <code>google-signin-aware</code>: {{status}}</p>
-    </template>
+    <p>Testing <code>google-signin-aware</code>: <span>{{status}}</span></p>
+  </template>
 
-    <script>
-      Polymer('sample-aware', {
-        status: 'Not granted',
-        signIn: function(response) {
-          this.status = 'Signin granted';
-          console.log('[Aware] Signin Response', response);
-        },
-        signOut: function(response) {
-          this.status = 'Signed out';
-          console.log('[Aware] Signout Response', response);
-        }
-      });
-    </script>
-  </polymer-element>
-
-  <sample-aware></sample-aware>
+  <script>
+    var aware = document.querySelector('#awareness');
+    aware.status = 'Not granted';
+    aware.signIn = function(response) {
+      this.status = 'Signin granted';
+      console.log('[Aware] Signin Response', response);
+    };
+    aware.signOut = function(response) {
+      this.status = 'Signed out';
+      console.log('[Aware] Signout Response', response);
+    };
+  </script>
 </body>
 </html>

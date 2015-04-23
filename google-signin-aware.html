@@ -23,30 +23,33 @@ when a user explicitely signs out via the google-signin element.
 @homepage https://googlewebcomponents.github.io/google-signin
 -->
 
-<polymer-element name="google-signin-aware" attributes="scopes">
+<dom-module id="google-signin-aware">
   <template>
-    <core-signals on-core-signal-google-auth-user="{{authUserChange}}"></core-signals>
+    <core-signals on-core-signal-google-auth-user="authUserChange"></core-signals>
   </template>
+</dom-module>
+<script>
+  (function() {
 
-  <script>
-    (function() {
-      var loader = null;
+    /**
+     * Called when authorization server replies.
+     *
+     * @param {Object} result Authorization result.
+     * @event google-signin-aware-success
+     */
 
-      /**
-       * Called when authorization server replies.
-       *
-       * @param {Object} result Authorization result.
-       * @event google-signin-aware-success
-       */
+    /**
+     * Called when the user is signed out.
+     *
+     * @param {Object} result Authorization result.
+     * @event google-signin-aware-signed-out
+     */
 
-      /**
-       * Called when the user is signed out.
-       *
-       * @param {Object} result Authorization result.
-       * @event google-signin-aware-signed-out
-       */
+    Polymer({
 
-      Polymer({
+      is: 'google-signin-aware',
+
+      properties: {
         /**
          * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
          * and should be space-delimited.
@@ -55,42 +58,48 @@ when a user explicitely signs out via the google-signin element.
          * @type string
          * @default 'profile'
          */
-        scopes: '',
-
-        domReady: function() {
-          this.fire('core-signal', {
-            'name': 'google-auth-request',
-            'data': this.scopes.split(' ')
-          });
-        },
-
-        /**
-         * Handles a change to the authenticated user.
-         */
-        authUserChange: function(e, result) {
-          if (result.user.isSignedIn()) {
-            // Check if correct scopes authorized, if not do nothing and continue to wait.
-            var isComplete = true;
-            var authResult = result.user.getAuthResponse();
-            var tmpScopes = authResult.scope.split(' ');
-            var scopes = this.scopes.split(' ');
-
-            for (var i = 0; i < scopes.length; i++) {
-              if (scopes[i] !== '' && tmpScopes.indexOf(scopes[i].toLowerCase()) < 0) {
-                isComplete = false;
-                break;
-              }
-            }
-
-            if (isComplete) {
-              this.fire('google-signin-aware-success', result);
-            }
-          } else {
-            // Fire event to indicate user signed out.
-            this.fire('google-signin-aware-signed-out');
-          }
+        scopes: {
+          type: String,
+          value: ''
         }
-      });
-    })();
-  </script>
-</polymer-element>
+      },
+
+      ready: function() {
+        this.async( this.notifyAuthRequest, 1);
+      },
+
+      notifyAuthRequest: function() {
+        this.fire('core-signal', {
+          'name': 'google-auth-request',
+          'data': this.scopes.split(' ')
+        });
+      },
+      /**
+       * Handles a change to the authenticated user.
+       */
+      authUserChange: function(e, result) {
+        if (result.user.isSignedIn()) {
+          // Check if correct scopes authorized, if not do nothing and continue to wait.
+          var isComplete = true;
+          var authResult = result.user.getAuthResponse();
+          var tmpScopes = authResult.scope.split(' ');
+          var scopes = this.scopes.split(' ');
+
+          for (var i = 0; i < scopes.length; i++) {
+            if (scopes[i] !== '' && tmpScopes.indexOf(scopes[i].toLowerCase()) < 0) {
+              isComplete = false;
+              break;
+            }
+          }
+
+          if (isComplete) {
+            this.fire('google-signin-aware-success', result);
+          }
+        } else {
+          // Fire event to indicate user signed out.
+          this.fire('google-signin-aware-signed-out');
+        }
+      }
+    });
+  })();
+</script>
