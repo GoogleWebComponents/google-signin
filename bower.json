@@ -31,7 +31,7 @@
     "core-icons": "Polymer/core-icons#0.8-preview",
     "core-signals": "Polymer/core-signals#0.8-preview",
     "font-roboto": "Polymer/font-roboto#0.8-preview",
-    "google-apis": "GoogleWebComponents/google-apis0.8-preview",
+    "google-apis": "GoogleWebComponents/google-apis#0.8-preview",
     "paper-button": "Polymer/paper-button#0.8-preview",
     "paper-ripple": "Polymer/paper-ripple#0.8-preview",
     "paper-shadow": "Polymer/paper-shadow#0.8-preview"
