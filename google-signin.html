@@ -402,6 +402,13 @@ any apps you're building. See the Google Developers Console
 
         publish: {
           /**
+           * Indicates whether your application needs to access a Google API when the user is not present at the browser.
+           *
+           * @default online
+           * @type string
+           */
+          accessType: 'online',
+          /**
            * App package name for android over-the-air installs.
            * See the relevant [docs](https://developers.google.com/+/web/signin/android-app-installs)
            *
@@ -548,11 +555,22 @@ any apps you're building. See the Google Developers Console
             }
           }, this);
 
-          auth.signIn(params).then(function(newUser) {
-            // Let the current user listener trigger the changes.
-          }, function(error) {
-            console.error(error);
-          });
+          if(this.accessType == 'offline'){
+            // Google Sign-In server-side flow allows over-the-air installs.
+            auth.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(function (result) {
+              // The current user listener trigger the changes.
+              // Send auth-code
+              defaultHandler.fire('google-auth-code-received', { 'code': result.code });
+            }, function (error) {
+              console.error(error);
+            });
+          }else {
+            auth.signIn(params).then(function (newUser) {
+              // Let the current user listener trigger the changes.
+            }, function (error) {
+              console.error(error);
+            });
+          }
         },
 
         signedIn: false,
