@@ -279,23 +279,30 @@ any apps you're building. See the Google Developers Console
           this.signedIn = result.user.isSignedIn();
 
           if (this.signedIn) {
-            this.checkScopes();
+            // If the scopes are already granted there is no reason to recheck scopes.
+            if(this.grantedRequestedScopes) {
+              return;
+            }
 
-            // Trigger the google-signin-success event
-            this.fire('google-signin-success', { 'user': result.user, 'gapi': gapi });
+            if(this.isGrantedRequestedScopes()) {
+              // Trigger the google-signin-success event
+              this.fire('google-signin-success', { 'user': result.user, 'gapi': gapi });
+
+              this.grantedRequestedScopes = true;
+            }
           } else {
             // Fire event to indicate user signed out
             this.fire('google-signed-out', { 'user': result.user });
+
+            this.grantedRequestedScopes = false;
           }
         },
 
         /**
          * Checks whether authorized and requested scopes match and
          * displays button for additional auth if necessary.
-         *
-         * @param {Array} scopes Scopes being requested.
          */
-        checkScopes: function () {
+        isGrantedRequestedScopes: function () {
           var currentScopes = this.scopes.split(' ');
           this.additionalAuth = false;
 
@@ -304,10 +311,12 @@ any apps you're building. See the Google Developers Console
               if (authorizedScopes.indexOf(currentScopes[i].toLowerCase()) < 0) {
                 this.additionalAuth = true;
                 this.fire('google-signin-necessary');
-                break;
+                return false;
               }
             }
           }
+
+          return true;
         },
 
         /**
