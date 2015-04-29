@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-signals/core-signals.html">
+<link rel="import" href="../iron-signals/iron-signals.html">
 
 <!--
 google-signin-aware is used to enable authentication in custom elements by
@@ -25,7 +25,7 @@ when a user explicitely signs out via the google-signin element.
 
 <dom-module id="google-signin-aware">
   <template>
-    <core-signals on-core-signal-google-auth-user="authUserChange"></core-signals>
+    <iron-signals on-iron-signal-google-auth-user="authUserChange"></iron-signals>
   </template>
 </dom-module>
 <script>
@@ -69,7 +69,7 @@ when a user explicitely signs out via the google-signin element.
       },
 
       notifyAuthRequest: function() {
-        this.fire('core-signal', {
+        this.fire('iron-signal', {
           'name': 'google-auth-request',
           'data': this.scopes.split(' ')
         });
