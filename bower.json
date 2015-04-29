@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#0.8-preview",
-    "iron-icon": "polymerelements/iron-icon^0.8.0",
+    "iron-icon": "PolymerElements/iron-icon^0.8.0",
     "iron-icons": "Polymer/iron-icons^0.8.0",
     "iron-signals": "Polymer/iron-signals^0.8.0",
     "font-roboto": "Polymer/font-roboto#0.8-preview",
