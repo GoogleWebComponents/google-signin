@@ -27,13 +27,17 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#0.8-preview",
-    "core-icon": "Polymer/core-icon#0.8-preview",
-    "core-icons": "Polymer/core-icons#0.8-preview",
-    "core-signals": "Polymer/core-signals#0.8-preview",
+    "iron-icon": "PolymerElements/iron-icon^0.8.0",
+    "iron-icons": "Polymer/iron-icons^0.8.0",
+    "iron-signals": "Polymer/iron-signals^0.8.0",
     "font-roboto": "Polymer/font-roboto#0.8-preview",
     "google-apis": "GoogleWebComponents/google-apis#0.8-preview",
     "paper-button": "Polymer/paper-button#0.8-preview",
     "paper-ripple": "Polymer/paper-ripple#0.8-preview",
     "paper-shadow": "Polymer/paper-shadow#0.8-preview"
+  },
+  "devDependencies": {
+    "iron-doc-viewer": "PolymerElements/iron-doc-viewer#^0.8.6"
   }
+
 }

@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-icon/core-icon.html">
-<link rel="import" href="../core-icons/core-icons.html">
-<link rel="import" href="../core-signals/core-signals.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-signals/iron-signals.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../google-apis/google-js-api.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
@@ -79,17 +79,17 @@ any apps you're building. See the Google Developers Console
   <template>
     <google-js-api on-js-api-load="loadAuth"></google-js-api>
 
-    <core-signals 
-      on-core-signal-google-auth-request="authRequestScopes"
-      on-core-signal-google-auth-user="authUserChange"
-      on-core-signal-google-auth-scopes="authScopesChange"
-    ></core-signals>
+    <iron-signals
+      on-iron-signal-google-auth-request="authRequestScopes"
+      on-iron-signal-google-auth-user="authUserChange"
+      on-iron-signal-google-auth-scopes="authScopesChange"
+    ></iron-signals>
 
     <template if="{{raised}}">
       <paper-shadow id="shadow" fit animated></paper-shadow>
     </template>
 
-    <div id="button" 
+    <div id="button"
       class$="[[computeButtonClass(height, width, theme, signedIn, brand, additionalAuth)]]">
 
       <paper-ripple id="ripple" fit></paper-ripple>
@@ -98,21 +98,21 @@ any apps you're building. See the Google Developers Console
         <template is="x-if" if="{{computeButtonIsSignIn(signedIn, additionalAuth)}}">
           <div class="button-content signIn" tabindex="0"
               on-click="signIn" on-keydown="signInKeyPress">
-            <span class="icon"><core-icon icon="[[parent.brandIcon]]"></core-icon></span>
+            <span class="icon"><iron-icon icon="[[parent.brandIcon]]"></iron-icon></span>
             <span class="buttonText">{{parent.labelSignin}}</span>
           </div>
         </template>
         <template is="x-if" if="{{ computeButtonIsSignOut(signedIn, additionalAuth) }}">
           <div class="button-content signOut" tabindex="0"
               on-click="signOut" on-keydown="signOutKeyPress">
-            <span class="icon"><core-icon icon="[[parent.brandIcon]]"></core-icon></span>
+            <span class="icon"><iron-icon icon="[[parent.brandIcon]]"></iron-icon></span>
             <span class="buttonText">{{parent.labelSignout}}</span>
           </div>
         </template>
         <template is="x-if" if="{{ computeButtonIsSignOutAddl(signedIn, additionalAuth) }}">
           <div class="button-content signIn" tabindex="0"
               on-click="signIn" on-keydown="signInKeyPress">
-            <span class="icon"><core-icon icon="[[parent.brandIcon]]"></core-icon></span>
+            <span class="icon"><iron-icon icon="[[parent.brandIcon]]"></iron-icon></span>
             <span class="buttonText">{{parent.labelAdditional}}</span>
           </div>
         </template>
@@ -614,7 +614,7 @@ any apps you're building. See the Google Developers Console
             }
 
             // Signal all buttons to update their state based on the user.
-            defaultHandler.fire('core-signal', {
+            defaultHandler.fire('iron-signal', {
               'name': 'google-auth-user',
               'data': {
                 'user': newPrimary
@@ -635,7 +635,7 @@ any apps you're building. See the Google Developers Console
             params[ProxyLoginAttributes[key]] = this[key];
           }
         }, this);
- 
+
         gapi.auth2.getAuthInstance().signIn(params).then(function(newUser) {
           // Let the current user listener trigger the changes.
         }, function(error) {
