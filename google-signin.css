@@ -25,6 +25,7 @@
 }
 
 #button {
+  position: relative;
   outline: none;
   font-size: 14px;
   font-weight: 400;
@@ -187,7 +188,7 @@ iron-icon {
 }
 
 .brand-google.theme-light #ripple {
-  color: #d1d1d1;
+  color: #444;
 }
 
 :host([noink]) .brand-google.theme-light:hover,
@@ -221,7 +222,7 @@ iron-icon {
 }
 
 .brand-google-plus.theme-light #ripple {
-  color: #d1d1d1;
+  color: #400;
 }
 
 :host([noink]) .brand-google-plus.theme-light:hover,

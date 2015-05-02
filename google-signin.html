@@ -1,21 +1,119 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="google-signin-aware.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-signals/iron-signals.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../google-apis/google-js-api.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
-<link rel="import" href="../paper-shadow/paper-shadow.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="google-icons.html">
 
-<!--
-Copyright (c) 2014 Google Inc. All rights reserved.
+<dom-module id="google-signin">
+  <link rel="import" type="css" href="google-signin.css">
+  <template>
+    <google-signin-aware id="aware"
+      app-package-name="{{appPackageName}}"
+      client-id="{{clientId}}"
+      cookie-policy="{{cookiePolicy}}"
+      request-visible-actions="{{requestVisibleActions}}"
+      scopes="{{scopes}}"
+      signed-in="{{signedIn}}"
+      is-authorized="{{isAuthorized}}"
+      need-additional-auth="{{needAdditionalAuth}}"
+      has-plus-scopes="{{hasPlusScopes}}"></google-signin-aware>
+    <template is="dom-if" if="{{raised}}">
+      <paper-material id="shadow" class="fit" elevation="2" animated></paper-material>
+    </template>
+    <div id="button"
+      class$="[[_computeButtonClass(height, width, theme, signedIn, _brand, needAdditionalAuth)]]">
 
-LICENSE: github.com/GoogleWebComponents/google-signin/blob/master/LICENSE
-AUTHOR(s): Addy Osmani, Gerwin Sturm, Rob Dodson, and Randy Merrill.
--->
+      <paper-ripple id="ripple" class="fit"></paper-ripple>
+      <!-- this div is needed to position the ripple behind text content -->
+      <div relative layout horizontal center-center>
+        <template is="dom-if" if="{{_computeButtonIsSignIn(signedIn, needAdditionalAuth)}}">
+          <div class="button-content signIn" tabindex="0"
+              on-click="signIn" on-keydown="_signInKeyPress">
+            <span class="icon"><iron-icon icon="[[_brandIcon]]"></iron-icon></span>
+            <span class="buttonText">{{_labelSignin}}</span>
+          </div>
+        </template>
+        <template is="dom-if" if="{{_computeButtonIsSignOut(signedIn, needAdditionalAuth) }}">
+          <div class="button-content signOut" tabindex="0"
+              on-click="signOut" on-keydown="_signOutKeyPress">
+            <span class="icon"><iron-icon icon="[[_brandIcon]]"></iron-icon></span>
+            <span class="buttonText">{{labelSignout}}</span>
+          </div>
+        </template>
+        <template is="dom-if" if="{{_computeButtonIsSignOutAddl(signedIn, needAdditionalAuth) }}">
+          <div class="button-content signIn" tabindex="0"
+              on-click="signIn" on-keydown="_signInKeyPress">
+            <span class="icon"><iron-icon icon="[[_brandIcon]]"></iron-icon></span>
+            <span class="buttonText">{{labelAdditional}}</span>
+          </div>
+        </template>
+      </div>
 
-<!--
+    </div>
+  </template>
+</dom-module>
+<script>
+  (function() {
+
+    /**
+     * Enum brand values.
+     * @readonly
+     * @enum {string}
+     */
+    var BrandValue = {
+        GOOGLE: 'google',
+        PLUS: 'google-plus'
+    };
+
+    /**
+     * Enum height values.
+     * @readonly
+     * @enum {string}
+     */
+    var HeightValue = {
+      SHORT: 'short',
+      STANDARD: 'standard',
+      TALL: 'tall'
+    };
+
+    /**
+     * Enum button label default values.
+     * @readonly
+     * @enum {string}
+     */
+    var LabelValue = {
+      STANDARD: 'Sign in',
+      WIDE: 'Sign in with Google',
+      WIDE_PLUS: 'Sign in with Google+'
+    };
+
+    /**
+     * Enum theme values.
+     * @readonly
+     * @enum {string}
+     */
+    var ThemeValue = {
+      LIGHT: 'light',
+      DARK: 'dark'
+    };
+
+    /**
+     * Enum width values.
+     * @readonly
+     * @enum {string}
+     */
+    var WidthValue = {
+      ICON_ONLY: 'iconOnly',
+      STANDARD: 'standard',
+      WIDE: 'wide'
+    };
+
+/**
 &lt;google-signin&gt; is used to authenticate with Google, allowing you to interact
 with other Google APIs such as Drive and Google+.
 
@@ -54,6 +152,7 @@ These attributes help you follow the Google+ Sign-In button branding guidelines
 The `google-signin-success` event is triggered when a user successfully authenticates
 and `google-signin-failure` is triggered when this is not the case. Both events
 will also provide the data returned by the Google client authentication process.
+You can also use `isAuthorized` attribute to observe authentication state.
 
 Additional events, such as `google-signout-attempted` and `google-signed-out` are
 triggered when the user attempts to sign-out and successfully signs out.
@@ -68,153 +167,11 @@ port 8080. That said, you *should* update the `clientId` to your own one for
 any apps you're building. See the Google Developers Console
 (https://console.developers.google.com) for more info.
 
-@class google-signin
-@blurb A Polymer element for authenticating and authorizing with Google Services.
-@status beta
-@homepage https://googlewebcomponents.github.io/google-signin
--->
+*/
 
-<dom-module id="google-signin">
-  <link rel="import" type="css" href="google-signin.css">
-  <template>
-    <google-js-api on-js-api-load="loadAuth"></google-js-api>
+    Polymer({
 
-    <iron-signals
-      on-iron-signal-google-auth-request="authRequestScopes"
-      on-iron-signal-google-auth-user="authUserChange"
-      on-iron-signal-google-auth-scopes="authScopesChange"
-    ></iron-signals>
-
-    <template if="{{raised}}">
-      <paper-shadow id="shadow" fit animated></paper-shadow>
-    </template>
-
-    <div id="button"
-      class$="[[computeButtonClass(height, width, theme, signedIn, brand, additionalAuth)]]">
-
-      <paper-ripple id="ripple" fit></paper-ripple>
-      <!-- this div is needed to position the ripple behind text content -->
-      <div relative layout horizontal center-center>
-        <template is="x-if" if="{{computeButtonIsSignIn(signedIn, additionalAuth)}}">
-          <div class="button-content signIn" tabindex="0"
-              on-click="signIn" on-keydown="signInKeyPress">
-            <span class="icon"><iron-icon icon="[[parent.brandIcon]]"></iron-icon></span>
-            <span class="buttonText">{{parent.labelSignin}}</span>
-          </div>
-        </template>
-        <template is="x-if" if="{{ computeButtonIsSignOut(signedIn, additionalAuth) }}">
-          <div class="button-content signOut" tabindex="0"
-              on-click="signOut" on-keydown="signOutKeyPress">
-            <span class="icon"><iron-icon icon="[[parent.brandIcon]]"></iron-icon></span>
-            <span class="buttonText">{{parent.labelSignout}}</span>
-          </div>
-        </template>
-        <template is="x-if" if="{{ computeButtonIsSignOutAddl(signedIn, additionalAuth) }}">
-          <div class="button-content signIn" tabindex="0"
-              on-click="signIn" on-keydown="signInKeyPress">
-            <span class="icon"><iron-icon icon="[[parent.brandIcon]]"></iron-icon></span>
-            <span class="buttonText">{{parent.labelAdditional}}</span>
-          </div>
-        </template>
-      </div>
-    </div>
-  </template>
-</dom-module>
-<script>
-  (function() {
-
-    var authorizedScopes = [];
-    var extraScopes = [];
-    var defaultHandler = null;
-
-    /**
-     * Enum brand values.
-     * @readonly
-     * @enum {string}
-     */
-    var BrandValue = {
-        GOOGLE: 'google',
-        PLUS: 'google-plus'
-    };
-
-    /**
-     * Enum height values.
-     * @readonly
-     * @enum {string}
-     */
-    var HeightValue = {
-      SHORT: 'short',
-      STANDARD: 'standard',
-      TALL: 'tall'
-    };
-
-    /**
-     * Enum button label default values.
-     * @readonly
-     * @enum {string}
-     */
-    var LabelValue = {
-      STANDARD: 'Sign in',
-      WIDE: 'Sign in with Google',
-      WIDE_PLUS: 'Sign in with Google+'
-    };
-
-    /**
-     * Enum of attributes to be passed through to the login API call.
-     * @readonly
-     * @enum {string}
-     */
-    var ProxyLoginAttributes = {
-      'appPackageName': 'apppackagename',
-      'clientId': 'clientid',
-      'cookiePolicy': 'cookiepolicy',
-      'requestVisibleActions': 'requestvisibleactions'
-    };
-
-    /**
-     * Enum theme values.
-     * @readonly
-     * @enum {string}
-     */
-    var ThemeValue = {
-      LIGHT: 'light',
-      DARK: 'dark'
-    };
-
-    /**
-     * Enum width values.
-     * @readonly
-     * @enum {string}
-     */
-    var WidthValue = {
-      ICON_ONLY: 'iconOnly',
-      STANDARD: 'standard',
-      WIDE: 'wide'
-    };
-
-    /**
-     * Adds any ungranted, unique scopes to the provided authScopes.
-     *
-     * @param {String} authScopes Scopes being requested.
-     */
-    var mergeExtraScopes = function(authScopes) {
-      if (!extraScopes.length) {
-        return authScopes;
-      }
-
-      var scopes = authScopes.split(' ');
-
-      // Check if there are any unauthorized scopes to add to the scope list.
-      for (var i = 0; i < extraScopes.length; i++) {
-        var currentScope = extraScopes[i].toLowerCase();
-        if (authorizedScopes.indexOf(currentScope) < 0
-            && scopes.indexOf(currentScope) < 0) {
-          scopes.push(currentScope);
-        }
-      }
-
-      return scopes.join(' ');
-    };
+      is: 'google-signin',
 
     /**
      * Called when authorization server replies.
@@ -230,18 +187,10 @@ any apps you're building. See the Google Developers Console
      * @event google-signed-out
      */
 
-    Polymer({
-
-      is: 'google-signin',
-
       properties: {
         /**
          * App package name for android over-the-air installs.
          * See the relevant [docs](https://developers.google.com/+/web/signin/android-app-installs)
-         *
-         * @attribute appPackageName
-         * @type string
-         * @default ''
          */
         appPackageName: {
           type: String,
@@ -251,19 +200,21 @@ any apps you're building. See the Google Developers Console
         /**
          * The brand being used for logo and styling.
          *
-         * @default google
-         * @type string
+         * @default 'google'
          */
         brand: {
           type: String,
-          value: 'google'
+          value: ''
+        },
+
+        /** @private */
+        _brand: {
+          type: String,
+          computed: '_computeBrand(brand, hasPlusScopes)'
         },
 
         /**
          * a Google Developers clientId reference
-         *
-         * @attribute clientId
-         * @type string
          */
         clientId: {
           type: String,
@@ -275,13 +226,11 @@ any apps you're building. See the Google Developers Console
          * remembering the user's sign-in state.
          * See the relevant [docs](https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy) for more information.
          *
-         * @attribute cookiePolicy
-         * @type string
          * @default 'single_host_origin'
          */
         cookiePolicy: {
           type: String,
-          value: 'single_host_origin'
+          value: ''
         },
 
         /**
@@ -289,9 +238,7 @@ any apps you're building. See the Google Developers Console
          *
          * Available options: short, standard, tall.
          *
-         * @attribute height
          * @type {HeightValue}
-         * @default 'standard'
          */
         height: {
           type: String,
@@ -301,10 +248,6 @@ any apps you're building. See the Google Developers Console
         /**
          * By default the ripple expands to fill the button. Set this to true to
          * constrain the ripple to a circle within the button.
-         *
-         * @attribute fill
-         * @type boolean
-         * @default true
          */
         fill: {
           type: Boolean,
@@ -313,10 +256,6 @@ any apps you're building. See the Google Developers Console
 
         /**
          * An optional label for the button for additional permissions.
-         *
-         * @attribute labelAdditional
-         * @type string
-         * @default 'Additional permissions required'
          */
         labelAdditional: {
           type: String,
@@ -325,21 +264,18 @@ any apps you're building. See the Google Developers Console
 
         /**
          * An optional label for the sign-in button.
-         *
-         * @attribute labelSignin
-         * @type string
          */
         labelSignin: {
           type: String,
-          value: 'Sign in'
+          value: ''
         },
 
+        _labelSignin: {
+          type: String,
+          computed: '_computeSigninLabel(labelSignin, width, _brand)'
+        },
         /**
          * An optional label for the sign-out button.
-         *
-         * @attribute labelSignout
-         * @type string
-         * @default 'Sign out'
          */
         labelSignout: {
           type: String,
@@ -348,10 +284,6 @@ any apps you're building. See the Google Developers Console
 
         /**
          * If true, the button will be styled with a shadow.
-         *
-         * @attribute raised
-         * @type boolean
-         * @default false
          */
         raised: {
           type: Boolean,
@@ -361,9 +293,6 @@ any apps you're building. See the Google Developers Console
         /**
          * The app activity types you want to write on behalf of the user
          * (e.g http://schemas.google.com/AddActivity)
-         *
-         * @attribute requestVisibleActions
-         * @type string
          */
         requestVisibleActions: {
           type: String,
@@ -373,14 +302,10 @@ any apps you're building. See the Google Developers Console
         /**
          * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
          * and should be space-delimited.
-         *
-         * @attribute scopes
-         * @type string
-         * @default 'profile'
          */
         scopes: {
           type: String,
-          value: 'profile'
+          value: ''
         },
 
         /**
@@ -402,264 +327,146 @@ any apps you're building. See the Google Developers Console
          *
          * Available options: iconOnly, standard, wide.
          *
-         * @attribute width
          * @type {WidthValue}
-         * @default 'standard'
          */
         width: {
           type: String,
           value: 'standard'
         },
-        /**
-         * Is user signed in?
-         *
-         * @attribute signedIn
-         * @type {Boolean}
-         */
-        signedIn: {
-          type: Boolean,
-          value: false,
-          notify: true
+
+        _brandIcon: {
+          type: String,
+          computed: '_computeIcon(_brand)'
         },
+
         /**
-         * Is additional authorization required?
-         * @attribute additionalAuth
-         * @type {Boolean}
+         * True if *any* element has google+ scopes
          */
-        additionalAuth: {
+        hasPlusScopes: {
+          type: Boolean,
+          notify: true,
+          value: false
+        },
+
+        /**
+         * True if additional authorization required globally
+         */
+        needAdditionalAuth: {
           type: Boolean,
           value: false
         },
 
-        brandIcon: {
-          type: String,
-          computed: 'computeIcon(brand)'
+        /**
+         * Is user signed in?
+         */
+        signedIn: {
+          type: Boolean,
+          notify: true,
+          value: false,
+          observer: '_observeSignedIn'
+        },
+
+        /**
+         * True if authorizations for *this* element have been granted
+         */
+        isAuthorized: {
+          type: Boolean,
+          notify: true,
+          value: false
         }
+
       },
 
-      attached: function () {
-        if (this.clientId === '') {
-          throw 'A valid clientId is required to use this element';
-        }
-
-        // Determine the branding to use before the label.
-        this.determineBranding();
-
-        // Allow for the label to be provided as an attribute.
-        if (this.labelSignin === '') {
-          this.determineLabel();
-        }
-
-        if (defaultHandler === null) {
-          // Bind the defaultHandler to the first attached signin button.
-          defaultHandler = this;
-        }
+      _computeButtonClass: function(height, width, theme, signedIn, brand, needAdditionalAuth) {
+        return "height-" + height + " width-" + width + " theme-" + theme + " signedIn-" + signedIn + " brand-" + brand + "  additionalAuth-" + needAdditionalAuth;
       },
 
-      computeButtonClass: function(height, width, theme, signedIn, brand, additionalAuth) {
-        return "height-" + height + " width-" + width + " theme-" + theme + " signedIn-" + signedIn + " brand-" + brand + "  additionalAuth-" + additionalAuth;
-      },
-
-      computeIcon: function(brand) {
+      _computeIcon: function(brand) {
         return "google:" + brand;
       },
 
       /* Button state computed */
-      computeButtonIsSignIn: function(signedIn, additionalAuth) {
+      _computeButtonIsSignIn: function(signedIn, additionalAuth) {
         return !signedIn;
       },
-      computeButtonIsSignOut: function(signedIn, additionalAuth) {
+
+      _computeButtonIsSignOut: function(signedIn, additionalAuth) {
         return signedIn && !additionalAuth;
       },
-      computeButtonIsSignOutAddl: function(signedIn, additionalAuth) {
+
+      _computeButtonIsSignOutAddl: function(signedIn, additionalAuth) {
         return signedIn && additionalAuth;
       },
-      /**
-       * Adds additional extra scopes to be used when signing in.
-       *
-       * @param {Object} e Event triggering the request.
-       * @param {Array} authScopes Scopes being requested.
-       */
-      authRequestScopes: function (e, authScopes) {
-        // Only want the default handler to add the new scope for now.
-        if (this !== defaultHandler) {
-            return;
-        }
 
-        for (var i = 0; i < authScopes.length; i++) {
-          if (authScopes[i] !== "") {
-            authScopes[i] = authScopes[i].toLowerCase();
-
-            if (extraScopes.indexOf(authScopes[i]) < 0) {
-                extraScopes.push(authScopes[i]);
-            }
-          }
-        }
-      },
-
-      /**
-       * Handles a change to the authenticated user.
-       */
-      authUserChange: function(e, result) {
-        this.signedIn = result.user.isSignedIn();
-
-        if (this.signedIn) {
-          this.checkScopes();
-
-          // Trigger the google-signin-success event
-          this.fire('google-signin-success', { 'user': result.user, 'gapi': gapi });
+      _computeBrand: function(attrBrand, hasPlusScopes) {
+        var newBrand;
+        if (attrBrand) {
+          newBrand = attrBrand;
+        } else if (hasPlusScopes) {
+          newBrand = BrandValue.PLUS;
         } else {
-          // Fire event to indicate user signed out
-          this.fire('google-signed-out', { 'user': result.user });
-        }
+          newBrand = BrandValue.GOOGLE;
+        };
+        return newBrand;
       },
 
-      /**
-       * Checks whether authorized and requested scopes match and
-       * displays button for additional auth if necessary.
-       *
-       * @param {Array} scopes Scopes being requested.
-       */
-      checkScopes: function () {
-        var currentScopes = this.scopes.split(' ');
-        this.additionalAuth = false;
-
-        for (var i = 0; i < currentScopes.length; i++) {
-          if (currentScopes[i] !== '') {
-            if (authorizedScopes.indexOf(currentScopes[i].toLowerCase()) < 0) {
-              this.additionalAuth = true;
-              this.fire('google-signin-necessary');
-              break;
-            }
-          }
+      _observeSignedIn: function(newVal, oldVal) {
+        if (newVal) {
+          if (this.needAdditionalAuth)
+            this.fire('google-signin-necessary');
+          this.fire('google-signin-success');
         }
-      },
-
-      /**
-       * Determines the proper branding based on the scopes being requested.
-       */
-      determineBranding: function() {
-        var scope;
-        var currentScopes = this.scopes.split(' ');
-        var hasPlusScopes = false;
-        for (var i = 0; i < currentScopes.length; i++) {
-          scope = currentScopes[i];
-          if (scope == '') continue;
-          if (scope.indexOf('/auth/games') > -1 || (
-              scope.indexOf('auth/plus.') > -1 && scope.indexOf('auth/plus.me') < 0)) {
-            hasPlusScopes = true;
-          }
-        }
-
-        if (hasPlusScopes) {
-          this.brand = BrandValue.PLUS;
-        } else {
-          this.brand = BrandValue.GOOGLE;
-        }
+        else
+          this.fire('google-signed-out');
       },
 
       /**
        * Determines the proper label based on the attributes.
        */
-      determineLabel: function() {
-        // If no label supplied use the width to determine label.
-        if (this.width == WidthValue.WIDE) {
-          if (this.brand == BrandValue.PLUS) {
-              this.labelSignin = LabelValue.WIDE_PLUS;
-          } else {
-              this.labelSignin = LabelValue.WIDE;
+      _computeSigninLabel: function(labelSignin, width, _brand) {
+        if (labelSignin) {
+          return labelSignin;
+        } else {
+          switch(width) {
+
+            case WidthValue.WIDE:
+              return (_brand == BrandValue.PLUS) ?
+                LabelValue.WIDE_PLUS : LabelValue.WIDE;
+
+            case WidthValue.STANDARD:
+              return LabelValue.STANDARD;
+
+            case WidthValue.ICON_ONLY:
+              return '';
+
+            default:
+              console.warn("bad width value: ", width);
+              return LabelValue.STANDARD;
           }
-        } else if (this.width == WidthValue.STANDARD) {
-          this.labelSignin = LabelValue.STANDARD;
         }
       },
 
-      /**
-       * Loads the `gapi.auth2` library and triggers the immediate auth.
+      /** Sign in user. Opens the authorization dialog for signing in.
+       * The dialog will be blocked by a popup blocker unless called inside click handler.
        */
-      loadAuth: function() {
-        // Only the defaultHander should load the library.
-        if (this !== defaultHandler) {
-          return;
-        }
-
-        gapi.load('auth2', function() {
-          var auth = gapi.auth2.init({
-            'client_id': defaultHandler.clientId,
-            'cookie_policy': defaultHandler.cookiePolicy,
-            'scope': defaultHandler.scopes
-          });
-          // Listen for changes to the primary user.
-          auth.currentUser.listen(function(newPrimary) {
-            // Reset the authorized scopes and update with current user scopes.
-            authorizedScopes = [];
-
-            if (newPrimary.isSignedIn()) {
-              var authResponse = newPrimary.getAuthResponse();
-
-              // Store authorized scopes to check against for granted scopes.
-              var tmpScopes = authResponse.scope.split(' ');
-              for (var i = 0; i < tmpScopes.length; i++) {
-                if (tmpScopes[i] !== "") {
-                  authorizedScopes.push(tmpScopes[i].toLowerCase());
-
-                  // Handle scopes that will be deprecated but are still returned with their old value
-                  if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
-                    authorizedScopes.push('profile');
-                  } else if (tmpScopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
-                    authorizedScopes.push('email');
-                  }
-                }
-              }
-            }
-
-            // Signal all buttons to update their state based on the user.
-            defaultHandler.fire('iron-signal', {
-              'name': 'google-auth-user',
-              'data': {
-                'user': newPrimary
-              }
-            });
-          });
-        });
-      },
-
       signIn: function () {
-        var params = {
-          'scope': mergeExtraScopes(this.scopes)
-        };
-
-        // // Proxy specific attributes through to the signIn options.
-        Object.keys(ProxyLoginAttributes).forEach(function(key) {
-          if (this[key] && this[key] !== '') {
-            params[ProxyLoginAttributes[key]] = this[key];
-          }
-        }, this);
-
-        gapi.auth2.getAuthInstance().signIn(params).then(function(newUser) {
-          // Let the current user listener trigger the changes.
-        }, function(error) {
-          console.error(error);
-        });
+        this.$.aware.signIn();
       },
 
-      signInKeyPress: function (e) {
+      _signInKeyPress: function (e) {
         if (e.which == 13 || e.keyCode == 13 || e.which == 32 || e.keyCode == 32) {
           e.preventDefault();
           this.signIn();
         }
       },
 
+      /** Sing out the user */
       signOut: function () {
         this.fire('google-signout-attempted');
-        gapi.auth2.getAuthInstance().signOut().then(function() {
-          // Let the current user listener trigger the changes.
-        }, function(error) {
-          console.error(error);
-        });
+        this.$.aware.signOut();
       },
 
-      signOutKeyPress: function (e) {
+      _signOutKeyPress: function (e) {
         if (e.which == 13 || e.keyCode == 13 || e.which == 32 || e.keyCode == 32) {
           e.preventDefault();
           this.signOut();
