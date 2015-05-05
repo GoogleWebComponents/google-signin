@@ -59,6 +59,9 @@ will also provide the data returned by the Google client authentication process.
 Additional events, such as `google-signout-attempted` and `google-signed-out` are
 triggered when the user attempts to sign-out and successfully signs out.
 
+When requesting offline access, the `google-signin-offline` event is triggered when
+the user successfully consents with offline support.
+
 The `google-signin-necessary` event is fired when scopes requested via
 google-signin-aware elements require additional user permissions.
 
@@ -220,6 +223,13 @@ any apps you're building. See the Google Developers Console
        *
        * @param {Object} result Authorization result.
        * @event google-signin-success
+       */
+
+      /**
+       * Called when an offline authorization is successful.
+       *
+       * @param String code Result with one-time offline code.
+       * @event google-signin-offline
        */
 
       /**
@@ -495,6 +505,15 @@ any apps you're building. See the Google Developers Console
           labelSignout: 'Sign out',
 
           /**
+           * Allows for offline access_token retrieval during the signin process.
+           *
+           * @attribute offline
+           * @type boolean
+           * @default false
+           */
+          offline: false,
+
+          /**
            * If true, the button will be styled with a shadow.
            *
            * @attribute raised
@@ -557,11 +576,25 @@ any apps you're building. See the Google Developers Console
             }
           }, this);
 
-          auth.signIn(params).then(function(newUser) {
-            // Let the current user listener trigger the changes.
-          }, function(error) {
-            console.error(error);
-          });
+          if(this.offline) {
+            params['redirect_uri'] = 'postmessage';
+
+            auth.grantOfflineAccess(params).then(function(response) {
+              if(response.code) {
+                this.fire('google-signin-offline', response.code);
+              }
+
+              // Let the current user listener trigger the changes.
+            }.bind(this), function(error) {
+              console.error(error);
+            });
+          } else {
+            auth.signIn(params).then(function(newUser) {
+              // Let the current user listener trigger the changes.
+            }, function(error) {
+              console.error(error);
+            });
+          }
         },
 
         signedIn: false,
