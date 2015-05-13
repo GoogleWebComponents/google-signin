@@ -371,6 +371,14 @@ You can bind to `isAuthorized` property to monitor authorization state.
 
       is: 'google-signin-aware',
 
+      /**
+       * Fired when this scope has been authorized
+       * @event google-signin-aware-success
+       */
+      /**
+       * Fired when this scope is not authorized
+       * @event google-signin-aware-signed-out
+       */
       properties: {
         /**
          * App package name for android over-the-air installs.
