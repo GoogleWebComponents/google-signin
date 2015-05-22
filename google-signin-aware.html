@@ -136,24 +136,24 @@
       },
 
       initAuth2: function() {
-        if ( !('gapi' in window) || !('auth2' in window.gapi) ||
-          !this.clientId) {
+        if (!('gapi' in window) || !('auth2' in window.gapi) || !this.clientId) {
           return;
         }
-        // console.log("auth2.init", this.requestedScopes, this.cookiePolicy, this.clientId);
         var auth = gapi.auth2.init({
           'client_id': this.clientId,
           'cookie_policy': this.cookiePolicy,
           'scope': this.requestedScopes
         });
+
+        auth.currentUser.listen(this.handleUserUpdate.bind(this));
+
         auth.then(
-          function success(wat) {
-            // console.log('auth initialized');
-            auth.currentUser.listen(this.handleUserUpdate.bind(this));
-          }.bind(this),
-          function failure() {
-            console.error('auth initialization failed');
-          }.bind(this)
+          function success() {
+          // Let the current user listener trigger the changes.
+          },
+          function error(error) {
+            console.error(error);
+          }
         );
       },
 
@@ -173,8 +173,9 @@
         // console.log(this._grantedScopeArray);
         this.updateAdditionalAuth();
 
+        var response = newPrimaryUser.getAuthResponse();
         for (var i=0; i<this.signinAwares.length; i++) {
-          this.signinAwares[i]._updateScopeStatus();
+          this.signinAwares[i]._updateScopeStatus(response);
         }
       },
 
@@ -505,14 +506,16 @@ You can bind to `isAuthorized` property to monitor authorization state.
         this._updateScopeStatus();
       },
 
-      _updateScopeStatus: function() {
+      _updateScopeStatus: function(user) {
         var newAuthorized = this.signedIn && AuthEngine.hasGrantedScopes(this.scopes);
         if (newAuthorized !== this.isAuthorized) {
           this._setIsAuthorized(newAuthorized);
-          if (newAuthorized)
-            this.fire('google-signin-aware-success');
-          else
-            this.fire('google-signin-aware-signed-out');
+          if (newAuthorized) {
+            this.fire('google-signin-aware-success', user);
+          }
+          else {
+            this.fire('google-signin-aware-signed-out', user);
+          }
         }
       }
     });
