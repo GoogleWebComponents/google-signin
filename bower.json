@@ -1,6 +1,6 @@
 {
   "name": "google-signin",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Web components to authenticate with Google services",
   "homepage": "https://googlewebcomponents.github.io/google-signin",
   "main": "google-signin.html",
@@ -23,16 +23,16 @@
     "authentication"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#v0.9.0-rc.1",
+    "polymer": "Polymer/polymer#^0.9.0",
     "font-roboto": "Polymer/font-roboto#^0.5.5",
     "iron-icon": "PolymerElements/iron-icon#^0.9.0",
     "iron-icons": "PolymerElements/iron-icons#^0.9.0",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^0.9.0",
     "paper-ripple": "PolymerElements/paper-ripple#^0.9.0",
     "paper-material": "PolymerElements/paper-material#^0.9.0",
-    "google-apis": "GoogleWebComponents/google-apis#0.8-preview"
+    "google-apis": "GoogleWebComponents/google-apis#^1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^0.9.1"
+    "iron-component-page": "PolymerElements/iron-component-page#^0.9.4"
   }
 }
