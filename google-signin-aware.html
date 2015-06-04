@@ -298,8 +298,22 @@
           return this._grantedScopeArray.indexOf(scope) === -1;
         }.bind(this)).join(' ');
       },
+
+      assertAuthInitialized: function() {
+        if (!this.clientId) {
+          throw new Error("AuthEngine not initialized. clientId has not been configured.");
+        }
+        if (!('gapi' in window)) {
+          throw new Error("AuthEngine not initialized. gapi has not loaded.");
+        }
+        if (!('auth2' in window.gapi)) {
+          throw new Error("AuthEngine not initialized. auth2 not loaded.");
+        }
+      },
+
       /** pops up sign-in dialog */
       signIn: function() {
+        this.assertAuthInitialized();
         var params = {
           'scope': this.getMissingScopes()
         };
@@ -338,6 +352,7 @@
 
       /** signs user out */
       signOut: function() {
+        this.assertAuthInitialized();
         gapi.auth2.getAuthInstance().signOut().then(
           function success() {
           // Let the current user listener trigger the changes.
