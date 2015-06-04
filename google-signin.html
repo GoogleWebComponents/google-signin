@@ -140,6 +140,9 @@ activities (https://developers.google.com/+/web/app-activities/) on behalf of
 the user. Please note that this attribute is only valid in combination with the
 plus.login scope (https://www.googleapis.com/auth/plus.login).
 
+Use `<google-signin-aware>` element to request additional scopes in
+your components, and to monitor user's state.
+
 The `labelSignin` attribute is an optional piece of text used for customizing
 the label on the sign-in button. `labelSignout` allows you to customize the label
 for sign-out, and `labelAdditional` defines the label that is displayed when
@@ -175,21 +178,30 @@ any apps you're building. See the Google Developers Console
       is: 'google-signin',
 
     /**
-     * Called when authorization server replies.
-     *
-     * @param {Object} result Authorization result.
+     * Fired when user is signed in.
+     * You can use auth2 api to retrieve current user: `gapi.auth2.getAuthInstance().currentUser.get();`
      * @event google-signin-success
      */
 
     /**
-     * Called when the user is signed-out.
-     *
-     * @param {Object} result Authorization result.
+     * Fired when the user is signed-out.
      * @event google-signed-out
      */
+
     /**
-     * Called if user requires additional authorization
+     * Fired if user requires additional authorization
      * @event google-signin-necessary
+     */
+
+    /**
+     * Fired when signed in, and scope has been authorized
+     * @param {Object} result Authorization result.
+     * @event google-signin-aware-success
+     */
+
+    /**
+     * Fired when this scope is not authorized
+     * @event google-signin-aware-signed-out
      */
       properties: {
         /**
