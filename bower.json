@@ -1,6 +1,6 @@
 {
   "name": "google-signin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Web components to authenticate with Google services",
   "homepage": "https://googlewebcomponents.github.io/google-signin",
   "main": "google-signin.html",
