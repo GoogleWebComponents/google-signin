@@ -1,0 +1,13 @@
+{
+  "name": "font-roboto",
+  "homepage": "https://github.com/PolymerElements/font-roboto",
+  "_release": "6f59e45de7",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6f59e45de7dd0291fb8d698bf003defba6bd924d"
+  },
+  "_source": "git://github.com/PolymerElements/font-roboto.git",
+  "_target": "master",
+  "_originalSource": "PolymerElements/font-roboto"
+}
