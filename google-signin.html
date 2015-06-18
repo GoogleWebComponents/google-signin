@@ -119,6 +119,8 @@ with other Google APIs such as Drive and Google+.
 
 <img style="max-width:100%;" src="https://cloud.githubusercontent.com/assets/107076/6791176/5c868822-d16a-11e4-918c-ec9b84a2db45.png"/>
 
+If you do not need to show the button, use companion `<google-signin-aware>` element to declare scopes, check authentication state.
+
 #### Examples
 
     <google-signin client-id="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
@@ -126,6 +128,7 @@ with other Google APIs such as Drive and Google+.
     <google-signin label-signin="Sign-in" client-id="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
 
     <google-signin theme="dark" width="iconOnly" client-id="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
 
 #### Notes
 
@@ -135,29 +138,23 @@ The attribute `clientId` is provided in your Google Developers Console
 The `scopes` attribute allows you to specify which scope permissions are required
 (e.g do you want to allow interaction with the Google Drive API). Many APIs also
 need to be enabled in the Google Developers Console before you can use them.
+
 The `requestVisibleActions` attribute is necessary if you want to write app
 activities (https://developers.google.com/+/web/app-activities/) on behalf of
 the user. Please note that this attribute is only valid in combination with the
 plus.login scope (https://www.googleapis.com/auth/plus.login).
 
-Use `<google-signin-aware>` element to request additional scopes in
-your components, and to monitor user's state.
-
-The `labelSignin` attribute is an optional piece of text used for customizing
-the label on the sign-in button. `labelSignout` allows you to customize the label
-for sign-out, and `labelAdditional` defines the label that is displayed when
-additional permissions are necessary for incremental auth.
+Use label properties to customize prompts.
 
 The button can be styled in using the `height`, `width`, and `theme` attributes.
 These attributes help you follow the Google+ Sign-In button branding guidelines
 (https://developers.google.com/+/branding-guidelines).
 
 The `google-signin-success` event is triggered when a user successfully authenticates
-and `google-signin-failure` is triggered when this is not the case. Both events
-will also provide the data returned by the Google client authentication process.
-You can also use `isAuthorized` attribute to observe authentication state.
+and `google-signed-out` is triggered when user signeds out.
+You can also use `isAuthorized` attribute to observe user's authentication state.
 
-Additional events, such as `google-signout-attempted` and `google-signed-out` are
+Additional events, such as `google-signout-attempted` are
 triggered when the user attempts to sign-out and successfully signs out.
 
 The `google-signin-necessary` event is fired when scopes requested via
