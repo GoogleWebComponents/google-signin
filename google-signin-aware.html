@@ -97,6 +97,21 @@
           this._requestVisibleActions = val;
       },
 
+      /** Is offline access currently enabled in the google-signin-aware element? */
+      _offline: false,
+
+      get offline() {
+        return this._offline;
+      },
+
+      set offline(val) {
+        this._offline = val;
+        this.updateAdditionalAuth();
+      },
+
+      /** Have we already gotten offline access from Google during this session? */
+      offlineGranted: false,
+
       /** <google-js-api> */
       _apiLoader: null,
 
@@ -179,6 +194,12 @@
         }
       },
 
+      setOfflineCode: function(code) {
+        for (var i=0; i<this.signinAwares.length; i++) {
+          this.signinAwares[i]._updateOfflineCode(code);
+        }
+      },
+
       /** convert scope string to scope array */
       strToScopeArray: function(str) {
         if (!str) {
@@ -237,10 +258,14 @@
       /** update status of _needAdditionalAuth */
       updateAdditionalAuth: function() {
         var needMoreAuth = false;
-        for (var i=0; i<this._requestedScopeArray.length; i++) {
-          if (this._grantedScopeArray.indexOf(this._requestedScopeArray[i]) === -1) {
-            needMoreAuth = true;
-            break;
+        if (this.offline && !this.offlineGranted) {
+          needMoreAuth = true;
+        } else {
+          for (var i=0; i<this._requestedScopeArray.length; i++) {
+            if (this._grantedScopeArray.indexOf(this._requestedScopeArray[i]) === -1) {
+              needMoreAuth = true;
+              break;
+            }
           }
         }
         if (this._needAdditionalAuth != needMoreAuth) {
@@ -327,15 +352,37 @@
 
         var promise;
         var user = gapi.auth2.getAuthInstance().currentUser.get();
-        if (user.getGrantedScopes()) {
-          // additional auth, skip multiple account dialog
-          promise = user.grant(params);
+        if (!this.offline) {
+          if (user.getGrantedScopes()) {
+            // additional auth, skip multiple account dialog
+            promise = user.grant(params);
+          } else {
+            // initial signin
+            promise = gapi.auth2.getAuthInstance().signIn(params);
+          }
         } else {
-          // initial signin
-          promise = gapi.auth2.getAuthInstance().signIn(params);
+          params.redirect_uri = 'postmessage';
+
+          // Despite being documented at https://goo.gl/tiO0Bk
+          // It doesn't seem like user.grantOfflineAccess() actually exists in
+          // the current version of the Google Sign-In JS client we're using
+          // through GoogleWebComponents. So in the offline case, we will not
+          // distinguish between a first auth and an additional one.
+          promise = gapi.auth2.getAuthInstance().grantOfflineAccess(params);
         }
         promise.then(
-          function success(newUser) {
+          function success(response) {
+            // If login was offline, response contains one string "code"
+            // Otherwise it contains the user object already
+            var newUser;
+            if (response.code) {
+              AuthEngine.offlineGranted = true;
+              newUser = gapi.auth2.getAuthInstance().currentUser.get();
+              AuthEngine.setOfflineCode(response.code);
+            } else {
+              newUser = response;
+            }
+
             var authResponse = newUser.getAuthResponse();
             // Let the current user listener trigger the changes.
           },
@@ -375,13 +422,38 @@ The `scopes` attribute allows you to specify which scope permissions are require
 (e.g do you want to allow interaction with the Google Drive API).
 
 The `google-signin-aware-success` event is triggered when a user successfully
-authenticates. The `google-signin-aware-signed-out` event is triggered
-when a user explicitely signs out via the google-signin element.
+authenticates. If `offline` is set to true, successful authentication will also
+trigger the `google-signin-offline-success`event.
+The `google-signin-aware-signed-out` event is triggered when a user explicitly
+signs out via the google-signin element.
 
 You can bind to `isAuthorized` property to monitor authorization state.
 ##### Example
 
     <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
+
+
+##### Example with offline
+    <template id="awareness" is="dom-bind">
+      <google-signin-aware
+          scopes="https://www.googleapis.com/auth/drive"
+          offline
+          on-google-signin-aware-success="handleSignin"
+          on-google-signin-offline-success="handleOffline"></google-signin-aware>
+    <\/template>
+    <script>
+      var aware = document.querySelector('#awareness');
+      aware.handleSignin = function(response) {
+        var user = gapi.auth2.getAuthInstance().currentUser.get();
+        console.log('User name: ' + user.getBasicProfile().getName());
+      };
+      aware.handleOffline = function(response) {
+        console.log('Offline code received: ' + response.detail.code);
+        // Here you would POST response.detail.code to your webserver, which can
+        // exchange the authorization code for an access token. More info at:
+        // https://developers.google.com/identity/protocols/OAuth2WebServer
+      };
+    <\/script>
 */
     Polymer({
 
@@ -391,6 +463,13 @@ You can bind to `isAuthorized` property to monitor authorization state.
        * Fired when this scope has been authorized
        * @param {Object} result Authorization result.
        * @event google-signin-aware-success
+       */
+      /**
+       * Fired when an offline authorization is successful.
+       * @param {Object} detail
+       * @param {string} detail.code The one-time authorization code from Google.
+       *     Your application can exchange this for an `access_token` and `refresh_token`
+       * @event google-signin-offline-success
        */
       /**
        * Fired when this scope is not authorized
@@ -432,6 +511,15 @@ You can bind to `isAuthorized` property to monitor authorization state.
         requestVisibleActions: {
           type: String,
           observer: '_requestVisibleActionsChanged'
+        },
+
+       /**
+         * Allows for offline `access_token` retrieval during the signin process.
+         */
+        offline: {
+          type: Boolean,
+          value: false,
+          observer: '_offlineChanged'
         },
 
        /**
@@ -517,6 +605,10 @@ You can bind to `isAuthorized` property to monitor authorization state.
         AuthEngine.requestVisibleActions = newVal;
       },
 
+      _offlineChanged: function(newVal, oldVal) {
+        AuthEngine.offline = newVal;
+      },
+
       _scopesChanged: function(newVal, oldVal) {
         AuthEngine.requestScopes(newVal);
         this._updateScopeStatus();
@@ -532,6 +624,12 @@ You can bind to `isAuthorized` property to monitor authorization state.
           else {
             this.fire('google-signin-aware-signed-out', user);
           }
+        }
+      },
+
+      _updateOfflineCode: function(code) {
+        if (code) {
+          this.fire('google-signin-offline-success', {code: code});
         }
       }
     });

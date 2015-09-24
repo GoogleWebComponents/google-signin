@@ -17,6 +17,7 @@
       client-id="{{clientId}}"
       cookie-policy="{{cookiePolicy}}"
       request-visible-actions="{{requestVisibleActions}}"
+      offline="{{offline}}"
       scopes="{{scopes}}"
       signed-in="{{signedIn}}"
       is-authorized="{{isAuthorized}}"
@@ -144,6 +145,10 @@ activities (https://developers.google.com/+/web/app-activities/) on behalf of
 the user. Please note that this attribute is only valid in combination with the
 plus.login scope (https://www.googleapis.com/auth/plus.login).
 
+The `offline` attribute allows you to get an auth code which your server can
+redeem for an offline access token
+(https://developers.google.com/identity/sign-in/web/server-side-flow).
+
 Use label properties to customize prompts.
 
 The button can be styled in using the `height`, `width`, and `theme` attributes.
@@ -151,11 +156,14 @@ These attributes help you follow the Google+ Sign-In button branding guidelines
 (https://developers.google.com/+/branding-guidelines).
 
 The `google-signin-success` event is triggered when a user successfully authenticates
-and `google-signed-out` is triggered when user signeds out.
+and `google-signed-out` is triggered when user signs out.
 You can also use `isAuthorized` attribute to observe user's authentication state.
 
 Additional events, such as `google-signout-attempted` are
 triggered when the user attempts to sign-out and successfully signs out.
+
+When requesting offline access, the `google-signin-offline-success` event is
+triggered when the user successfully consents with offline support.
 
 The `google-signin-necessary` event is fired when scopes requested via
 google-signin-aware elements require additional user permissions.
@@ -194,6 +202,14 @@ any apps you're building. See the Google Developers Console
      * Fired when signed in, and scope has been authorized
      * @param {Object} result Authorization result.
      * @event google-signin-aware-success
+     */
+
+    /**
+     * Fired when an offline authorization is successful.
+     * @event google-signin-offline-success
+     * @param {Object} detail
+     * @param {string} detail.code The one-time authorization code from Google.
+     *     Your application can exchange this for an `access_token` and `refresh_token`
      */
 
     /**
@@ -287,6 +303,7 @@ any apps you're building. See the Google Developers Console
           type: String,
           computed: '_computeSigninLabel(labelSignin, width, _brand)'
         },
+
         /**
          * An optional label for the sign-out button.
          */
@@ -310,6 +327,14 @@ any apps you're building. See the Google Developers Console
         requestVisibleActions: {
           type: String,
           value: ''
+        },
+
+        /**
+         * Allows for offline `access_token` retrieval during the signin process.
+         */
+        offline: {
+          type: Boolean,
+          value: false
         },
 
         /**
