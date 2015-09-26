@@ -95,6 +95,7 @@ or like this if plus scopes are present
           <option value="profile">Profile info</option>
         </select>
       </div>
+      <div>offline=<input type="checkbox" checked="{{offline::change}}"></div>
       <div>signedIn="<span>{{signedIn}}</span>"</div>
       <div>isAuthorized="<span>{{isAuthorized}}</span>"</div>
       <div>needAdditionalAuth:"<span>{{needAdditionalAuth}}</span>"&gt;</div>
@@ -106,22 +107,29 @@ or like this if plus scopes are present
     <google-signin-aware
         scopes="{{scope}}"
         signed-in="{{signedIn}}"
+        offline="{{offline}}"
         is-authorized="{{isAuthorized}}"
         need-additional-auth="{{needAdditionalAuth}}"
         on-google-signin-aware-success="handleSignIn"
+        on-google-signin-offline-success="handleOffline"
         on-google-signin-aware-signed-out="handleSignOut"></google-signin-aware>
     <p>User name:<span>{{userName}}</span></p>
     <p>Testing <code>google-signin-aware</code> events: <span>{{status}}</span></p>
+    <p>Testing <code>google-signin-offline</code> events: <span>{{offlineCode}}</span></p>
     <p><button on-click="disconnect">Disconnect to start over</button></p>
   </template>
   <script>
     var aware = document.querySelector('#awareness');
     aware.status = 'Not granted';
+    aware.offlineCode = 'No offline login.';
     aware.userName = 'N/A';
     aware.handleSignIn = function(response) {
       this.status = 'Signin granted';
       // console.log('[Aware] Signin Response', response);
       this.userName = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName();
+    };
+    aware.handleOffline = function(response) {
+      this.offlineCode = response.detail.code;
     };
     aware.handleSignOut = function(response) {
       this.status = 'Signed out';
