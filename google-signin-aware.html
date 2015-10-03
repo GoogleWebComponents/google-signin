@@ -13,7 +13,8 @@
       'appPackageName': 'apppackagename',
       'clientId': 'clientid',
       'cookiePolicy': 'cookiepolicy',
-      'requestVisibleActions': 'requestvisibleactions'
+      'requestVisibleActions': 'requestvisibleactions',
+      'hostedDomain': 'hostedDomain'
     };
 
     /**
@@ -97,6 +98,23 @@
           this._requestVisibleActions = val;
       },
 
+     /**
+       * oauth2 argument, set by google-signin-aware
+       */
+      _hostedDomain: '',
+
+      get hostedDomain() {
+        return this._hostedDomain;
+      },
+
+      set hostedDomain(val) {
+        if (this._hostedDomain && val && val != this._hostedDomain) {
+          throw new Error('hostedDomain cannot change. Values do not match. New: ' + val + ' Old: ' + this._hostedDomain);
+        }
+        if (val)
+          this._hostedDomain = val;
+      },
+
       /** Is offline access currently enabled in the google-signin-aware element? */
       _offline: false,
 
@@ -157,7 +175,8 @@
         var auth = gapi.auth2.init({
           'client_id': this.clientId,
           'cookie_policy': this.cookiePolicy,
-          'scope': this.requestedScopes
+          'scope': this.requestedScopes,
+          'hosted_domain': this.hostedDomain
         });
 
         auth.currentUser.listen(this.handleUserUpdate.bind(this));
@@ -513,6 +532,15 @@ You can bind to `isAuthorized` property to monitor authorization state.
           observer: '_requestVisibleActionsChanged'
         },
 
+        /**
+         * The Google Apps domain to which users must belong to sign in.
+         * See the relevant [docs](https://developers.google.com/identity/sign-in/web/reference) for more information.
+         */
+        hostedDomain: {
+          type: String,
+          observer: '_hostedDomainChanged'
+        },
+
        /**
          * Allows for offline `access_token` retrieval during the signin process.
          */
@@ -603,6 +631,10 @@ You can bind to `isAuthorized` property to monitor authorization state.
 
       _requestVisibleActionsChanged: function(newVal, oldVal) {
         AuthEngine.requestVisibleActions = newVal;
+      },
+
+      _hostedDomainChanged: function(newVal, oldVal) {
+        AuthEngine.hostedDomain = newVal;
       },
 
       _offlineChanged: function(newVal, oldVal) {

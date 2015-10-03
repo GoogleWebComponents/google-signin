@@ -17,6 +17,7 @@
       client-id="{{clientId}}"
       cookie-policy="{{cookiePolicy}}"
       request-visible-actions="{{requestVisibleActions}}"
+      hosted-domain="{{hostedDomain}}"
       offline="{{offline}}"
       scopes="{{scopes}}"
       signed-in="{{signedIn}}"
@@ -325,6 +326,15 @@ any apps you're building. See the Google Developers Console
          * (e.g http://schemas.google.com/AddActivity)
          */
         requestVisibleActions: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * The Google Apps domain to which users must belong to sign in.
+         * See the relevant [docs](https://developers.google.com/identity/sign-in/web/reference) for more information.
+         */
+        hostedDomain: {
           type: String,
           value: ''
         },
