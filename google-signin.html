@@ -19,6 +19,7 @@
       request-visible-actions="{{requestVisibleActions}}"
       hosted-domain="{{hostedDomain}}"
       offline="{{offline}}"
+      offline-always-prompt="{{offlineAlwaysPrompt}}"
       scopes="{{scopes}}"
       signed-in="{{signedIn}}"
       is-authorized="{{isAuthorized}}"
@@ -149,6 +150,9 @@ plus.login scope (https://www.googleapis.com/auth/plus.login).
 The `offline` attribute allows you to get an auth code which your server can
 redeem for an offline access token
 (https://developers.google.com/identity/sign-in/web/server-side-flow).
+You can also set `offline-always-prompt` instead of `offline` to ensure that your app
+will re-prompt the user for offline access and generate a working `refresh_token`
+even if they have already granted offline access to your app in the past.
 
 Use label properties to customize prompts.
 
@@ -343,6 +347,16 @@ any apps you're building. See the Google Developers Console
          * Allows for offline `access_token` retrieval during the signin process.
          */
         offline: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Forces a re-prompt, even if the user has already granted offline
+         * access to your application in the past. You only need one of
+         * `offline` and `offlineAlwaysPrompt`.
+         */
+        offlineAlwaysPrompt: {
           type: Boolean,
           value: false
         },
