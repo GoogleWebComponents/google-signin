@@ -127,6 +127,18 @@
         this.updateAdditionalAuth();
       },
 
+      /** Should we force a re-prompt for offline access? */
+      _offlineAlwaysPrompt: false,
+
+      get offlineAlwaysPrompt() {
+        return this._offlineAlwaysPrompt;
+      },
+
+      set offlineAlwaysPrompt(val) {
+        this._offlineAlwaysPrompt = val;
+        this.updateAdditionalAuth();
+      },
+
       /** Have we already gotten offline access from Google during this session? */
       offlineGranted: false,
 
@@ -277,7 +289,7 @@
       /** update status of _needAdditionalAuth */
       updateAdditionalAuth: function() {
         var needMoreAuth = false;
-        if (this.offline && !this.offlineGranted) {
+        if ((this.offlineAlwaysPrompt || this.offline ) && !this.offlineGranted) {
           needMoreAuth = true;
         } else {
           for (var i=0; i<this._requestedScopeArray.length; i++) {
@@ -371,7 +383,7 @@
 
         var promise;
         var user = gapi.auth2.getAuthInstance().currentUser.get();
-        if (!this.offline) {
+        if (!(this.offline || this.offlineAlwaysPrompt)) {
           if (user.getGrantedScopes()) {
             // additional auth, skip multiple account dialog
             promise = user.grant(params);
@@ -381,6 +393,9 @@
           }
         } else {
           params.redirect_uri = 'postmessage';
+          if (this.offlineAlwaysPrompt) {
+            params.approval_prompt = 'force';
+          }
 
           // Despite being documented at https://goo.gl/tiO0Bk
           // It doesn't seem like user.grantOfflineAccess() actually exists in
@@ -441,8 +456,8 @@ The `scopes` attribute allows you to specify which scope permissions are require
 (e.g do you want to allow interaction with the Google Drive API).
 
 The `google-signin-aware-success` event is triggered when a user successfully
-authenticates. If `offline` is set to true, successful authentication will also
-trigger the `google-signin-offline-success`event.
+authenticates. If either `offline` or `offlineAlwaysPrompt` is set to true, successful
+authentication will also trigger the `google-signin-offline-success`event.
 The `google-signin-aware-signed-out` event is triggered when a user explicitly
 signs out via the google-signin element.
 
@@ -543,11 +558,26 @@ You can bind to `isAuthorized` property to monitor authorization state.
 
        /**
          * Allows for offline `access_token` retrieval during the signin process.
+         * See also `offlineAlwaysPrompt`. You only need to set one of the two; if both
+         * are set, the behavior of `offlineAlwaysPrompt` will override `offline`.
          */
         offline: {
           type: Boolean,
           value: false,
           observer: '_offlineChanged'
+        },
+
+        /**
+          * Works the same as `offline` with the addition that it will always
+          * force a re-prompt to the user, guaranteeing that you will get a
+          * refresh_token even if the user has already granted offline access to
+          * this application. You only need to set one of `offline` or
+          * `offlineAlwaysPrompt`, not both.
+          */
+        offlineAlwaysPrompt: {
+          type: Boolean,
+          value: false,
+          observer: '_offlineAlwaysPromptChanged'
         },
 
        /**
@@ -639,6 +669,10 @@ You can bind to `isAuthorized` property to monitor authorization state.
 
       _offlineChanged: function(newVal, oldVal) {
         AuthEngine.offline = newVal;
+      },
+
+      _offlineAlwaysPromptChanged: function(newVal, oldVal) {
+        AuthEngine.offlineAlwaysPrompt = newVal;
       },
 
       _scopesChanged: function(newVal, oldVal) {
