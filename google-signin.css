@@ -170,6 +170,20 @@ iron-icon {
   border: 1px solid #3266d5;
 }
 
+.brand-google.theme-dark .icon {
+  background: #fff;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.brand-google.theme-dark.width-iconOnly .icon {
+  border-radius: 2px;
+}
+
+.brand-google.theme-dark .buttonText {
+  padding-left: .8em;
+}
+
 .brand-google.theme-dark #ripple {
   color: #1b39a8;
 }
