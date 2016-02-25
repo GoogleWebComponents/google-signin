@@ -130,8 +130,10 @@
           throw new Error('prompt must be a string. Received ' + typeof val);
         }
         if (val) {
+          var values = val.split(' ');
+          values = values.map(function(v) { return v.trim(); });
+          values = values.filter(function(v) { return v; });
           var validValues = {none:0, login:0, consent: 0, select_account:0};
-          var values = val.trim().split();
           values.forEach(function(v) {
             if (v == 'none' && values.length > 1) {
               throw new Error(
