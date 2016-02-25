@@ -20,6 +20,7 @@
       offline="{{offline}}"
       offline-always-prompt="{{offlineAlwaysPrompt}}"
       scopes="{{scopes}}"
+      prompt="{{prompt}}"
       signed-in="{{signedIn}}"
       is-authorized="{{isAuthorized}}"
       need-additional-auth="{{needAdditionalAuth}}"
@@ -365,6 +366,25 @@ any apps you're building. See the Google Developers Console
          * and should be space-delimited.
          */
         scopes: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * Space-delimited, case-sensitive list of strings that
+         * specifies whether the the user is prompted for reauthentication
+         * and/or consent. The defined values are:
+         *   none: do not display authentication or consent pages.
+         *     This value is mutually exclusive with the rest.
+         *   login: always prompt the user for reauthentication.
+         *   consent: always show consent screen.
+         *   select_account: always show account selection page.
+         *     This enables a user who has multiple accounts to select amongst
+         *     the multiple accounts that they might have current sessions for.
+         * For more information, see "prompt" parameter description in
+         * https://openid.net/specs/openid-connect-basic-1_0.html#RequestParameters
+         */
+        prompt: {
           type: String,
           value: ''
         },

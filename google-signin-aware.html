@@ -13,8 +13,9 @@
       'appPackageName': 'apppackagename',
       'clientId': 'clientid',
       'cookiePolicy': 'cookiepolicy',
-      'requestVisibleActions': 'requestvisibleactions',
-      'hostedDomain': 'hostedDomain'
+      'hostedDomain': 'hostedDomain',
+      'prompt': 'prompt',
+      'requestVisibleActions': 'requestvisibleactions'
     };
 
     /**
@@ -113,6 +114,37 @@
         }
         if (val)
           this._hostedDomain = val;
+      },
+
+     /**
+       * oauth2 argument, set by google-signin-aware
+       */
+      _prompt: '',
+
+      get prompt() {
+        return this._prompt;
+      },
+
+      set prompt(val) {
+        if (typeof val !== 'string') {
+          throw new Error('prompt must be a string. Received ' + typeof val);
+        }
+        if (val) {
+          var validValues = {none:0, login:0, consent: 0, select_account:0};
+          var values = val.trim().split();
+          values.forEach(function(v) {
+            if (v == 'none' && values.length > 1) {
+              throw new Error(
+                  'none cannot be combined with other prompt values');
+            }
+            if (!(v in validValues)) {
+              throw new Error(
+                  'invalid prompt value ' + v +
+                  '. Valid values: ' + Object.keys(validValues).join(', '));
+            }
+          });
+        }
+        this._prompt = val;
       },
 
       /** Is offline access currently enabled in the google-signin-aware element? */
@@ -591,6 +623,26 @@ You can bind to `isAuthorized` property to monitor authorization state.
         },
 
         /**
+         * Space-delimited, case-sensitive list of strings that
+         * specifies whether the the user is prompted for reauthentication
+         * and/or consent. The defined values are:
+         *   none: do not display authentication or consent pages.
+         *     This value is mutually exclusive with the rest.
+         *   login: always prompt the user for reauthentication.
+         *   consent: always show consent screen.
+         *   select_account: always show account selection page.
+         *     This enables a user who has multiple accounts to select amongst
+         *     the multiple accounts that they might have current sessions for.
+         * For more information, see "prompt" parameter description in
+         * https://openid.net/specs/openid-connect-basic-1_0.html#RequestParameters
+         */
+        prompt: {
+          type: String,
+          value: '',
+          observer: '_promptChanged'
+        },
+
+        /**
          * True if user is signed in
          */
         signedIn: {
@@ -678,6 +730,10 @@ You can bind to `isAuthorized` property to monitor authorization state.
       _scopesChanged: function(newVal, oldVal) {
         AuthEngine.requestScopes(newVal);
         this._updateScopeStatus();
+      },
+
+      _promptChanged: function(newVal, oldVal) {
+        AuthEngine.prompt = newVal;
       },
 
       _updateScopeStatus: function(user) {
