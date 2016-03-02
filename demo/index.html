@@ -155,7 +155,7 @@ or like this if plus scopes are present
       gapi.auth2.getAuthInstance().signOut();
     };
 
-    aware.addEventListener('openid-prompt-changed', function (e) {
+    aware.addEventListener('openid-prompt-changed', function(e) {
       if (e.detail.value) {
         if (e.detail.path === 'openidPrompt.none') {
           aware.set('openidPrompt', {
@@ -175,8 +175,7 @@ or like this if plus scopes are present
           values.push(k);
         }
       });
-      //this.promptValue = values.join(' ');
-      this.set('openidPromptValue', values.join(' '))
+      this.set('openidPromptValue', values.join(' '));
     });
 
   </script>

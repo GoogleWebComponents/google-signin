@@ -132,9 +132,13 @@
         }
         if (val) {
           var values = val.split(' ');
-          values = values.map(function(v) { return v.trim(); });
-          values = values.filter(function(v) { return v; });
-          var validValues = {none:0, login:0, consent: 0, select_account:0};
+          values = values.map(function(v) {
+            return v.trim();
+          });
+          values = values.filter(function(v) {
+            return v;
+          });
+          var validValues = {none: 0, login: 0, consent: 0, select_account: 0};
           values.forEach(function(v) {
             if (v == 'none' && values.length > 1) {
               throw new Error(
