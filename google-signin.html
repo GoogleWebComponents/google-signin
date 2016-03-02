@@ -20,7 +20,7 @@
       offline="{{offline}}"
       offline-always-prompt="{{offlineAlwaysPrompt}}"
       scopes="{{scopes}}"
-      prompt="{{prompt}}"
+      openid-prompt="{{openidPrompt}}"
       signed-in="{{signedIn}}"
       is-authorized="{{isAuthorized}}"
       need-additional-auth="{{needAdditionalAuth}}"
@@ -384,7 +384,7 @@ any apps you're building. See the Google Developers Console
          * For more information, see "prompt" parameter description in
          * https://openid.net/specs/openid-connect-basic-1_0.html#RequestParameters
          */
-        prompt: {
+        openidPrompt: {
           type: String,
           value: ''
         },

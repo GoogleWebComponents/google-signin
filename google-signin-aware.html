@@ -14,7 +14,7 @@
       'clientId': 'clientid',
       'cookiePolicy': 'cookiepolicy',
       'hostedDomain': 'hostedDomain',
-      'prompt': 'prompt',
+      'openidPrompt': 'prompt',
       'requestVisibleActions': 'requestvisibleactions'
     };
 
@@ -119,15 +119,16 @@
      /**
        * oauth2 argument, set by google-signin-aware
        */
-      _prompt: '',
+      _openidPrompt: '',
 
-      get prompt() {
-        return this._prompt;
+      get openidPrompt() {
+        return this._openidPrompt;
       },
 
-      set prompt(val) {
+      set openidPrompt(val) {
         if (typeof val !== 'string') {
-          throw new Error('prompt must be a string. Received ' + typeof val);
+          throw new Error(
+              'openidPrompt must be a string. Received ' + typeof val);
         }
         if (val) {
           var values = val.split(' ');
@@ -137,16 +138,16 @@
           values.forEach(function(v) {
             if (v == 'none' && values.length > 1) {
               throw new Error(
-                  'none cannot be combined with other prompt values');
+                  'none cannot be combined with other openidPrompt values');
             }
             if (!(v in validValues)) {
               throw new Error(
-                  'invalid prompt value ' + v +
+                  'invalid openidPrompt value ' + v +
                   '. Valid values: ' + Object.keys(validValues).join(', '));
             }
           });
         }
-        this._prompt = val;
+        this._openidPrompt = val;
       },
 
       /** Is offline access currently enabled in the google-signin-aware element? */
@@ -638,10 +639,10 @@ You can bind to `isAuthorized` property to monitor authorization state.
          * For more information, see "prompt" parameter description in
          * https://openid.net/specs/openid-connect-basic-1_0.html#RequestParameters
          */
-        prompt: {
+        openidPrompt: {
           type: String,
           value: '',
-          observer: '_promptChanged'
+          observer: '_openidPromptChanged'
         },
 
         /**
@@ -734,8 +735,8 @@ You can bind to `isAuthorized` property to monitor authorization state.
         this._updateScopeStatus();
       },
 
-      _promptChanged: function(newVal, oldVal) {
-        AuthEngine.prompt = newVal;
+      _openidPromptChanged: function(newVal, oldVal) {
+        AuthEngine.openidPrompt = newVal;
       },
 
       _updateScopeStatus: function(user) {

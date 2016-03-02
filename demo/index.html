@@ -96,12 +96,12 @@ or like this if plus scopes are present
           <option value="profile">Profile info</option>
         </select>
       </div>
-      <div>prompt=
-        <input type="checkbox" checked="{{prompt.none::change}}">none
-        <input type="checkbox" checked="{{prompt.login::change}}">login
-        <input type="checkbox" checked="{{prompt.consent::change}}">consent
+      <div>openid-prompt=
+        <input type="checkbox" checked="{{openidPrompt.none::change}}">none
+        <input type="checkbox" checked="{{openidPrompt.login::change}}">login
+        <input type="checkbox" checked="{{openidPrompt.consent::change}}">consent
         <input type="checkbox"
-            checked="{{prompt.select_account::change}}">select_account
+            checked="{{openidPrompt.select_account::change}}">select_account
       </div>
       <div>offline=<input type="checkbox" checked="{{offline::change}}"></div>
       <div>signedIn="<span>{{signedIn}}</span>"</div>
@@ -114,7 +114,7 @@ or like this if plus scopes are present
     </p>
     <google-signin-aware
         scopes="{{scope}}"
-        prompt="{{promptValue}}"
+        openid-prompt="{{openidPromptValue}}"
         signed-in="{{signedIn}}"
         offline="{{offline}}"
         is-authorized="{{isAuthorized}}"
@@ -132,7 +132,7 @@ or like this if plus scopes are present
     aware.status = 'Not granted';
     aware.offlineCode = 'No offline login.';
     aware.userName = 'N/A';
-    aware.prompt = {};
+    aware.openidPrompt = {};
     aware.handleSignIn = function(response) {
       this.status = 'Signin granted';
       // console.log('[Aware] Signin Response', response);
@@ -155,28 +155,28 @@ or like this if plus scopes are present
       gapi.auth2.getAuthInstance().signOut();
     };
 
-    aware.addEventListener('prompt-changed', function (e) {
+    aware.addEventListener('openid-prompt-changed', function (e) {
       if (e.detail.value) {
-        if (e.detail.path === 'prompt.none') {
-          aware.set('prompt', {
+        if (e.detail.path === 'openidPrompt.none') {
+          aware.set('openidPrompt', {
             none: true,
             login: false,
             consent: false,
             select_account: false
           });
         } else {
-          aware.set('prompt.none', false);
+          aware.set('openidPrompt.none', false);
         }
       }
 
       var values = [];
-      Object.keys(aware.prompt).forEach(function(k) {
-        if (aware.prompt[k]) {
+      Object.keys(aware.openidPrompt).forEach(function(k) {
+        if (aware.openidPrompt[k]) {
           values.push(k);
         }
       });
       //this.promptValue = values.join(' ');
-      this.set('promptValue', values.join(' '))
+      this.set('openidPromptValue', values.join(' '))
     });
 
   </script>
