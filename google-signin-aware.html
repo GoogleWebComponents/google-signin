@@ -513,7 +513,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
           offline
           on-google-signin-aware-success="handleSignin"
           on-google-signin-offline-success="handleOffline"></google-signin-aware>
-    </template>
+    <\/template>
     <script>
       var aware = document.querySelector('#awareness');
       aware.handleSignin = function(response) {
@@ -526,7 +526,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
         // exchange the authorization code for an access token. More info at:
         // https://developers.google.com/identity/protocols/OAuth2WebServer
       };
-    </script>
+    <\/script>
 */
     Polymer({
 
