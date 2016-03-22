@@ -5,7 +5,6 @@
 <link rel="import" href="../google-apis/google-js-api.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="google-icons.html">
 
 <dom-module id="google-signin">
@@ -33,7 +32,7 @@
 
       <paper-ripple id="ripple" class="fit"></paper-ripple>
       <!-- this div is needed to position the ripple behind text content -->
-      <div relative layout horizontal center-center>
+      <div>
         <template is="dom-if" if="{{_computeButtonIsSignIn(signedIn, needAdditionalAuth)}}">
           <div class="button-content signIn" tabindex="0"
               on-click="signIn" on-keydown="_signInKeyPress">
