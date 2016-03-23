@@ -460,13 +460,13 @@
             // Let the current user listener trigger the changes.
           },
           function error(error) {
-            if ("Access denied." == error.reason) {
-              // Access denied is not an error, user hit cancel
-              return;
-            } else {
-              console.error(error);
+            // Access denied is not an error, user hit cancel
+            if ("Access denied." !== error.reason) {
+              this.signinAwares.forEach(function(awareInstance) {
+                awareInstance.fire('google-signin-aware-error', error);
+              });
             }
-          }
+          }.bind(this)
         );
       },
 
@@ -547,6 +547,11 @@ You can bind to `isAuthorized` property to monitor authorization state.
       /**
        * Fired when this scope is not authorized
        * @event google-signin-aware-signed-out
+       */
+      /**
+       * Fired when there is an error during the signin flow.
+       * @param {Object} detail The error object returned from the OAuth 2 flow.
+       * @event google-signin-aware-error
        */
       properties: {
         /**

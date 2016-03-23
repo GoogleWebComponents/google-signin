@@ -119,6 +119,7 @@ or like this if plus scopes are present
         offline="{{offline}}"
         is-authorized="{{isAuthorized}}"
         need-additional-auth="{{needAdditionalAuth}}"
+        on-google-signin-aware-error="handleSignInError"
         on-google-signin-aware-success="handleSignIn"
         on-google-signin-offline-success="handleOffline"
         on-google-signin-aware-signed-out="handleSignOut"></google-signin-aware>
@@ -133,6 +134,9 @@ or like this if plus scopes are present
     aware.offlineCode = 'No offline login.';
     aware.userName = 'N/A';
     aware.openidPrompt = {};
+    aware.handleSignInError = function(event) {
+      this.status = JSON.stringify(event.detail);
+    };
     aware.handleSignIn = function(response) {
       this.status = 'Signin granted';
       // console.log('[Aware] Signin Response', response);
