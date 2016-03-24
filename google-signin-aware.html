@@ -463,7 +463,7 @@
             // Access denied is not an error, user hit cancel
             if ("Access denied." !== error.reason) {
               this.signinAwares.forEach(function(awareInstance) {
-                awareInstance.fire('google-signin-aware-error', error);
+                awareInstance.errorNotify(error);
               });
             }
           }.bind(this)
@@ -709,6 +709,10 @@ You can bind to `isAuthorized` property to monitor authorization state.
       /** signs user out */
       signOut: function() {
         AuthEngine.signOut();
+      },
+
+      errorNotify: function(error) {
+        this.fire('google-signin-aware-error', error);
       },
 
       _appPackageNameChanged: function(newName, oldName) {
