@@ -495,12 +495,16 @@ any apps you're building. See the Google Developers Console
 
       _observeSignedIn: function(newVal, oldVal) {
         if (newVal) {
-          if (this.needAdditionalAuth)
+          if (this.needAdditionalAuth) {
             this.fire('google-signin-necessary');
+          }
           this.fire('google-signin-success');
         }
-        else
+        // Use `oldVal` avoids to fire the event at the initialization of
+        // `signedIn`.
+        else if (oldVal) {
           this.fire('google-signed-out');
+        }
       },
 
       /**
