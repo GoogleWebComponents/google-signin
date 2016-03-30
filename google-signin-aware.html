@@ -43,7 +43,7 @@
         if (this._clientId && val && val != this._clientId) {
           throw new Error('clientId cannot change. Values do not match. New: ' + val + ' Old:' + this._clientId);
         }
-        if (val) {
+        if (val && val != this._clientId) {
           this._clientId = val;
           this.initAuth2();
         }
