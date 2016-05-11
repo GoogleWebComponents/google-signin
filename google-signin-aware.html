@@ -749,7 +749,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
 
       _scopesChanged: function(newVal, oldVal) {
         AuthEngine.requestScopes(newVal);
-        this._updateScopeStatus();
+        this._updateScopeStatus(undefined);
       },
 
       _openidPromptChanged: function(newVal, oldVal) {
