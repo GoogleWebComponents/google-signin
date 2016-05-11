@@ -230,7 +230,7 @@
           'hosted_domain': this.hostedDomain
         });
 
-        auth.currentUser.listen(this.handleUserUpdate.bind(this));
+        auth['currentUser'].listen(this.handleUserUpdate.bind(this));
 
         auth.then(
           function onFulfilled() {
@@ -421,7 +421,7 @@
         }, this);
 
         var promise;
-        var user = gapi.auth2.getAuthInstance().currentUser.get();
+        var user = gapi.auth2.getAuthInstance()['currentUser'].get();
         if (!(this.offline || this.offlineAlwaysPrompt)) {
           if (user.getGrantedScopes()) {
             // additional auth, skip multiple account dialog
@@ -450,7 +450,7 @@
             var newUser;
             if (response.code) {
               AuthEngine.offlineGranted = true;
-              newUser = gapi.auth2.getAuthInstance().currentUser.get();
+              newUser = gapi.auth2.getAuthInstance()['currentUser'].get();
               AuthEngine.setOfflineCode(response.code);
             } else {
               newUser = response;
@@ -517,7 +517,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
     <script>
       var aware = document.querySelector('#awareness');
       aware.handleSignin = function(response) {
-        var user = gapi.auth2.getAuthInstance().currentUser.get();
+        var user = gapi.auth2.getAuthInstance()['currentUser'].get();
         console.log('User name: ' + user.getBasicProfile().getName());
       };
       aware.handleOffline = function(response) {
