@@ -539,9 +539,9 @@ You can bind to `isAuthorized` property to monitor authorization state.
        */
       /**
        * Fired when an offline authorization is successful.
-       * @param {Object} detail
-       * @param {string} detail.code The one-time authorization code from Google.
-       *     Your application can exchange this for an `access_token` and `refresh_token`
+       * @param {{code: string}} detail -
+       *     code: The one-time authorization code from Google.
+       *         Your application can exchange this for an `access_token` and `refresh_token`
        * @event google-signin-offline-success
        */
       /**
