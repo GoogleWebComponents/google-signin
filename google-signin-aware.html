@@ -537,6 +537,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
        * @param {Object} result Authorization result.
        * @event google-signin-aware-success
        */
+
       /**
        * Fired when an offline authorization is successful.
        * @param {{code: string}} detail -
@@ -544,10 +545,12 @@ You can bind to `isAuthorized` property to monitor authorization state.
        *         Your application can exchange this for an `access_token` and `refresh_token`
        * @event google-signin-offline-success
        */
+
       /**
        * Fired when this scope is not authorized
        * @event google-signin-aware-signed-out
        */
+
       /**
        * Fired when there is an error during the signin flow.
        * @param {Object} detail The error object returned from the OAuth 2 flow.
@@ -562,6 +565,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
           type: String,
           observer: '_appPackageNameChanged'
         },
+
         /**
          * a Google Developers clientId reference
          */
