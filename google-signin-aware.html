@@ -486,48 +486,52 @@
 
     AuthEngine.init();
 
-/**
-`google-signin-aware` is used to enable authentication in custom elements by
-interacting with a google-signin element that needs to be present somewhere
-on the page.
+    /**
+    `<google-signin-aware>` is used to enable authentication in custom elements.
 
-The `scopes` attribute allows you to specify which scope permissions are required
-(e.g do you want to allow interaction with the Google Drive API).
+    The `scopes` attribute allows you to specify which scope permissions are required
+    (e.g do you want to allow interaction with the Google Drive API).
 
-The `google-signin-aware-success` event is triggered when a user successfully
-authenticates. If either `offline` or `offlineAlwaysPrompt` is set to true, successful
-authentication will also trigger the `google-signin-offline-success`event.
-The `google-signin-aware-signed-out` event is triggered when a user explicitly
-signs out via the google-signin element.
+    The `google-signin-aware-success` event is triggered when a user successfully
+    authenticates. If either `offline` or `offlineAlwaysPrompt` is set to true, successful
+    authentication will also trigger the `google-signin-offline-success`event.
+    The `google-signin-aware-signed-out` event is triggered when a user explicitly
+    signs out via the google-signin element.
 
-You can bind to `isAuthorized` property to monitor authorization state.
-##### Example
+    You can bind to `isAuthorized` property to monitor authorization state.
 
-    <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
+    The `<google-signin>` element provides the standard Google signin button UI and should be placed
+    within the application to allow the user to trigger the authentication. When opting to use a
+    custom signin UI, trigger the authentication by calling the `signin()` method of the
+    `<google-signin-aware>` component.
 
+    #### Example
 
-##### Example with offline
-    <template id="awareness" is="dom-bind">
-      <google-signin-aware
-          scopes="https://www.googleapis.com/auth/drive"
-          offline
-          on-google-signin-aware-success="handleSignin"
-          on-google-signin-offline-success="handleOffline"></google-signin-aware>
-    <\/template>
-    <script>
-      var aware = document.querySelector('#awareness');
-      aware.handleSignin = function(response) {
-        var user = gapi.auth2.getAuthInstance().currentUser.get();
-        console.log('User name: ' + user.getBasicProfile().getName());
-      };
-      aware.handleOffline = function(response) {
-        console.log('Offline code received: ' + response.detail.code);
-        // Here you would POST response.detail.code to your webserver, which can
-        // exchange the authorization code for an access token. More info at:
-        // https://developers.google.com/identity/protocols/OAuth2WebServer
-      };
-    <\/script>
-*/
+        <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
+
+    #### Example with offline
+
+        <template id="awareness" is="dom-bind">
+          <google-signin-aware
+              scopes="https://www.googleapis.com/auth/drive"
+              offline
+              on-google-signin-aware-success="handleSignin"
+              on-google-signin-offline-success="handleOffline"></google-signin-aware>
+        <\/template>
+        <script>
+          var aware = document.querySelector('#awareness');
+          aware.handleSignin = function(response) {
+            var user = gapi.auth2.getAuthInstance().currentUser.get();
+            console.log('User name: ' + user.getBasicProfile().getName());
+          };
+          aware.handleOffline = function(response) {
+            console.log('Offline code received: ' + response.detail.code);
+            // Here you would POST response.detail.code to your webserver, which can
+            // exchange the authorization code for an access token. More info at:
+            // https://developers.google.com/identity/protocols/OAuth2WebServer
+          };
+        <\/script>
+    */
     Polymer({
 
       is: 'google-signin-aware',
