@@ -230,13 +230,13 @@
           'hosted_domain': this.hostedDomain
         });
 
-        auth.currentUser.listen(this.handleUserUpdate.bind(this));
+        auth['currentUser'].listen(this.handleUserUpdate.bind(this));
 
         auth.then(
-          function success() {
+          function onFulfilled() {
           // Let the current user listener trigger the changes.
           },
-          function error(error) {
+          function onRejected(error) {
             console.error(error);
           }
         );
@@ -364,7 +364,7 @@
       },
       /**
        * attached <google-signin-aware>
-       * @param {<google-signin-aware>} aware element to add
+       * @param {!GoogleSigninAwareElement} aware element to add
        */
       attachSigninAware: function(aware) {
         if (this.signinAwares.indexOf(aware) == -1) {
@@ -421,7 +421,7 @@
         }, this);
 
         var promise;
-        var user = gapi.auth2.getAuthInstance().currentUser.get();
+        var user = gapi.auth2.getAuthInstance()['currentUser'].get();
         if (!(this.offline || this.offlineAlwaysPrompt)) {
           if (user.getGrantedScopes()) {
             // additional auth, skip multiple account dialog
@@ -444,13 +444,13 @@
           promise = gapi.auth2.getAuthInstance().grantOfflineAccess(params);
         }
         promise.then(
-          function success(response) {
+          function onFulfilled(response) {
             // If login was offline, response contains one string "code"
             // Otherwise it contains the user object already
             var newUser;
             if (response.code) {
               AuthEngine.offlineGranted = true;
-              newUser = gapi.auth2.getAuthInstance().currentUser.get();
+              newUser = gapi.auth2.getAuthInstance()['currentUser'].get();
               AuthEngine.setOfflineCode(response.code);
             } else {
               newUser = response;
@@ -459,7 +459,7 @@
             var authResponse = newUser.getAuthResponse();
             // Let the current user listener trigger the changes.
           },
-          function error(error) {
+          function onRejected(error) {
             // Access denied is not an error, user hit cancel
             if ("Access denied." !== error.reason) {
               this.signinAwares.forEach(function(awareInstance) {
@@ -474,10 +474,10 @@
       signOut: function() {
         this.assertAuthInitialized();
         gapi.auth2.getAuthInstance().signOut().then(
-          function success() {
+          function onFulfilled() {
           // Let the current user listener trigger the changes.
           },
-          function error(error) {
+          function onRejected(error) {
             console.error(error);
           }
         );
@@ -517,7 +517,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
     <script>
       var aware = document.querySelector('#awareness');
       aware.handleSignin = function(response) {
-        var user = gapi.auth2.getAuthInstance().currentUser.get();
+        var user = gapi.auth2.getAuthInstance()['currentUser'].get();
         console.log('User name: ' + user.getBasicProfile().getName());
       };
       aware.handleOffline = function(response) {
@@ -537,22 +537,30 @@ You can bind to `isAuthorized` property to monitor authorization state.
        * @param {Object} result Authorization result.
        * @event google-signin-aware-success
        */
+
       /**
        * Fired when an offline authorization is successful.
-       * @param {Object} detail
-       * @param {string} detail.code The one-time authorization code from Google.
-       *     Your application can exchange this for an `access_token` and `refresh_token`
+       * @param {{code: string}} detail -
+       *     code: The one-time authorization code from Google.
+       *         Your application can exchange this for an `access_token` and `refresh_token`
        * @event google-signin-offline-success
        */
+
       /**
        * Fired when this scope is not authorized
        * @event google-signin-aware-signed-out
        */
+
       /**
        * Fired when there is an error during the signin flow.
        * @param {Object} detail The error object returned from the OAuth 2 flow.
        * @event google-signin-aware-error
        */
+
+      /**
+       * This block is needed so the previous @param is not assigned to the next property.
+       */
+
       properties: {
         /**
          * App package name for android over-the-air installs.
@@ -562,6 +570,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
           type: String,
           observer: '_appPackageNameChanged'
         },
+
         /**
          * a Google Developers clientId reference
          */
@@ -745,7 +754,7 @@ You can bind to `isAuthorized` property to monitor authorization state.
 
       _scopesChanged: function(newVal, oldVal) {
         AuthEngine.requestScopes(newVal);
-        this._updateScopeStatus();
+        this._updateScopeStatus(undefined);
       },
 
       _openidPromptChanged: function(newVal, oldVal) {

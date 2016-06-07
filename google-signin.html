@@ -189,46 +189,46 @@ any apps you're building. See the Google Developers Console
 
       is: 'google-signin',
 
-    /**
-     * Fired when user is signed in.
-     * You can use auth2 api to retrieve current user: `gapi.auth2.getAuthInstance().currentUser.get();`
-     * @event google-signin-success
-     */
+      /**
+       * Fired when user is signed in.
+       * You can use auth2 api to retrieve current user: `gapi.auth2.getAuthInstance()['currentUser'].get();`
+       * @event google-signin-success
+       */
 
-    /**
-     * Fired when the user is signed-out.
-     * @event google-signed-out
-     */
+      /**
+       * Fired when the user is signed-out.
+       * @event google-signed-out
+       */
 
-    /**
-     * Fired if user requires additional authorization
-     * @event google-signin-necessary
-     */
+      /**
+       * Fired if user requires additional authorization
+       * @event google-signin-necessary
+       */
 
-    /**
-     * Fired when signed in, and scope has been authorized
-     * @param {Object} result Authorization result.
-     * @event google-signin-aware-success
-     */
+      /**
+       * Fired when signed in, and scope has been authorized
+       * @param {Object} result Authorization result.
+       * @event google-signin-aware-success
+       */
 
-    /**
-     * Fired when there is an error during the signin flow.
-     * @param {Object} detail The error object returned from the OAuth 2 flow.
-     * @event google-signin-aware-error
-     */
+      /**
+       * Fired when there is an error during the signin flow.
+       * @param {Object} detail The error object returned from the OAuth 2 flow.
+       * @event google-signin-aware-error
+       */
 
-    /**
-     * Fired when an offline authorization is successful.
-     * @event google-signin-offline-success
-     * @param {Object} detail
-     * @param {string} detail.code The one-time authorization code from Google.
-     *     Your application can exchange this for an `access_token` and `refresh_token`
-     */
+      /**
+       * Fired when an offline authorization is successful.
+       * @param {{code: string}} detail -
+       *     code: The one-time authorization code from Google.
+       *         Your application can exchange this for an `access_token` and `refresh_token`
+       * @event google-signin-offline-success
+       */
 
-    /**
-     * Fired when this scope is not authorized
-     * @event google-signin-aware-signed-out
-     */
+      /**
+       * This block is needed so the previous @param is not assigned to the next property.
+       */
+
       properties: {
         /**
          * App package name for android over-the-air installs.
