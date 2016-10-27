@@ -38,6 +38,7 @@ limitations under the License.
       offline-always-prompt="{{offlineAlwaysPrompt}}"
       scopes="{{scopes}}"
       openid-prompt="{{openidPrompt}}"
+      initialized="{{initialized}}"
       signed-in="{{signedIn}}"
       is-authorized="{{isAuthorized}}"
       need-additional-auth="{{needAdditionalAuth}}"
@@ -456,6 +457,15 @@ any apps you're building. See the Google Developers Console
          * True if additional authorization required globally
          */
         needAdditionalAuth: {
+          type: Boolean,
+          notify: true,
+          value: false
+        },
+
+        /**
+         * True when the auth library has been initialized, and signedIn property value is set from the first api response.
+         */
+        initialized: {
           type: Boolean,
           notify: true,
           value: false
