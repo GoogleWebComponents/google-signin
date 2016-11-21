@@ -61,7 +61,9 @@ limitations under the License.
         }
         if (val && val != this._clientId) {
           this._clientId = val;
-          this.initAuth2();
+          if ('gapi' in window) {
+            this.initAuth2();
+          }
         }
       },
 
