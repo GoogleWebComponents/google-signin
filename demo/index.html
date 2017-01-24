@@ -104,6 +104,7 @@ or like this if plus scopes are present
             checked="{{openidPrompt.select_account::change}}">select_account
       </div>
       <div>offline=<input type="checkbox" checked="{{offline::change}}"></div>
+      <div>initialized="<span>{{initialized}}</span>"</div>
       <div>signedIn="<span>{{signedIn}}</span>"</div>
       <div>isAuthorized="<span>{{isAuthorized}}</span>"</div>
       <div>needAdditionalAuth:"<span>{{needAdditionalAuth}}</span>"&gt;</div>
@@ -115,6 +116,7 @@ or like this if plus scopes are present
     <google-signin-aware
         scopes="{{scope}}"
         openid-prompt="{{openidPromptValue}}"
+        initialized="{{initialized}}"
         signed-in="{{signedIn}}"
         offline="{{offline}}"
         is-authorized="{{isAuthorized}}"
@@ -122,10 +124,13 @@ or like this if plus scopes are present
         on-google-signin-aware-error="handleSignInError"
         on-google-signin-aware-success="handleSignIn"
         on-google-signin-offline-success="handleOffline"
-        on-google-signin-aware-signed-out="handleSignOut"></google-signin-aware>
+        on-google-signin-aware-signed-out="handleSignOut"
+        on-signed-in-changed="handleStateChange"
+        on-initialized-changed="handleStateChange"></google-signin-aware>
     <p>User name:<span>{{userName}}</span></p>
     <p>Testing <code>google-signin-aware</code> events: <span>{{status}}</span></p>
     <p>Testing <code>google-signin-offline</code> events: <span>{{offlineCode}}</span></p>
+    <p>Only display "not signed in" element after auth state is initialized (avoid flickering): <b hidden id="not-signed-in">Not signed in!</b></p>
     <p><button on-click="disconnect">Disconnect to start over</button></p>
   </template>
   <script>
@@ -157,6 +162,16 @@ or like this if plus scopes are present
         currentUser.disconnect();
       }
       gapi.auth2.getAuthInstance().signOut();
+    };
+
+    aware.handleStateChange = function(e) {
+      var signedIn = e.target.signedIn;
+      var initialized = e.target.initialized;
+      if(initialized && !signedIn) {
+        document.querySelector("#not-signed-in").removeAttribute("hidden");
+      } else {
+        document.querySelector("#not-signed-in").setAttribute("hidden", true);
+      }
     };
 
     aware.addEventListener('openid-prompt-changed', function(e) {

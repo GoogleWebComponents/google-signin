@@ -208,6 +208,9 @@ limitations under the License.
         return this._requestedScopeArray.join(' ');
       },
 
+      /** Is auth library initalized? */
+      _initialized: false,
+
       /** Is user signed in? */
       _signedIn: false,
 
@@ -267,6 +270,14 @@ limitations under the License.
             this.signinAwares[i]._setSignedIn(isSignedIn);
           }
         }
+        // update and broadcast initialized property the first time the isSignedIn property is set.
+        if(!this._initialized) {
+            for (var i=0; i<this.signinAwares.length; i++) {
+                this.signinAwares[i]._setInitialized(true);
+            }
+            this._initialized = true;
+        }
+
 
         // update granted scopes
         this._grantedScopeArray = this.strToScopeArray(
@@ -387,6 +398,7 @@ limitations under the License.
           this.signinAwares.push(aware);
           // Initialize aware properties
           aware._setNeedAdditionalAuth(this._needAdditionalAuth);
+          aware._setInitialized(this._initialized);
           aware._setSignedIn(this._signedIn);
           aware._setHasPlusScopes(this._hasPlusScopes);
         } else {
@@ -677,6 +689,15 @@ You can bind to `isAuthorized` property to monitor authorization state.
           type: String,
           value: '',
           observer: '_openidPromptChanged'
+        },
+
+        /**
+         * True when the auth library has been initialized, and signedIn property value is set from the first api response.
+         */
+        initialized: {
+            type: Boolean,
+            notify: true,
+            readOnly: true
         },
 
         /**
