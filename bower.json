@@ -22,16 +22,33 @@
     "authentication"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0",
+    "polymer": "Polymer/polymer#^2.0.0-rc.1",
     "font-roboto": "PolymerElements/font-roboto#^1.0.0",
-    "iron-icon": "PolymerElements/iron-icon#^1.0.0",
-    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.0.0",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.0",
-    "paper-ripple": "PolymerElements/paper-ripple#^1.0.0",
-    "paper-material": "PolymerElements/paper-material#^1.0.0",
-    "google-apis": "GoogleWebComponents/google-apis#^1.0.0"
+    "iron-icon": "PolymerElements/iron-icon#2.0-preview",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#2.0-preview",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0-preview",
+    "paper-ripple": "PolymerElements/paper-ripple#2.0-preview",
+    "paper-material": "PolymerElements/paper-material#2.0-preview",
+    "google-apis": "GoogleWebComponents/google-apis#2.0-preview"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.2"
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview"
+  },
+  "variants": {
+    "1.x": {
+      "dependencies": {
+        "polymer": "Polymer/polymer#^1.0.0",
+        "font-roboto": "PolymerElements/font-roboto#^1.0.0",
+        "iron-icon": "PolymerElements/iron-icon#^1.0.0",
+        "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.0.0",
+        "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.0",
+        "paper-ripple": "PolymerElements/paper-ripple#^1.0.0",
+        "paper-material": "PolymerElements/paper-material#^1.0.0",
+        "google-apis": "GoogleWebComponents/google-apis#^1.0.0"
+      },
+      "devDependencies": {
+        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+      }
+    }
   }
 }
