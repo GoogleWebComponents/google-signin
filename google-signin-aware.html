@@ -232,6 +232,9 @@ limitations under the License.
       init: function() {
         this._apiLoader = document.createElement('google-js-api');
         this._apiLoader.addEventListener('js-api-load', this.loadAuth2.bind(this));
+        if (Polymer.Element) {
+          document.body.appendChild(this._apiLoader);
+        }
       },
 
       loadAuth2: function() {

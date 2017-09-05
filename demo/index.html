@@ -84,61 +84,68 @@ or like this if plus scopes are present
   <p>Every signin button will request all the scopes present in the document,
   and change its appearance to match</p>
   <p>For example, here is a signin-aware scope. You can change its scopes via popup</p>
-  <template id="awareness" is="dom-bind">
-    <div><code>&lt;google-signin-aware
-      <div>scope=
-        <select value="{{scope::change}}">
-          <option value="">None</option>
-          <option value="https://www.googleapis.com/auth/analytics">Google Analytics</option>
-          <option value="https://www.googleapis.com/auth/plus.login">Google Plus view circles</option>
-          <option value="https://www.googleapis.com/auth/youtube">YouTube</option>
-          <option value="https://www.googleapis.com/auth/calendar">Calendar</option>
-          <option value="profile">Profile info</option>
-        </select>
-      </div>
-      <div>openid-prompt=
-        <input type="checkbox" checked="{{openidPrompt.none::change}}">none
-        <input type="checkbox" checked="{{openidPrompt.login::change}}">login
-        <input type="checkbox" checked="{{openidPrompt.consent::change}}">consent
-        <input type="checkbox"
-            checked="{{openidPrompt.select_account::change}}">select_account
-      </div>
-      <div>offline=<input type="checkbox" checked="{{offline::change}}"></div>
-      <div>initialized="<span>{{initialized}}</span>"</div>
-      <div>signedIn="<span>{{signedIn}}</span>"</div>
-      <div>isAuthorized="<span>{{isAuthorized}}</span>"</div>
-      <div>needAdditionalAuth:"<span>{{needAdditionalAuth}}</span>"&gt;</div>
-    </code></div>
-    <p>Every new scope you select will be added to requested scopes.</p>
-    <p>When you select a Google Plus scope, button will turn red.</p>
-      <google-signin></google-signin>
-    </p>
-    <google-signin-aware
-        scopes="{{scope}}"
-        openid-prompt="{{openidPromptValue}}"
-        initialized="{{initialized}}"
-        signed-in="{{signedIn}}"
-        offline="{{offline}}"
-        is-authorized="{{isAuthorized}}"
-        need-additional-auth="{{needAdditionalAuth}}"
-        on-google-signin-aware-error="handleSignInError"
-        on-google-signin-aware-success="handleSignIn"
-        on-google-signin-offline-success="handleOffline"
-        on-google-signin-aware-signed-out="handleSignOut"
-        on-signed-in-changed="handleStateChange"
-        on-initialized-changed="handleStateChange"></google-signin-aware>
-    <p>User name:<span>{{userName}}</span></p>
-    <p>Testing <code>google-signin-aware</code> events: <span>{{status}}</span></p>
-    <p>Testing <code>google-signin-offline</code> events: <span>{{offlineCode}}</span></p>
-    <p>Only display "not signed in" element after auth state is initialized (avoid flickering): <b hidden id="not-signed-in">Not signed in!</b></p>
-    <p><button on-click="disconnect">Disconnect to start over</button></p>
-  </template>
+  <dom-bind id="awareness">
+    <template is="dom-bind">
+      <div><code>&lt;google-signin-aware
+        <div>scope=
+          <select value="{{scope::change}}">
+            <option value="">None</option>
+            <option value="https://www.googleapis.com/auth/analytics">Google Analytics</option>
+            <option value="https://www.googleapis.com/auth/plus.login">Google Plus view circles</option>
+            <option value="https://www.googleapis.com/auth/youtube">YouTube</option>
+            <option value="https://www.googleapis.com/auth/calendar">Calendar</option>
+            <option value="profile">Profile info</option>
+          </select>
+        </div>
+        <div>openid-prompt=
+          <input type="checkbox" checked="{{openidPrompt.none::change}}">none
+          <input type="checkbox" checked="{{openidPrompt.login::change}}">login
+          <input type="checkbox" checked="{{openidPrompt.consent::change}}">consent
+          <input type="checkbox"
+              checked="{{openidPrompt.select_account::change}}">select_account
+        </div>
+        <div>offline=<input type="checkbox" checked="{{offline::change}}"></div>
+        <div>initialized="<span>{{initialized}}</span>"</div>
+        <div>signedIn="<span>{{signedIn}}</span>"</div>
+        <div>isAuthorized="<span>{{isAuthorized}}</span>"</div>
+        <div>needAdditionalAuth:"<span>{{needAdditionalAuth}}</span>"&gt;</div>
+      </code></div>
+      <p>Every new scope you select will be added to requested scopes.</p>
+      <p>When you select a Google Plus scope, button will turn red.</p>
+        <google-signin></google-signin>
+      </p>
+      <google-signin-aware
+          scopes="{{scope}}"
+          openid-prompt="{{openidPromptValue}}"
+          initialized="{{initialized}}"
+          signed-in="{{signedIn}}"
+          offline="{{offline}}"
+          is-authorized="{{isAuthorized}}"
+          need-additional-auth="{{needAdditionalAuth}}"
+          on-google-signin-aware-error="handleSignInError"
+          on-google-signin-aware-success="handleSignIn"
+          on-google-signin-offline-success="handleOffline"
+          on-google-signin-aware-signed-out="handleSignOut"
+          on-signed-in-changed="handleStateChange"
+          on-initialized-changed="handleStateChange"></google-signin-aware>
+      <p>User name:<span>{{userName}}</span></p>
+      <p>Testing <code>google-signin-aware</code> events: <span>{{status}}</span></p>
+      <p>Testing <code>google-signin-offline</code> events: <span>{{offlineCode}}</span></p>
+      <p>Only display "not signed in" element after auth state is initialized (avoid flickering): <b hidden id="not-signed-in">Not signed in!</b></p>
+      <p><button on-click="disconnect">Disconnect to start over</button></p>
+    </template>
+  </dom-bind>
   <script>
     var aware = document.querySelector('#awareness');
+    if (!Polymer.Element) {
+      aware = aware.querySelector('template');
+    }
+
     aware.status = 'Not granted';
     aware.offlineCode = 'No offline login.';
     aware.userName = 'N/A';
     aware.openidPrompt = {};
+
     aware.handleSignInError = function(event) {
       this.status = JSON.stringify(event.detail);
     };
@@ -156,7 +163,6 @@ or like this if plus scopes are present
       this.userName = 'N/A';
     };
     aware.disconnect = function() {
-      var b = document.querySelector('google-signin');
       var currentUser = gapi.auth2.getAuthInstance().currentUser.get();
       if (currentUser) {
         currentUser.disconnect();
