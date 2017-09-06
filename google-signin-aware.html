@@ -61,7 +61,9 @@ limitations under the License.
         }
         if (val && val != this._clientId) {
           this._clientId = val;
-          this.initAuth2();
+          if ('gapi' in window) {
+            this.initAuth2();
+          }
         }
       },
 
@@ -438,10 +440,11 @@ limitations under the License.
       },
 
       /** pops up sign-in dialog */
-      signIn: function() {
+      signIn: function(id) {
         this.assertAuthInitialized();
         var params = {
-          'scope': this.getMissingScopes()
+          'scope': this.getMissingScopes(),
+          'login_hint': id || ''
         };
 
         // Proxy specific attributes through to the signIn options.
@@ -751,8 +754,8 @@ You can bind to `isAuthorized` property to monitor authorization state.
       },
 
       /** pops up the authorization dialog */
-      signIn: function() {
-        AuthEngine.signIn();
+      signIn: function(id) {
+        AuthEngine.signIn(id);
       },
 
       /** signs user out */
