@@ -6,9 +6,9 @@
 
   <title>google-signin Demo</title>
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../google-signin.html">
-  <link rel="import" href="../google-signin-aware.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="../google-signin.js"></script>
+  <script type="module" src="../google-signin-aware.js"></script>
 
   <!-- Demo only styles -->
   <style>
@@ -135,74 +135,76 @@ or like this if plus scopes are present
       <p><button on-click="disconnect">Disconnect to start over</button></p>
     </template>
   </dom-bind>
-  <script>
-    var aware = document.querySelector('#awareness');
-    if (!Polymer.Element) {
-      aware = aware.querySelector('template');
-    }
+  <script type="module">
+import '../google-signin.js';
+import '../google-signin-aware.js';
+import { Element } from '@polymer/polymer/polymer-element.js';
+var aware = document.querySelector('#awareness');
+if (!Element) {
+  aware = aware.querySelector('template');
+}
 
-    aware.status = 'Not granted';
-    aware.offlineCode = 'No offline login.';
-    aware.userName = 'N/A';
-    aware.openidPrompt = {};
+aware.status = 'Not granted';
+aware.offlineCode = 'No offline login.';
+aware.userName = 'N/A';
+aware.openidPrompt = {};
 
-    aware.handleSignInError = function(event) {
-      this.status = JSON.stringify(event.detail);
-    };
-    aware.handleSignIn = function(response) {
-      this.status = 'Signin granted';
-      // console.log('[Aware] Signin Response', response);
-      this.userName = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName();
-    };
-    aware.handleOffline = function(response) {
-      this.offlineCode = response.detail.code;
-    };
-    aware.handleSignOut = function(response) {
-      this.status = 'Signed out';
-      // console.log('[Aware] Signout Response', response);
-      this.userName = 'N/A';
-    };
-    aware.disconnect = function() {
-      var currentUser = gapi.auth2.getAuthInstance().currentUser.get();
-      if (currentUser) {
-        currentUser.disconnect();
-      }
-      gapi.auth2.getAuthInstance().signOut();
-    };
+aware.handleSignInError = function(event) {
+  this.status = JSON.stringify(event.detail);
+};
+aware.handleSignIn = function(response) {
+  this.status = 'Signin granted';
+  // console.log('[Aware] Signin Response', response);
+  this.userName = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName();
+};
+aware.handleOffline = function(response) {
+  this.offlineCode = response.detail.code;
+};
+aware.handleSignOut = function(response) {
+  this.status = 'Signed out';
+  // console.log('[Aware] Signout Response', response);
+  this.userName = 'N/A';
+};
+aware.disconnect = function() {
+  var currentUser = gapi.auth2.getAuthInstance().currentUser.get();
+  if (currentUser) {
+    currentUser.disconnect();
+  }
+  gapi.auth2.getAuthInstance().signOut();
+};
 
-    aware.handleStateChange = function(e) {
-      var signedIn = e.target.signedIn;
-      var initialized = e.target.initialized;
-      if(initialized && !signedIn) {
-        document.querySelector("#not-signed-in").removeAttribute("hidden");
-      } else {
-        document.querySelector("#not-signed-in").setAttribute("hidden", true);
-      }
-    };
+aware.handleStateChange = function(e) {
+  var signedIn = e.target.signedIn;
+  var initialized = e.target.initialized;
+  if(initialized && !signedIn) {
+    document.querySelector("#not-signed-in").removeAttribute("hidden");
+  } else {
+    document.querySelector("#not-signed-in").setAttribute("hidden", true);
+  }
+};
 
-    aware.addEventListener('openid-prompt-changed', function(e) {
-      if (e.detail.value) {
-        if (e.detail.path === 'openidPrompt.none') {
-          aware.set('openidPrompt', {
-            none: true,
-            login: false,
-            consent: false,
-            select_account: false
-          });
-        } else {
-          aware.set('openidPrompt.none', false);
-        }
-      }
-
-      var values = [];
-      Object.keys(aware.openidPrompt).forEach(function(k) {
-        if (aware.openidPrompt[k]) {
-          values.push(k);
-        }
+aware.addEventListener('openid-prompt-changed', function(e) {
+  if (e.detail.value) {
+    if (e.detail.path === 'openidPrompt.none') {
+      aware.set('openidPrompt', {
+        none: true,
+        login: false,
+        consent: false,
+        select_account: false
       });
-      this.set('openidPromptValue', values.join(' '));
-    });
+    } else {
+      aware.set('openidPrompt.none', false);
+    }
+  }
 
-  </script>
+  var values = [];
+  Object.keys(aware.openidPrompt).forEach(function(k) {
+    if (aware.openidPrompt[k]) {
+      values.push(k);
+    }
+  });
+  this.set('openidPromptValue', values.join(' '));
+});
+</script>
 </body>
 </html>
