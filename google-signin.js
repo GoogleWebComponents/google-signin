@@ -1,4 +1,4 @@
-/*
+/**
 @license
 Copyright 2014 Google Inc
 
