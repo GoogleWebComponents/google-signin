@@ -152,7 +152,23 @@ Polymer({
   _template: html`
     <style include="google-signin-styles iron-positioning"></style>
 
-    <google-signin-aware id="aware" app-package-name="{{appPackageName}}" client-id="{{clientId}}" cookie-policy="{{cookiePolicy}}" request-visible-actions="{{requestVisibleActions}}" hosted-domain="{{hostedDomain}}" offline="{{offline}}" offline-always-prompt="{{offlineAlwaysPrompt}}" scopes="{{scopes}}" openid-prompt="{{openidPrompt}}" initialized="{{initialized}}" signed-in="{{signedIn}}" is-authorized="{{isAuthorized}}" need-additional-auth="{{needAdditionalAuth}}" has-plus-scopes="{{hasPlusScopes}}"></google-signin-aware>
+    <google-signin-aware
+      id="aware"
+      app-package-name="{{appPackageName}}"
+      client-id="{{clientId}}"
+      cookie-policy="{{cookiePolicy}}"
+      request-visible-actions="{{requestVisibleActions}}"
+      hosted-domain="{{hostedDomain}}"
+      offline="{{offline}}"
+      offline-always-prompt="{{offlineAlwaysPrompt}}"
+      scopes="{{scopes}}"
+      openid-prompt="{{openidPrompt}}"
+      initialized="{{initialized}}"
+      signed-in="{{signedIn}}"
+      is-authorized="{{isAuthorized}}"
+      need-additional-auth="{{needAdditionalAuth}}"
+      has-plus-scopes="{{hasPlusScopes}}">
+    </google-signin-aware>
     <template is="dom-if" if="{{raised}}">
       <paper-material id="shadow" class="fit" elevation="2" animated=""></paper-material>
     </template>

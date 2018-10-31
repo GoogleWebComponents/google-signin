@@ -31,8 +31,5 @@
     "@polymer/iron-flex-layout": "^3.0.0-pre.18",
     "@polymer/paper-ripple": "^3.0.0-pre.18",
     "@polymer/paper-material": "^3.0.0-pre.18"
-  },
-  "devDependencies": {
-    "@polymer/iron-component-page": "^3.0.0-pre.18"
   }
 }
