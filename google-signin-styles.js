@@ -1,4 +1,5 @@
-<!--
+/**
+@license
 Copyright 2014 Google Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
--->
+*/
+const $_documentContainer = document.createElement('template');
 
-<dom-module id="google-signin-styles">
+$_documentContainer.innerHTML = `<dom-module id="google-signin-styles">
   <template>
     <style>
       :host {
@@ -264,4 +266,8 @@ limitations under the License.
       }
     </style>
   </template>
-</dom-module>
+</dom-module>`;
+
+document.head.appendChild($_documentContainer.content);
+
+export {};
