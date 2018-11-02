@@ -44,204 +44,226 @@ var ProxyLoginAttributes = {
  * API used: https://developers.google.com/identity/sign-in/web/reference
  *
  */
-var AuthEngine = {
-
+function AuthEngineConstructor() {
   /**
    * oauth2 argument, set by google-signin-aware
    */
-  _clientId: null,
-
-  get clientId() {
-    return this._clientId;
-  },
-
-  set clientId(val) {
-    if (this._clientId && val && val != this._clientId) {
-      throw new Error('clientId cannot change. Values do not match. New: ' + val + ' Old:' + this._clientId);
-    }
-    if (val && val != this._clientId) {
-      this._clientId = val;
-      this.initAuth2();
-    }
-  },
-
-  /**
-   * oauth2 argument, set by google-signin-aware
-   */
-  _cookiePolicy: 'single_host_origin',
-
-  get cookiePolicy() {
-    return this._cookiePolicy;
-  },
-
-  set cookiePolicy(val) {
-    if (val) {
-      this._cookiePolicy = val;
-    }
-  },
-
-  /**
-   * oauth2 argument, set by google-signin-aware
-   */
-  _appPackageName: '',
-
-  get appPackageName() {
-    return this._appPackageName;
-  },
-
-  set appPackageName(val) {
-    if (this._appPackageName && val && val != this._appPackageName) {
-      throw new Error('appPackageName cannot change. Values do not match. New: ' + val + ' Old: ' + this._appPackageName);
-    }
-    if (val) {
-      this._appPackageName = val;
-    }
-  },
-
- /**
-   * oauth2 argument, set by google-signin-aware
-   */
-  _requestVisibleActions: '',
-
-  get requestVisibleactions() {
-    return this._requestVisibleActions;
-  },
-
-  set requestVisibleactions(val) {
-    if (this._requestVisibleActions && val && val != this._requestVisibleActions) {
-      throw new Error('requestVisibleactions cannot change. Values do not match. New: ' + val + ' Old: ' + this._requestVisibleActions);
-    }
-    if (val)
-      this._requestVisibleActions = val;
-  },
-
- /**
-   * oauth2 argument, set by google-signin-aware
-   */
-  _hostedDomain: '',
-
-  get hostedDomain() {
-    return this._hostedDomain;
-  },
-
-  set hostedDomain(val) {
-    if (this._hostedDomain && val && val != this._hostedDomain) {
-      throw new Error('hostedDomain cannot change. Values do not match. New: ' + val + ' Old: ' + this._hostedDomain);
-    }
-    if (val)
-      this._hostedDomain = val;
-  },
-
- /**
-   * oauth2 argument, set by google-signin-aware
-   */
-  _openidPrompt: '',
-
-  get openidPrompt() {
-    return this._openidPrompt;
-  },
-
-  set openidPrompt(val) {
-    if (typeof val !== 'string') {
-      throw new Error(
-          'openidPrompt must be a string. Received ' + typeof val);
-    }
-    if (val) {
-      var values = val.split(' ');
-      values = values.map(function(v) {
-        return v.trim();
-      });
-      values = values.filter(function(v) {
-        return v;
-      });
-      var validValues = {none: 0, login: 0, consent: 0, select_account: 0};
-      values.forEach(function(v) {
-        if (v == 'none' && values.length > 1) {
-          throw new Error(
-              'none cannot be combined with other openidPrompt values');
+  this._clientId = null;
+  Object.defineProperties(this, {
+    clientId: {
+      get: function() {
+        return this._clientId;
+      },
+      set: function(val) {
+        if (this._clientId && val && val != this._clientId) {
+          throw new Error('clientId cannot change. Values do not match. New: '
+                          + val + ' Old:' + this._clientId);
         }
-        if (!(v in validValues)) {
-          throw new Error(
-              'invalid openidPrompt value ' + v +
-              '. Valid values: ' + Object.keys(validValues).join(', '));
+        if (val && val != this._clientId) {
+          this._clientId = val;
+          this.initAuth2();
         }
-      });
-    }
-    this._openidPrompt = val;
-  },
+      }
+    },
+  });
+
+  /**
+   * oauth2 argument, set by google-signin-aware
+   */
+  this._cookiePolicy = 'single_host_origin';
+  Object.defineProperties(this, {
+    cookiePolicy: {
+      get: function() {
+        return this._cookiePolicy;
+      },
+      set: function(val) {
+        if (val) {
+          this._cookiePolicy = val;
+        }
+      },
+    },
+  });
+
+  /**
+   * oauth2 argument, set by google-signin-aware
+   */
+  this._appPackageName = '';
+  Object.defineProperties(this, {
+    appPackageName: {
+      get: function() {
+        return this._appPackageName;
+      },
+      set: function(val) {
+        if (this._appPackageName && val && val != this._appPackageName) {
+          throw new Error('appPackageName cannot change. Values do not match. New: ' + val + ' Old: ' + this._appPackageName);
+        }
+        if (val) {
+          this._appPackageName = val;
+        }
+      },
+    },
+  });
+
+  /**
+   * oauth2 argument, set by google-signin-aware
+   */
+  this._requestVisibleActions = '';
+  Object.defineProperties(this, {
+    requestVisibleactions: {
+      get: function() {
+        return this._requestVisibleActions;
+      },
+      set: function(val) {
+        if (this._requestVisibleActions && val && val != this._requestVisibleActions) {
+          throw new Error('requestVisibleactions cannot change. Values do not match. New: ' + val + ' Old: ' + this._requestVisibleActions);
+        }
+        if (val) {
+          this._requestVisibleActions = val;
+        }
+      },
+    },
+  });
+
+  /**
+   * oauth2 argument, set by google-signin-aware
+   */
+  this._hostedDomain = '';
+  Object.defineProperties(this, {
+    hostedDomain: {
+      get: function() {
+        return this._hostedDomain;
+      },
+      set: function(val) {
+        if (this._hostedDomain && val && val != this._hostedDomain) {
+          throw new Error('hostedDomain cannot change. Values do not match. New: ' + val + ' Old: ' + this._hostedDomain);
+        }
+        if (val) {
+          this._hostedDomain = val;
+        }
+      },
+    },
+  });
+
+  /**
+   * oauth2 argument, set by google-signin-aware
+   */
+  this._openidPrompt = '';
+  Object.defineProperties(this, {
+    openidPrompt: {
+      get: function() {
+        return this._openidPrompt;
+      },
+      set: function(val) {
+        if (typeof val !== 'string') {
+          throw new Error(
+              'openidPrompt must be a string. Received ' + typeof val);
+        }
+        if (val) {
+          var values = val.split(' ');
+          values = values.map(function(v) {
+            return v.trim();
+          });
+          values = values.filter(function(v) {
+            return v;
+          });
+          var validValues = {none: 0, login: 0, consent: 0, select_account: 0};
+          values.forEach(function(v) {
+            if (v == 'none' && values.length > 1) {
+              throw new Error(
+                  'none cannot be combined with other openidPrompt values');
+            }
+            if (!(v in validValues)) {
+              throw new Error(
+                  'invalid openidPrompt value ' + v +
+                  '. Valid values: ' + Object.keys(validValues).join(', '));
+            }
+          });
+        }
+        this._openidPrompt = val;
+      },
+    },
+  });
 
   /** Is offline access currently enabled in the google-signin-aware element? */
-  _offline: false,
-
-  get offline() {
-    return this._offline;
-  },
-
-  set offline(val) {
-    this._offline = val;
-    this.updateAdditionalAuth();
-  },
+  this._offline = false;
+  Object.defineProperties(this, {
+    offline: {
+      get: function() {
+        return this._offline;
+      },
+      set: function(val) {
+        this._offline = val;
+        this.updateAdditionalAuth();
+      },
+    },
+  });
 
   /** Should we force a re-prompt for offline access? */
-  _offlineAlwaysPrompt: false,
-
-  get offlineAlwaysPrompt() {
-    return this._offlineAlwaysPrompt;
-  },
-
-  set offlineAlwaysPrompt(val) {
-    this._offlineAlwaysPrompt = val;
-    this.updateAdditionalAuth();
-  },
+  this._offlineAlwaysPrompt = false;
+  Object.defineProperties(this, {
+    offlineAlwaysPrompt: {
+      get: function() {
+        return this._offlineAlwaysPrompt;
+      },
+      set: function(val) {
+        this._offlineAlwaysPrompt = val;
+        this.updateAdditionalAuth();
+      },
+    },
+  });
 
   /** Have we already gotten offline access from Google during this session? */
-  offlineGranted: false,
+  this.offlineGranted = false;
 
   /** <google-js-api> */
-  _apiLoader: null,
+  this._apiLoader = null;
 
   /** an array of wanted scopes. oauth2 argument */
-  _requestedScopeArray: [],
+  this._requestedScopeArray = [];
 
   /** _requestedScopeArray as string */
-  get requestedScopes() {
-    return this._requestedScopeArray.join(' ');
-  },
+  Object.defineProperties(this, {
+    requestedScopes: {
+      get: function() {
+        return this._requestedScopeArray.join(' ');
+      },
+    },
+  });
 
   /** Is auth library initalized? */
-  _initialized: false,
+  this._initialized = false;
 
   /** Is user signed in? */
-  _signedIn: false,
+  this._signedIn = false;
 
   /** Currently granted scopes */
-  _grantedScopeArray: [],
+  this._grantedScopeArray = [];
 
   /** True if additional authorization is required */
-  _needAdditionalAuth: true,
+  this._needAdditionalAuth = true;
 
   /** True if have google+ scopes */
-  _hasPlusScopes: false,
+  this._hasPlusScopes = false;
 
   /**
    * array of <google-signin-aware>
    * state changes are broadcast to them
    */
-  signinAwares: [],
+  this.signinAwares = [];
 
-  init: function() {
+  this.init = function() {
     this._apiLoader = document.createElement('google-js-api');
     this._apiLoader.addEventListener('js-api-load', this.loadAuth2.bind(this));
     if (Element) {
       document.body.appendChild(this._apiLoader);
     }
-  },
+  };
 
-  loadAuth2: function() {
+  this.loadAuth2 = function() {
     gapi.load('auth2', this.initAuth2.bind(this));
-  },
+  };
 
-  initAuth2: function() {
+  this.initAuth2 = function() {
     if (!('gapi' in window) || !('auth2' in window.gapi) || !this.clientId) {
       return;
     }
@@ -262,9 +284,9 @@ var AuthEngine = {
         console.error(error);
       }
     );
-  },
+  };
 
-  handleUserUpdate: function(newPrimaryUser) {
+  this.handleUserUpdate = function(newPrimaryUser) {
     // update and broadcast currentUser
     var isSignedIn = newPrimaryUser.isSignedIn();
     if (isSignedIn != this._signedIn) {
@@ -292,16 +314,16 @@ var AuthEngine = {
     for (var i=0; i<this.signinAwares.length; i++) {
       this.signinAwares[i]._updateScopeStatus(response);
     }
-  },
+  };
 
-  setOfflineCode: function(code) {
+  this.setOfflineCode = function(code) {
     for (var i=0; i<this.signinAwares.length; i++) {
       this.signinAwares[i]._updateOfflineCode(code);
     }
-  },
+  };
 
   /** convert scope string to scope array */
-  strToScopeArray: function(str) {
+  this.strToScopeArray = function(str) {
     if (!str) {
       return [];
     }
@@ -321,26 +343,26 @@ var AuthEngine = {
     return scopes.filter( function(value, index, self) {
       return self.indexOf(value) === index;
     });
-  },
+  };
 
   /** true if scopes have google+ scopes */
-  isPlusScope: function(scope) {
+  this.isPlusScope = function(scope) {
     return (scope.indexOf('/auth/games') > -1)
         || (scope.indexOf('auth/plus.') > -1 && scope.indexOf('auth/plus.me') < 0);
-  },
+  };
 
   /** true if scopes have been granted */
-  hasGrantedScopes: function(scopeStr) {
+  this.hasGrantedScopes = function(scopeStr) {
     var scopes = this.strToScopeArray(scopeStr);
     for (var i=0; i< scopes.length; i++) {
       if (this._grantedScopeArray.indexOf(scopes[i]) === -1)
         return false;
     }
     return true;
-  },
+  };
 
   /** request additional scopes */
-  requestScopes: function(newScopeStr) {
+  this.requestScopes = function(newScopeStr) {
     var newScopes = this.strToScopeArray(newScopeStr);
     var scopesUpdated = false;
     for (var i=0; i<newScopes.length; i++) {
@@ -353,10 +375,10 @@ var AuthEngine = {
       this.updateAdditionalAuth();
       this.updatePlusScopes();
     }
-  },
+  };
 
   /** update status of _needAdditionalAuth */
-  updateAdditionalAuth: function() {
+  this.updateAdditionalAuth = function() {
     var needMoreAuth = false;
     if ((this.offlineAlwaysPrompt || this.offline ) && !this.offlineGranted) {
       needMoreAuth = true;
@@ -375,9 +397,9 @@ var AuthEngine = {
         this.signinAwares[i]._setNeedAdditionalAuth(needMoreAuth);
       }
     }
-  },
+  };
 
-  updatePlusScopes: function() {
+  this.updatePlusScopes = function() {
     var hasPlusScopes = false;
     for (var i = 0; i < this._requestedScopeArray.length; i++) {
       if (this.isPlusScope(this._requestedScopeArray[i])) {
@@ -391,12 +413,13 @@ var AuthEngine = {
         this.signinAwares[i]._setHasPlusScopes(hasPlusScopes);
       }
     }
-  },
+  };
+
   /**
    * attached <google-signin-aware>
    * @param {!GoogleSigninAwareElement} aware element to add
    */
-  attachSigninAware: function(aware) {
+  this.attachSigninAware = function(aware) {
     if (this.signinAwares.indexOf(aware) == -1) {
       this.signinAwares.push(aware);
       // Initialize aware properties
@@ -407,25 +430,25 @@ var AuthEngine = {
     } else {
       console.warn('signinAware attached more than once', aware);
     }
-  },
+  };
 
-  detachSigninAware: function(aware) {
+  this.detachSigninAware = function(aware) {
     var index = this.signinAwares.indexOf(aware);
     if (index != -1) {
       this.signinAwares.splice(index, 1);
     } else {
       console.warn('Trying to detach unattached signin-aware');
     }
-  },
+  };
 
   /** returns scopes not granted */
-  getMissingScopes: function() {
+  this.getMissingScopes = function() {
     return this._requestedScopeArray.filter( function(scope) {
       return this._grantedScopeArray.indexOf(scope) === -1;
     }.bind(this)).join(' ');
-  },
+  };
 
-  assertAuthInitialized: function() {
+  this.assertAuthInitialized = function() {
     if (!this.clientId) {
       throw new Error("AuthEngine not initialized. clientId has not been configured.");
     }
@@ -435,10 +458,10 @@ var AuthEngine = {
     if (!('auth2' in window.gapi)) {
       throw new Error("AuthEngine not initialized. auth2 not loaded.");
     }
-  },
+  };
 
   /** pops up sign-in dialog */
-  signIn: function() {
+  this.signIn = function() {
     this.assertAuthInitialized();
     var params = {
       'scope': this.getMissingScopes()
@@ -499,10 +522,10 @@ var AuthEngine = {
         }
       }.bind(this)
     );
-  },
+  };
 
   /** signs user out */
-  signOut: function() {
+  this.signOut = function() {
     this.assertAuthInitialized();
     gapi.auth2.getAuthInstance().signOut().then(
       function onFulfilled() {
@@ -512,9 +535,10 @@ var AuthEngine = {
         console.error(error);
       }
     );
-  }
+  };
 };
 
+var AuthEngine = new AuthEngineConstructor();
 AuthEngine.init();
 
 /**
