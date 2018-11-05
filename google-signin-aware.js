@@ -17,7 +17,6 @@ limitations under the License.
 import '@polymer/polymer/polymer-legacy.js';
 
 import 'google-apis/google-js-api.js';
-import { Element } from '@polymer/polymer/polymer-element.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 
 /**
@@ -43,6 +42,7 @@ var ProxyLoginAttributes = {
  *
  * API used: https://developers.google.com/identity/sign-in/web/reference
  *
+ * @constructor
  */
 function AuthEngineConstructor() {
   /**
@@ -221,15 +221,6 @@ function AuthEngineConstructor() {
   /** an array of wanted scopes. oauth2 argument */
   this._requestedScopeArray = [];
 
-  /** _requestedScopeArray as string */
-  Object.defineProperties(this, {
-    requestedScopes: {
-      get: function() {
-        return this._requestedScopeArray.join(' ');
-      },
-    },
-  });
-
   /** Is auth library initalized? */
   this._initialized = false;
 
@@ -254,9 +245,7 @@ function AuthEngineConstructor() {
   this.init = function() {
     this._apiLoader = document.createElement('google-js-api');
     this._apiLoader.addEventListener('js-api-load', this.loadAuth2.bind(this));
-    if (Element) {
-      document.body.appendChild(this._apiLoader);
-    }
+    (document.body || document.head).appendChild(this._apiLoader);
   };
 
   this.loadAuth2 = function() {
@@ -270,7 +259,7 @@ function AuthEngineConstructor() {
     var auth = gapi.auth2.init({
       'client_id': this.clientId,
       'cookie_policy': this.cookiePolicy,
-      'scope': this.requestedScopes,
+      'scope': this._requestedScopeArray.join(' '),
       'hosted_domain': this.hostedDomain
     });
 
