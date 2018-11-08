@@ -576,6 +576,8 @@ Polymer({
 
   is: 'google-signin-aware',
 
+  _template: null,
+
   /**
    * Fired when this scope has been authorized
    * @param {Object} result Authorization result.
