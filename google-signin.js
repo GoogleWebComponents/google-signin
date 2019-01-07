@@ -19,7 +19,7 @@ import '@polymer/polymer/polymer-legacy.js';
 import './google-signin-aware.js';
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/font-roboto/roboto.js';
-import 'google-apis/google-js-api.js';
+import '@google-web-components/google-apis/google-js-api.js';
 import '@polymer/paper-ripple/paper-ripple.js';
 import '@polymer/paper-material/paper-material.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
