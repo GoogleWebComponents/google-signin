@@ -8,9 +8,10 @@
     "google",
     "authentication"
   ],
+  "repository": "GoogleWebComponents/google-signin",
   "homepage": "https://googlewebcomponents.github.io/google-signin",
-  "name": "@polymer/google-signin",
-  "version": "3.0.0",
+  "name": "@google-web-components/google-signin",
+  "version": "3.0.1",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
@@ -30,6 +31,7 @@
     "@polymer/iron-iconset-svg": "^3.0.0-pre.18",
     "@polymer/iron-flex-layout": "^3.0.0-pre.18",
     "@polymer/paper-ripple": "^3.0.0-pre.18",
-    "@polymer/paper-material": "^3.0.0-pre.18"
+    "@polymer/paper-material": "^3.0.0-pre.18",
+    "@google-web-components/google-apis": "^3.0.0"
   }
 }

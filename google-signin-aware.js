@@ -16,7 +16,7 @@ limitations under the License.
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'google-apis/google-js-api.js';
+import '@google-web-components/google-apis/google-js-api.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 
 /**

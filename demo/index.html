@@ -136,9 +136,9 @@ or like this if plus scopes are present
   <script type="module">
 import '../google-signin.js';
 import '../google-signin-aware.js';
-import { Element } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 var aware = document.querySelector('#awareness');
-if (!Element) {
+if (!PolymerElement) {
   aware = aware.querySelector('template');
 }
 
