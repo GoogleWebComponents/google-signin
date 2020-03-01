@@ -576,6 +576,7 @@ Polymer({
 
   is: 'google-signin-aware',
 
+  /** @override */
   _template: null,
 
   /**
@@ -757,10 +758,12 @@ Polymer({
     }
   },
 
+  /** @override */
   attached: function() {
     AuthEngine.attachSigninAware(this);
   },
 
+  /** @override */
   detached: function() {
     AuthEngine.detachSigninAware(this);
   },
