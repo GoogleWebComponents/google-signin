@@ -149,6 +149,7 @@ any apps you're building. See the Google Developers Console
 */
 
 Polymer({
+  /** @override */
   _template: html`
     <style include="google-signin-styles iron-positioning"></style>
 
@@ -415,7 +416,6 @@ Polymer({
      *
      * Available options: light, dark.
      *
-     * @attribute theme
      * @type {string}
      * @default 'dark'
      */
