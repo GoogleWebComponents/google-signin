@@ -11,7 +11,7 @@
   "repository": "GoogleWebComponents/google-signin",
   "homepage": "https://googlewebcomponents.github.io/google-signin",
   "name": "@google-web-components/google-signin",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
